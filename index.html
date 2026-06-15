@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mixer - Ephemeral Blend</title>
+    <title>Tala - Ephemeral Blend</title>
     <style>
       :root {
         color-scheme: dark;
@@ -656,7 +656,7 @@
         <div class="topbar">
           <div class="brand">
             <div class="mark" aria-hidden="true"></div>
-            <h1>Mixer</h1>
+            <h1>Tala</h1>
           </div>
           <div class="mode-pill">Ephemeral listening - no recording, no export</div>
         </div>
@@ -781,7 +781,7 @@
 
       <footer>
         <p>
-          Listen in the moment: archival streams play from their original source while Mixer adds
+          Listen in the moment: archival streams play from their original source while Tala adds
           a separate beat beside them. Favorites save your choices and settings, not the audio.
         </p>
       </footer>
@@ -1133,8 +1133,11 @@
       let isStreamPlaying = false;
       let soundcloudWidget;
       let soundcloudReady = Promise.resolve(false);
-      const customTracksKey = "mixer:customTracks";
-      let favorites = JSON.parse(localStorage.getItem("mixer:favorites") || "[]");
+      const customTracksKey = "tala:customTracks";
+      const favoritesKey = "tala:favorites";
+      const legacyCustomTracksKey = "mixer:customTracks";
+      const legacyFavoritesKey = "mixer:favorites";
+      let favorites = JSON.parse(localStorage.getItem(favoritesKey) || localStorage.getItem(legacyFavoritesKey) || "[]");
 
       function embedUrl(trackUrl) {
         const params = new URLSearchParams({
@@ -1198,7 +1201,7 @@
       }
 
       function restoreCustomTracks() {
-        const saved = JSON.parse(localStorage.getItem(customTracksKey) || "[]");
+        const saved = JSON.parse(localStorage.getItem(customTracksKey) || localStorage.getItem(legacyCustomTracksKey) || "[]");
         saved.slice().reverse().forEach((track) => {
           if (!tracks.some((item) => item.url === track.url)) {
             tracks.unshift(track);
@@ -1308,7 +1311,7 @@
         favorites = favorites.filter((item) => `${item.trackUrl}|${item.beatTitle}|${item.streamVolume}|${item.beatVolume}|${item.tempo}|${item.swing}` !== key);
         favorites.unshift(favorite);
         favorites = favorites.slice(0, 12);
-        localStorage.setItem("mixer:favorites", JSON.stringify(favorites));
+        localStorage.setItem(favoritesKey, JSON.stringify(favorites));
         renderFavorites();
         setStatus("Favorite saved as settings only");
       }

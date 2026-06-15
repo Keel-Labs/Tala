@@ -1,6 +1,6 @@
-# Mixer
+# Tala
 
-Mixer is an ephemeral listening prototype for pairing archival Indian music streams with original generated beats.
+Tala is an ephemeral listening prototype for pairing archival Indian music streams with original generated beats.
 
 ## Prototype
 
@@ -24,4 +24,4 @@ The current prototype demonstrates:
 
 ## Product Guardrail
 
-The first experience is live co-playback, not stored remixing. Archival audio stays in the original streaming embed, and Mixer only plays a separate beat beside it.
+The first experience is live co-playback, not stored remixing. Archival audio stays in the original streaming embed, and Tala only plays a separate beat beside it.
