@@ -1,0 +1,1596 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mixer - Ephemeral Blend</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #251634;
+        --muted: #6b5c73;
+        --line: #f6b35f;
+        --paper: #261339;
+        --surface: #fff0cf;
+        --red: #ff5f7d;
+        --teal: #17d6c5;
+        --gold: #ffd36e;
+        --green: #9cff7a;
+        --violet: #6c2c8f;
+        --midnight: #160c24;
+        --shadow: 0 22px 0 rgba(22, 12, 36, 0.55), 0 28px 70px rgba(255, 95, 125, 0.22);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 14% 18%, rgba(255, 95, 125, 0.28), transparent 28%),
+          radial-gradient(circle at 80% 10%, rgba(23, 214, 197, 0.22), transparent 26%),
+          linear-gradient(90deg, rgba(255, 211, 110, 0.08) 1px, transparent 1px) 0 0 / 42px 42px,
+          linear-gradient(rgba(255, 211, 110, 0.08) 1px, transparent 1px) 0 0 / 42px 42px,
+          linear-gradient(135deg, #2b1741 0%, #21102f 42%, #4f163f 100%);
+        color: #fff5d7;
+        font-family:
+          "Trebuchet MS", "Arial Rounded MT Bold", ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: 0;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.045) 0,
+            rgba(255, 255, 255, 0.045) 1px,
+            transparent 1px,
+            transparent 4px
+          );
+        mix-blend-mode: soft-light;
+        opacity: 0.34;
+        z-index: 0;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app {
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      header {
+        padding: 22px clamp(18px, 4vw, 48px);
+        border-bottom: 2px solid rgba(255, 211, 110, 0.45);
+        background: rgba(22, 12, 36, 0.82);
+        backdrop-filter: blur(14px);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .mark {
+        width: 38px;
+        height: 38px;
+        border: 2px solid var(--gold);
+        display: grid;
+        place-items: center;
+        background: #ff5f7d;
+        box-shadow: 4px 4px 0 var(--teal), 0 0 18px rgba(255, 95, 125, 0.6);
+        flex: 0 0 auto;
+        border-radius: 7px;
+      }
+
+      .mark::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid var(--gold);
+        background: var(--midnight);
+      }
+
+      h1 {
+        font-family: "Cooper Black", "Bauhaus 93", "Arial Black", fantasy;
+        font-size: clamp(24px, 4vw, 46px);
+        line-height: 1;
+        margin: 0;
+        letter-spacing: 0;
+        color: var(--gold);
+        text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(23, 214, 197, 0.55);
+      }
+
+      .mode-pill {
+        border: 1px solid rgba(255, 211, 110, 0.55);
+        background: rgba(255, 240, 207, 0.1);
+        color: #ffe8b5;
+        padding: 8px 11px;
+        border-radius: 999px;
+        white-space: nowrap;
+        font-size: 13px;
+      }
+
+      main {
+        width: min(1180px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: clamp(22px, 4vw, 44px) 0;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .intro {
+        padding: clamp(18px, 3vw, 30px) 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .eyebrow {
+        margin: 0;
+        color: var(--red);
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+
+      .intro h2 {
+        font-family: "Cooper Black", "Bauhaus 93", "Arial Black", fantasy;
+        font-size: clamp(34px, 7vw, 76px);
+        line-height: 0.95;
+        margin: 0;
+        max-width: 720px;
+        letter-spacing: 0;
+        color: #fff0cf;
+        text-shadow:
+          3px 3px 0 var(--red),
+          6px 6px 0 var(--teal),
+          0 0 28px rgba(255, 211, 110, 0.42);
+      }
+
+      .intro p {
+        margin: 0;
+        color: #ffe8b5;
+        line-height: 1.65;
+        max-width: 620px;
+        font-size: 17px;
+      }
+
+      .retro-deck {
+        width: min(420px, 100%);
+        min-height: 130px;
+        border: 2px solid var(--gold);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255, 95, 125, 0.25), transparent 48%),
+          linear-gradient(90deg, rgba(23, 214, 197, 0.12), rgba(255, 211, 110, 0.12)),
+          rgba(22, 12, 36, 0.72);
+        box-shadow: 6px 6px 0 var(--red), 0 0 32px rgba(23, 214, 197, 0.22);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .retro-deck::before {
+        content: "";
+        position: absolute;
+        width: 118px;
+        height: 118px;
+        border-radius: 50%;
+        left: 22px;
+        top: 6px;
+        background:
+          radial-gradient(circle, var(--gold) 0 8px, #21102f 9px 18px, transparent 19px),
+          repeating-radial-gradient(circle, #1a1027 0 7px, #372145 8px 10px);
+        border: 5px solid #0d0715;
+        box-shadow: 0 0 20px rgba(255, 211, 110, 0.35);
+        animation: spinRecord 9s linear infinite;
+        opacity: 0.84;
+      }
+
+      .retro-deck::after {
+        content: "ON AIR";
+        position: absolute;
+        right: 24px;
+        top: 28px;
+        color: var(--green);
+        font-family: "Arial Black", sans-serif;
+        font-size: 28px;
+        text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
+      }
+
+      .cassette-lines {
+        position: absolute;
+        right: 24px;
+        bottom: 26px;
+        width: 160px;
+        height: 34px;
+        border: 2px solid rgba(255, 240, 207, 0.8);
+        border-radius: 4px;
+        background:
+          radial-gradient(circle at 24px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          radial-gradient(circle at 132px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          linear-gradient(90deg, transparent 42px, rgba(255, 240, 207, 0.62) 43px 116px, transparent 117px);
+        transform: rotate(-2deg);
+      }
+
+      @keyframes spinRecord {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .button {
+        min-height: 44px;
+        border: 2px solid var(--gold);
+        background: #32184b;
+        color: #fff4d0;
+        padding: 0 16px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        cursor: pointer;
+        box-shadow: 4px 4px 0 var(--red), 0 0 18px rgba(23, 214, 197, 0.16);
+        font-weight: 800;
+      }
+
+      .button.secondary {
+        background: #fff0cf;
+        color: var(--ink);
+      }
+
+      .button.icon {
+        width: 46px;
+        padding: 0;
+      }
+
+      .button.favorite {
+        background: var(--red);
+        color: #fff0cf;
+      }
+
+      .button.small {
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 14px;
+        box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.22);
+      }
+
+      .button:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 var(--red);
+      }
+
+      .stage {
+        background: var(--surface);
+        border: 3px solid var(--gold);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        overflow: hidden;
+        color: var(--ink);
+      }
+
+      .stage-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 3px solid var(--gold);
+        background: linear-gradient(90deg, #ff5f7d, #ffd36e 46%, #17d6c5);
+        color: #21102f;
+      }
+
+      .stage-head .meta {
+        color: #3e2852;
+        font-weight: 900;
+      }
+
+      .stage-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+      }
+
+      .live-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 0 5px rgba(156, 255, 122, 0.25), 0 0 18px rgba(156, 255, 122, 0.8);
+      }
+
+      .now {
+        padding: 18px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .selection {
+        display: grid;
+        gap: 10px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(37, 22, 52, 0.18);
+      }
+
+      .label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+
+      .track-name {
+        font-weight: 900;
+        font-size: clamp(21px, 3vw, 30px);
+        line-height: 1.08;
+        color: var(--ink);
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .player-frame {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(255, 95, 125, 0.12);
+      }
+
+      iframe {
+        display: block;
+        width: 100%;
+        height: 166px;
+        border: 0;
+      }
+
+      .beat-visual {
+        height: 100px;
+        display: grid;
+        grid-template-columns: repeat(16, 1fr);
+        align-items: end;
+        gap: 5px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background:
+          linear-gradient(180deg, rgba(23, 214, 197, 0.16), transparent),
+          repeating-linear-gradient(90deg, rgba(37, 22, 52, 0.08) 0 1px, transparent 1px 22px),
+          #fff8e8;
+      }
+
+      .bar {
+        min-height: 12px;
+        border-radius: 4px 4px 0 0;
+        background: var(--teal);
+        opacity: 0.38;
+        transition: opacity 120ms ease, transform 120ms ease;
+      }
+
+      .bar.active {
+        opacity: 1;
+        transform: scaleY(1.08);
+        background: var(--red);
+        box-shadow: 0 0 12px rgba(255, 95, 125, 0.8);
+      }
+
+      .controls {
+        display: grid;
+        gap: 16px;
+      }
+
+      .control-row {
+        display: grid;
+        grid-template-columns: 128px minmax(0, 1fr) 44px;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .control-row output {
+        text-align: right;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--red);
+      }
+
+      .library {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .panel {
+        border: 2px solid var(--gold);
+        border-radius: 8px;
+        padding: 14px;
+        background: rgba(255, 240, 207, 0.94);
+        box-shadow: 7px 7px 0 rgba(255, 95, 125, 0.72), 0 0 24px rgba(23, 214, 197, 0.14);
+        color: var(--ink);
+      }
+
+      .panel h3 {
+        margin: 0 0 12px;
+        font-size: 18px;
+        font-family: "Cooper Black", "Arial Black", fantasy;
+        color: var(--ink);
+      }
+
+      .search {
+        width: 100%;
+        min-height: 42px;
+        border: 2px solid rgba(37, 22, 52, 0.22);
+        border-radius: 7px;
+        background: #fff9e9;
+        color: var(--ink);
+        padding: 0 12px;
+        margin-bottom: 10px;
+      }
+
+      .archive-tools {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .inline-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .inline-form .search {
+        margin-bottom: 0;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .text-link {
+        border: 0;
+        background: transparent;
+        color: var(--violet);
+        cursor: pointer;
+        font-weight: 900;
+        padding: 0;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .item {
+        width: 100%;
+        min-height: 58px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        border: 2px solid rgba(37, 22, 52, 0.16);
+        background: rgba(255, 249, 233, 0.96);
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 7px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .item[aria-pressed="true"] {
+        border-color: var(--ink);
+        background: #fff0cf;
+        box-shadow: inset 4px 0 0 var(--gold);
+      }
+
+      .item strong {
+        display: block;
+        overflow-wrap: anywhere;
+        color: var(--ink);
+        font-weight: 900;
+      }
+
+      .item .meta {
+        color: #5c4d66;
+      }
+
+      .tag {
+        font-size: 12px;
+        color: var(--surface);
+        background: var(--teal);
+        border-radius: 999px;
+        padding: 5px 8px;
+        white-space: nowrap;
+      }
+
+      .empty {
+        border: 2px dashed rgba(37, 22, 52, 0.25);
+        border-radius: 7px;
+        color: var(--muted);
+        padding: 14px;
+        line-height: 1.45;
+        background: rgba(255, 252, 247, 0.58);
+      }
+
+      footer {
+        border-top: 2px solid rgba(255, 211, 110, 0.45);
+        padding: 16px clamp(18px, 4vw, 48px);
+        color: #ffe8b5;
+        background: rgba(22, 12, 36, 0.82);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      footer p {
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (max-width: 1040px) {
+        .library {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .hero,
+        .library {
+          grid-template-columns: 1fr;
+        }
+
+        .intro {
+          padding-top: 4px;
+        }
+
+        .mode-pill {
+          display: none;
+        }
+      }
+
+      @media (max-width: 560px) {
+        main {
+          width: min(100vw - 24px, 1180px);
+        }
+
+        .topbar {
+          align-items: flex-start;
+        }
+
+        .stage-head,
+        .actions {
+          align-items: stretch;
+        }
+
+        .stage-head {
+          flex-direction: column;
+        }
+
+        .button {
+          flex: 1 1 auto;
+        }
+
+        .button.icon {
+          flex: 0 0 46px;
+        }
+
+        .control-row {
+          grid-template-columns: 1fr;
+          gap: 7px;
+        }
+
+        .control-row output {
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div class="topbar">
+          <div class="brand">
+            <div class="mark" aria-hidden="true"></div>
+            <h1>Mixer</h1>
+          </div>
+          <div class="mode-pill">Ephemeral listening - no recording, no export</div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <div class="intro">
+            <h2 id="page-title">Old recordings, new pulse.</h2>
+            <p>
+              Pick an archival Indian recording from its original streaming source, layer an
+              original beat beside it, and listen in the moment. The blend is never rendered,
+              saved, downloaded, or shared.
+            </p>
+            <div class="retro-deck" aria-hidden="true">
+              <div class="cassette-lines"></div>
+            </div>
+            <div class="actions">
+              <button class="button" id="playBlend" type="button" title="Start or stop the live blend">
+                <span aria-hidden="true">▶</span>
+                <span>Play Blend</span>
+              </button>
+              <button class="button secondary" id="randomAll" type="button" title="Choose a random recording and beat">
+                <span aria-hidden="true">↻</span>
+                <span>Random Blend</span>
+              </button>
+              <button class="button favorite" id="saveFavorite" type="button" title="Save this live blend configuration">
+                <span aria-hidden="true">♡</span>
+                <span>Favorite</span>
+              </button>
+            </div>
+          </div>
+
+          <section class="stage" aria-label="Ephemeral blend controls">
+            <div class="stage-head">
+              <div class="stage-title">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span>Live Blend</span>
+              </div>
+              <span class="meta" id="statusText">Ready for private listening</span>
+            </div>
+
+            <div class="now">
+              <div class="selection">
+                <span class="label">Archival stream</span>
+                <span class="track-name" id="trackTitle"></span>
+                <span class="meta" id="trackMeta"></span>
+                <div class="player-frame">
+                  <iframe id="soundcloudPlayer" title="Archive of Indian Music SoundCloud player" allow="autoplay"></iframe>
+                </div>
+              </div>
+
+              <div class="selection">
+                <span class="label">Generated beat</span>
+                <span class="track-name" id="beatTitle"></span>
+                <span class="meta" id="beatMeta"></span>
+                <div class="beat-visual" id="beatVisual" aria-label="Beat step visualizer"></div>
+              </div>
+
+              <div class="controls" aria-label="Blend controls">
+                <label class="control-row">
+                  <span>Stream volume</span>
+                  <input id="streamVolume" type="range" min="0" max="100" value="80" />
+                  <output id="streamVolumeOut">80%</output>
+                </label>
+                <label class="control-row">
+                  <span>Beat volume</span>
+                  <input id="beatVolume" type="range" min="0" max="100" value="52" />
+                  <output id="beatVolumeOut">52%</output>
+                </label>
+                <label class="control-row">
+                  <span>Beat tempo</span>
+                  <input id="tempo" type="range" min="62" max="132" value="88" />
+                  <output id="tempoOut">88</output>
+                </label>
+                <label class="control-row">
+                  <span>Swing feel</span>
+                  <input id="swing" type="range" min="0" max="42" value="14" />
+                  <output id="swingOut">14</output>
+                </label>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="library" aria-label="Prototype library">
+          <div class="panel">
+            <h3>Archival Stream Queue</h3>
+            <label>
+              <span class="sr-only">Search archival streams</span>
+              <input class="search" id="trackSearch" type="search" placeholder="Search this queue" />
+            </label>
+            <div class="archive-tools">
+              <form class="inline-form" id="customTrackForm">
+                <label>
+                  <span class="sr-only">Paste a SoundCloud track URL</span>
+                  <input class="search" id="customTrackUrl" type="url" placeholder="Paste a SoundCloud track URL" />
+                </label>
+                <button class="button secondary small" type="submit">Load</button>
+              </form>
+              <div class="hint">
+                Looking beyond this queue?
+                <button class="text-link" id="openArchiveSearch" type="button">Open AIM popular tracks</button>
+              </div>
+            </div>
+            <div class="list" id="trackList"></div>
+          </div>
+          <div class="panel">
+            <h3>Original Beat Patterns</h3>
+            <label>
+              <span class="sr-only">Search beat patterns</span>
+              <input class="search" id="beatSearch" type="search" placeholder="Search beats, EDM, lo-fi, garage" />
+            </label>
+            <div class="list" id="beatList"></div>
+          </div>
+          <div class="panel">
+            <h3>Favorite Blends</h3>
+            <div class="list" id="favoriteList"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          Listen in the moment: archival streams play from their original source while Mixer adds
+          a separate beat beside them. Favorites save your choices and settings, not the audio.
+        </p>
+      </footer>
+    </div>
+
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+    <script>
+      const tracks = [
+        {
+          title: "Lata Mangeshkar & Chorus - Panchi Banoon",
+          meta: "Archive of Indian Music popular track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/lata-mangeshkar-chorus-panchi-banoon"
+        },
+        {
+          title: "Bade Ghulam Ali Khan - Aaye Na Balam",
+          meta: "Archive of Indian Music popular track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/bade-ghulam-ali-khan-aaye-na-1"
+        },
+        {
+          title: "Lata Mangeshkar - Khuda Nigehbaan Ho Tumhara",
+          meta: "Archive of Indian Music popular track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/lata-mangeshkar-khuda-nigehbaan-ho-tumhara"
+        },
+        {
+          title: "Lata Mangeshkar - Bekas Pe Karam Kijiye",
+          meta: "Archive of Indian Music popular track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/lata-mangeshkar-bekas-pe-karam-kijiye"
+        },
+        {
+          title: "Bade Ghulam Ali Khan - Kate Na Birha Ki Raat",
+          meta: "Archive of Indian Music popular track on SoundCloud - Piloo",
+          url: "https://soundcloud.com/archive-of-indian-music/bade-ghulam-ali-khan-kate-na"
+        },
+        {
+          title: "P. V. Anantasayanam & Party - Sri Venkateshwara Suprabhatham",
+          meta: "Archive of Indian Music popular track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/p-v-anantasayanam-party-sri"
+        },
+        {
+          title: "Bade Ghulam Ali Khan - Tirachhi Nazariya Ki Baan",
+          meta: "Archive of Indian Music popular track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/bade-ghulam-ali-khan-tirachhi"
+        },
+        {
+          title: "Ustad Ghulam Ali Khan - Bazooband Khul Khul Jaye",
+          meta: "Archive of Indian Music popular track on SoundCloud - Bhairavi",
+          url: "https://soundcloud.com/archive-of-indian-music/ustad-ghulam-ali-khan"
+        },
+        {
+          title: "M. S. Subbulakshmi - Senjurutti",
+          meta: "Archive of Indian Music popular track on SoundCloud - child artist recording",
+          url: "https://soundcloud.com/archive-of-indian-music/m-s-subbulakshmi-as-a-10-yr"
+        },
+        {
+          title: "Asha Bhosle - Chalo Chale",
+          meta: "Archive of Indian Music popular track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/asha-bhosle-chalo-chale"
+        },
+        {
+          title: "Bidaram Krishnappa of Mysore - Sringara Lahari",
+          meta: "Archive of Indian Music popular track on SoundCloud - Neelambari",
+          url: "https://soundcloud.com/archive-of-indian-music/bidaram-krishnappa-of-mysore-2"
+        },
+        {
+          title: "Zohra Bai - Chalo Ri Mayi Auliya",
+          meta: "Archive of Indian Music on SoundCloud - Puriya",
+          url: "https://soundcloud.com/archive-of-indian-music/zohra-bai-chalo-ri-mayi-auliya"
+        },
+        {
+          title: "Gauhar Jan - Bhairavi 01",
+          meta: "Archive of Indian Music on SoundCloud - Gauhar Jan collection",
+          url: "https://soundcloud.com/archive-of-indian-music/2764-gauhar-jan-01"
+        },
+        {
+          title: "Gauhar Jan - Bhairavi 02",
+          meta: "Archive of Indian Music on SoundCloud - Gauhar Jan collection",
+          url: "https://soundcloud.com/archive-of-indian-music/2765-gauhar-jan-02"
+        },
+        {
+          title: "Khyal - Multani by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          url: "https://soundcloud.com/archive-of-indian-music/3635-khyal-multani-by-zohra"
+        },
+        {
+          title: "Terana - Palass by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          url: "https://soundcloud.com/archive-of-indian-music/3636-terana-palass-by-zohra"
+        },
+        {
+          title: "Ghazal by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - all rights reserved stream",
+          url: "https://soundcloud.com/archive-of-indian-music/3637-ghazal-by-zohra-bai-g-c-8"
+        },
+        {
+          title: "Majmuah by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          url: "https://soundcloud.com/archive-of-indian-music/3638-majmuah-by-zohra-bai-g-c"
+        },
+        {
+          title: "Savni by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          url: "https://soundcloud.com/archive-of-indian-music/3639-savni-by-zohra-bai-g-c-9"
+        },
+        {
+          title: "Zila by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - all rights reserved stream",
+          url: "https://soundcloud.com/archive-of-indian-music/3640-zila-by-zohra-bai-g-c-9"
+        },
+        {
+          title: "Des by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          url: "https://soundcloud.com/archive-of-indian-music/3641-des-by-zohra-bai-g-c-8"
+        },
+        {
+          title: "Sarang by Zohra Bai",
+          meta: "Archive of Indian Music on SoundCloud - all rights reserved stream",
+          url: "https://soundcloud.com/archive-of-indian-music/3642-sarang-by-zohra-bai-g-c-8"
+        },
+        {
+          title: "Bal Gandharva G.C.16",
+          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          url: "https://soundcloud.com/archive-of-indian-music/3578-79-bal-gandharva-g-c-16"
+        },
+        {
+          title: "Bal Gandharva G.C.21",
+          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          url: "https://soundcloud.com/archive-of-indian-music/3580-81-bal-gandharva-g-c-21"
+        },
+        {
+          title: "Bal Gandharva G.C.21 P.8740",
+          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          url: "https://soundcloud.com/archive-of-indian-music/3582-83-bal-gandharva-g-c-21"
+        },
+        {
+          title: "Bal Gandharva G.C.16 P.5059",
+          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          url: "https://soundcloud.com/archive-of-indian-music/3584-85-balgandharva-g-c-16"
+        }
+      ];
+
+      const beats = [
+        {
+          title: "Monsoon Lo-Fi",
+          meta: "88 BPM - soft kick, brushed hats, mellow chime",
+          tempo: 88,
+          swing: 14,
+          pattern: {
+            kick: [1, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0, 0.65, 0, 0, 0],
+            snare: [0, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0.9, 0, 0, 0],
+            hat: [0.45, 0.18, 0.35, 0.18, 0.45, 0.18, 0.35, 0.18, 0.45, 0.18, 0.35, 0.18, 0.45, 0.18, 0.35, 0.18],
+            bell: [0, 0, 0.24, 0, 0, 0, 0.2, 0, 0, 0, 0.24, 0, 0, 0, 0.2, 0]
+          }
+        },
+        {
+          title: "Street Procession",
+          meta: "104 BPM - dhol pulse, claps, bright hand cymbal",
+          tempo: 104,
+          swing: 8,
+          pattern: {
+            kick: [1, 0, 0.45, 0, 0.8, 0, 0.55, 0, 1, 0, 0.45, 0, 0.8, 0, 0.6, 0],
+            snare: [0, 0, 0, 0.5, 0, 0, 0, 0.85, 0, 0, 0, 0.5, 0, 0, 0, 0.9],
+            hat: [0.3, 0.25, 0.3, 0.25, 0.3, 0.25, 0.3, 0.25, 0.3, 0.25, 0.3, 0.25, 0.3, 0.25, 0.3, 0.25],
+            bell: [0.28, 0, 0, 0, 0.28, 0, 0, 0, 0.28, 0, 0, 0, 0.28, 0, 0, 0]
+          }
+        },
+        {
+          title: "Midnight Keherwa",
+          meta: "76 BPM - eight-beat groove, sparse bass, soft chime",
+          tempo: 76,
+          swing: 24,
+          pattern: {
+            kick: [1, 0, 0, 0.35, 0.7, 0, 0, 0.3, 1, 0, 0, 0.35, 0.7, 0, 0, 0.3],
+            snare: [0, 0, 0.68, 0, 0, 0, 0.76, 0, 0, 0, 0.68, 0, 0, 0, 0.76, 0],
+            hat: [0.28, 0, 0.25, 0, 0.28, 0, 0.25, 0, 0.28, 0, 0.25, 0, 0.28, 0, 0.25, 0],
+            bell: [0, 0, 0, 0, 0.22, 0, 0, 0, 0, 0, 0, 0, 0.22, 0, 0, 0]
+          }
+        },
+        {
+          title: "Courtyard Break",
+          meta: "116 BPM - crisp breakbeat with tabla-like taps",
+          tempo: 116,
+          swing: 18,
+          pattern: {
+            kick: [1, 0, 0, 0.3, 0, 0, 0.78, 0, 1, 0.25, 0, 0, 0.65, 0, 0, 0],
+            snare: [0, 0, 0, 0, 0.95, 0, 0, 0, 0, 0, 0, 0, 0.95, 0, 0.3, 0],
+            hat: [0.4, 0.2, 0.32, 0.2, 0.4, 0.2, 0.32, 0.2, 0.4, 0.2, 0.32, 0.2, 0.4, 0.2, 0.32, 0.2],
+            bell: [0, 0.22, 0, 0, 0, 0, 0.22, 0, 0, 0.22, 0, 0, 0, 0, 0.22, 0]
+          }
+        },
+        {
+          title: "Mumbai House",
+          meta: "124 BPM - four-on-floor EDM, open hats, festival lift",
+          tempo: 124,
+          swing: 4,
+          pattern: {
+            kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+            snare: [0, 0, 0, 0, 0.85, 0, 0, 0, 0, 0, 0, 0, 0.9, 0, 0, 0],
+            hat: [0, 0.42, 0.18, 0.42, 0, 0.42, 0.18, 0.42, 0, 0.42, 0.18, 0.42, 0, 0.42, 0.18, 0.42],
+            bell: [0.16, 0, 0, 0, 0.16, 0, 0.22, 0, 0.16, 0, 0, 0, 0.16, 0, 0.28, 0]
+          }
+        },
+        {
+          title: "Archive Rave",
+          meta: "132 BPM - hard club pulse, clipped hats, bright stabs",
+          tempo: 132,
+          swing: 2,
+          pattern: {
+            kick: [1, 0, 0.32, 0, 1, 0, 0.32, 0, 1, 0, 0.32, 0, 1, 0, 0.46, 0],
+            snare: [0, 0, 0, 0, 0.95, 0, 0, 0, 0, 0, 0, 0, 0.95, 0, 0, 0],
+            hat: [0.28, 0.5, 0.28, 0.5, 0.28, 0.5, 0.28, 0.5, 0.28, 0.5, 0.28, 0.5, 0.28, 0.5, 0.28, 0.5],
+            bell: [0, 0, 0.34, 0, 0, 0, 0.28, 0, 0, 0, 0.34, 0, 0.2, 0, 0.42, 0]
+          }
+        },
+        {
+          title: "Delhi Garage",
+          meta: "126 BPM - shuffled UK garage, syncopated kick, glassy taps",
+          tempo: 126,
+          swing: 32,
+          pattern: {
+            kick: [1, 0, 0, 0.4, 0, 0.7, 0, 0, 1, 0, 0.36, 0, 0, 0.82, 0, 0],
+            snare: [0, 0, 0, 0, 0.84, 0, 0, 0, 0, 0, 0, 0, 0.92, 0, 0, 0],
+            hat: [0.36, 0.2, 0.5, 0.2, 0.36, 0.2, 0.5, 0.2, 0.36, 0.2, 0.5, 0.2, 0.36, 0.2, 0.5, 0.2],
+            bell: [0, 0.18, 0, 0, 0, 0, 0.2, 0, 0, 0.24, 0, 0, 0, 0, 0.2, 0]
+          }
+        },
+        {
+          title: "Temple Dub",
+          meta: "70 BPM - slow dub pulse, roomy snare, meditative chime",
+          tempo: 70,
+          swing: 20,
+          pattern: {
+            kick: [1, 0, 0, 0, 0, 0, 0.55, 0, 1, 0, 0, 0.32, 0, 0, 0, 0],
+            snare: [0, 0, 0, 0, 0.74, 0, 0, 0, 0, 0, 0, 0, 0.84, 0, 0, 0],
+            hat: [0.2, 0, 0.18, 0, 0.2, 0, 0.18, 0, 0.2, 0, 0.18, 0, 0.2, 0, 0.18, 0],
+            bell: [0, 0, 0.26, 0, 0, 0, 0, 0, 0, 0, 0.32, 0, 0, 0, 0, 0]
+          }
+        },
+        {
+          title: "Vinyl Rain Lo-Fi",
+          meta: "82 BPM - sleepy lo-fi drums, dusty hats, mellow chime",
+          tempo: 82,
+          swing: 26,
+          pattern: {
+            kick: [1, 0, 0, 0.2, 0.7, 0, 0, 0, 1, 0, 0.25, 0, 0.55, 0, 0, 0],
+            snare: [0, 0, 0, 0, 0.72, 0, 0, 0, 0, 0, 0, 0, 0.82, 0, 0, 0],
+            hat: [0.25, 0.12, 0.22, 0.12, 0.25, 0.12, 0.22, 0.12, 0.25, 0.12, 0.22, 0.12, 0.25, 0.12, 0.22, 0.12],
+            bell: [0, 0, 0.18, 0, 0, 0, 0.14, 0, 0, 0, 0.18, 0, 0, 0, 0.14, 0]
+          }
+        },
+        {
+          title: "Study Tape",
+          meta: "92 BPM - mellow lo-fi bounce, soft snare, late-night keys",
+          tempo: 92,
+          swing: 18,
+          pattern: {
+            kick: [1, 0, 0.28, 0, 0, 0, 0.62, 0, 1, 0, 0, 0.24, 0.72, 0, 0, 0],
+            snare: [0, 0, 0, 0, 0.78, 0, 0, 0, 0, 0, 0, 0, 0.86, 0, 0, 0],
+            hat: [0.36, 0.16, 0.24, 0.16, 0.36, 0.16, 0.24, 0.16, 0.36, 0.16, 0.24, 0.16, 0.36, 0.16, 0.24, 0.16],
+            bell: [0.16, 0, 0, 0, 0, 0.2, 0, 0, 0.16, 0, 0, 0, 0, 0.2, 0, 0]
+          }
+        },
+        {
+          title: "Tabla Glow",
+          meta: "98 BPM - tabla-fusion taps, warm kick, circular groove",
+          tempo: 98,
+          swing: 16,
+          pattern: {
+            kick: [1, 0, 0, 0.32, 0.62, 0, 0.42, 0, 1, 0, 0, 0.32, 0.62, 0, 0.42, 0],
+            snare: [0, 0, 0.36, 0, 0, 0, 0.76, 0, 0, 0, 0.36, 0, 0, 0, 0.82, 0],
+            hat: [0.26, 0.22, 0.3, 0.22, 0.26, 0.22, 0.3, 0.22, 0.26, 0.22, 0.3, 0.22, 0.26, 0.22, 0.3, 0.22],
+            bell: [0, 0.24, 0, 0.18, 0, 0.2, 0, 0, 0, 0.24, 0, 0.18, 0, 0.2, 0, 0]
+          }
+        },
+        {
+          title: "Raga Trap",
+          meta: "140 BPM - half-time fusion, rolling hats, deep kick",
+          tempo: 140,
+          swing: 10,
+          pattern: {
+            kick: [1, 0, 0, 0.42, 0, 0, 0.72, 0, 1, 0.35, 0, 0, 0, 0, 0.82, 0],
+            snare: [0, 0, 0, 0, 0.95, 0, 0, 0, 0, 0, 0, 0, 0.95, 0, 0, 0],
+            hat: [0.32, 0.18, 0.5, 0.18, 0.32, 0.18, 0.5, 0.18, 0.32, 0.18, 0.5, 0.18, 0.32, 0.18, 0.5, 0.18],
+            bell: [0, 0, 0.26, 0, 0, 0.18, 0, 0, 0, 0, 0.26, 0, 0, 0.18, 0.3, 0]
+          }
+        },
+        {
+          title: "Club Dhol",
+          meta: "128 BPM - EDM club beat with dhol-style accents",
+          tempo: 128,
+          swing: 6,
+          pattern: {
+            kick: [1, 0, 0.36, 0, 1, 0, 0.42, 0, 1, 0, 0.36, 0, 1, 0, 0.52, 0],
+            snare: [0, 0, 0, 0, 0.92, 0, 0, 0, 0, 0, 0, 0, 0.96, 0, 0, 0],
+            hat: [0.2, 0.54, 0.2, 0.54, 0.2, 0.54, 0.2, 0.54, 0.2, 0.54, 0.2, 0.54, 0.2, 0.54, 0.2, 0.54],
+            bell: [0.22, 0, 0, 0.16, 0.22, 0, 0.3, 0, 0.22, 0, 0, 0.16, 0.22, 0, 0.36, 0]
+          }
+        },
+        {
+          title: "Neon Garba",
+          meta: "118 BPM - dance-fusion pulse, circular claps, bright accents",
+          tempo: 118,
+          swing: 12,
+          pattern: {
+            kick: [1, 0, 0.42, 0, 0.7, 0, 0, 0.36, 1, 0, 0.42, 0, 0.7, 0, 0, 0.36],
+            snare: [0, 0, 0, 0.48, 0, 0, 0, 0.85, 0, 0, 0, 0.48, 0, 0, 0, 0.88],
+            hat: [0.34, 0.2, 0.34, 0.2, 0.34, 0.2, 0.34, 0.2, 0.34, 0.2, 0.34, 0.2, 0.34, 0.2, 0.34, 0.2],
+            bell: [0, 0.22, 0, 0, 0.28, 0, 0.22, 0, 0, 0.22, 0, 0, 0.28, 0, 0.22, 0]
+          }
+        }
+      ];
+
+      const els = {
+        player: document.querySelector("#soundcloudPlayer"),
+        trackTitle: document.querySelector("#trackTitle"),
+        trackMeta: document.querySelector("#trackMeta"),
+        beatTitle: document.querySelector("#beatTitle"),
+        beatMeta: document.querySelector("#beatMeta"),
+        status: document.querySelector("#statusText"),
+        playBlend: document.querySelector("#playBlend"),
+        randomAll: document.querySelector("#randomAll"),
+        saveFavorite: document.querySelector("#saveFavorite"),
+        openArchiveSearch: document.querySelector("#openArchiveSearch"),
+        customTrackForm: document.querySelector("#customTrackForm"),
+        customTrackUrl: document.querySelector("#customTrackUrl"),
+        trackSearch: document.querySelector("#trackSearch"),
+        beatSearch: document.querySelector("#beatSearch"),
+        trackList: document.querySelector("#trackList"),
+        beatList: document.querySelector("#beatList"),
+        favoriteList: document.querySelector("#favoriteList"),
+        beatVisual: document.querySelector("#beatVisual"),
+        streamVolume: document.querySelector("#streamVolume"),
+        streamVolumeOut: document.querySelector("#streamVolumeOut"),
+        beatVolume: document.querySelector("#beatVolume"),
+        beatVolumeOut: document.querySelector("#beatVolumeOut"),
+        tempo: document.querySelector("#tempo"),
+        tempoOut: document.querySelector("#tempoOut"),
+        swing: document.querySelector("#swing"),
+        swingOut: document.querySelector("#swingOut")
+      };
+
+      let currentTrack = 0;
+      let currentBeat = 0;
+      let audioContext;
+      let masterGain;
+      let schedulerId;
+      let nextStepTime = 0;
+      let step = 0;
+      let isPlaying = false;
+      let isStreamPlaying = false;
+      let soundcloudWidget;
+      let soundcloudReady = Promise.resolve(false);
+      const customTracksKey = "mixer:customTracks";
+      let favorites = JSON.parse(localStorage.getItem("mixer:favorites") || "[]");
+
+      function embedUrl(trackUrl) {
+        const params = new URLSearchParams({
+          url: trackUrl,
+          color: "#b9342f",
+          auto_play: "false",
+          hide_related: "true",
+          show_comments: "false",
+          show_user: "true",
+          show_reposts: "false",
+          show_teaser: "false",
+          visual: "false"
+        });
+        return `https://w.soundcloud.com/player/?${params.toString()}`;
+      }
+
+      function selectTrack(index) {
+        currentTrack = index;
+        const track = tracks[currentTrack];
+        els.trackTitle.textContent = track.title;
+        els.trackMeta.textContent = track.meta;
+        els.player.src = embedUrl(track.url);
+        bindSoundcloudWidget();
+        renderLists();
+        setStatus("Archival stream selected");
+      }
+
+      function addCustomTrack(url) {
+        const trimmedUrl = url.trim();
+        if (!/^https:\/\/soundcloud\.com\/.+\/.+/.test(trimmedUrl)) {
+          setStatus("Paste a full SoundCloud track URL");
+          return;
+        }
+
+        const existingIndex = tracks.findIndex((track) => track.url === trimmedUrl);
+        if (existingIndex >= 0) {
+          selectTrack(existingIndex);
+          return;
+        }
+
+        const slug = trimmedUrl.split("/").filter(Boolean).pop() || "custom-stream";
+        const title = slug
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, (letter) => letter.toUpperCase());
+        tracks.unshift({
+          title,
+          meta: "User-added SoundCloud stream - no audio stored",
+          url: trimmedUrl
+        });
+        saveCustomTrack({ title, meta: "User-added SoundCloud stream - no audio stored", url: trimmedUrl });
+        els.customTrackUrl.value = "";
+        selectTrack(0);
+        setStatus("SoundCloud stream loaded");
+      }
+
+      function saveCustomTrack(track) {
+        const saved = JSON.parse(localStorage.getItem(customTracksKey) || "[]")
+          .filter((item) => item.url !== track.url);
+        saved.unshift(track);
+        localStorage.setItem(customTracksKey, JSON.stringify(saved.slice(0, 50)));
+      }
+
+      function restoreCustomTracks() {
+        const saved = JSON.parse(localStorage.getItem(customTracksKey) || "[]");
+        saved.slice().reverse().forEach((track) => {
+          if (!tracks.some((item) => item.url === track.url)) {
+            tracks.unshift(track);
+          }
+        });
+      }
+
+      function selectBeat(index) {
+        currentBeat = index;
+        const beat = beats[currentBeat];
+        els.beatTitle.textContent = beat.title;
+        els.beatMeta.textContent = beat.meta;
+        els.tempo.value = beat.tempo;
+        els.swing.value = beat.swing;
+        updateOutputs();
+        renderVisualizer();
+        renderLists();
+        setStatus("Beat pattern selected");
+      }
+
+      function randomIndex(length, previous) {
+        if (length < 2) return 0;
+        let next = previous;
+        while (next === previous) {
+          next = Math.floor(Math.random() * length);
+        }
+        return next;
+      }
+
+      async function randomizeAll() {
+        selectTrack(randomIndex(tracks.length, currentTrack));
+        selectBeat(randomIndex(beats.length, currentBeat));
+        await playBlend();
+      }
+
+      function includesQuery(item, query) {
+        if (!query) return true;
+        return `${item.title} ${item.meta}`.toLowerCase().includes(query.trim().toLowerCase());
+      }
+
+      function renderLists() {
+        const trackQuery = els.trackSearch.value;
+        const beatQuery = els.beatSearch.value;
+        const visibleTracks = tracks
+          .map((track, index) => ({ track, index }))
+          .filter(({ track }) => includesQuery(track, trackQuery));
+        const visibleBeats = beats
+          .map((beat, index) => ({ beat, index }))
+          .filter(({ beat }) => includesQuery(beat, beatQuery));
+
+        els.trackList.innerHTML = visibleTracks.length ? visibleTracks.map(({ track, index }) => `
+          <button class="item" type="button" aria-pressed="${index === currentTrack}" data-track="${index}">
+            <span><strong>${track.title}</strong><span class="meta">${track.meta}</span></span>
+            <span class="tag">Stream</span>
+          </button>
+        `).join("") : '<div class="empty">No archival streams match that search.</div>';
+
+        els.beatList.innerHTML = visibleBeats.length ? visibleBeats.map(({ beat, index }) => `
+          <button class="item" type="button" aria-pressed="${index === currentBeat}" data-beat="${index}">
+            <span><strong>${beat.title}</strong><span class="meta">${beat.meta}</span></span>
+            <span class="tag">Original</span>
+          </button>
+        `).join("") : '<div class="empty">No beat patterns match that search.</div>';
+
+        els.trackList.querySelectorAll("[data-track]").forEach((button) => {
+          button.addEventListener("click", () => selectTrack(Number(button.dataset.track)));
+        });
+        els.beatList.querySelectorAll("[data-beat]").forEach((button) => {
+          button.addEventListener("click", () => selectBeat(Number(button.dataset.beat)));
+        });
+        renderFavorites();
+      }
+
+      function renderFavorites() {
+        if (!favorites.length) {
+          els.favoriteList.innerHTML = '<div class="empty">Favorite a blend to replay the same stream, beat, and slider settings later. No audio is stored.</div>';
+          return;
+        }
+
+        els.favoriteList.innerHTML = favorites.map((favorite, index) => `
+          <button class="item" type="button" data-favorite="${index}">
+            <span>
+              <strong>${favorite.trackTitle} + ${favorite.beatTitle}</strong>
+              <span class="meta">Stream ${favorite.streamVolume}% · Beat ${favorite.beatVolume}% · ${favorite.tempo} BPM · swing ${favorite.swing}</span>
+            </span>
+            <span class="tag">Saved</span>
+          </button>
+        `).join("");
+
+        els.favoriteList.querySelectorAll("[data-favorite]").forEach((button) => {
+          button.addEventListener("click", () => loadFavorite(Number(button.dataset.favorite)));
+        });
+      }
+
+      function saveFavorite() {
+        const favorite = {
+          trackUrl: tracks[currentTrack].url,
+          trackTitle: tracks[currentTrack].title,
+          beatTitle: beats[currentBeat].title,
+          beatIndex: currentBeat,
+          streamVolume: Number(els.streamVolume.value),
+          beatVolume: Number(els.beatVolume.value),
+          tempo: Number(els.tempo.value),
+          swing: Number(els.swing.value)
+        };
+        const key = `${favorite.trackUrl}|${favorite.beatTitle}|${favorite.streamVolume}|${favorite.beatVolume}|${favorite.tempo}|${favorite.swing}`;
+        favorites = favorites.filter((item) => `${item.trackUrl}|${item.beatTitle}|${item.streamVolume}|${item.beatVolume}|${item.tempo}|${item.swing}` !== key);
+        favorites.unshift(favorite);
+        favorites = favorites.slice(0, 12);
+        localStorage.setItem("mixer:favorites", JSON.stringify(favorites));
+        renderFavorites();
+        setStatus("Favorite saved as settings only");
+      }
+
+      function loadFavorite(index) {
+        const favorite = favorites[index];
+        const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
+        if (trackIndex >= 0) selectTrack(trackIndex);
+        selectBeat(favorite.beatIndex);
+        els.streamVolume.value = favorite.streamVolume;
+        els.beatVolume.value = favorite.beatVolume;
+        els.tempo.value = favorite.tempo;
+        els.swing.value = favorite.swing;
+        updateOutputs();
+        setStatus("Favorite settings loaded");
+      }
+
+      function renderVisualizer(activeStep = -1) {
+        const beat = beats[currentBeat];
+        els.beatVisual.innerHTML = beat.pattern.kick.map((value, index) => {
+          const total = Math.max(
+            beat.pattern.kick[index] || 0,
+            beat.pattern.snare[index] || 0,
+            beat.pattern.hat[index] || 0,
+            beat.pattern.bell[index] || 0
+          );
+          const height = 18 + total * 64;
+          return `<span class="bar ${index === activeStep ? "active" : ""}" style="height:${height}px"></span>`;
+        }).join("");
+      }
+
+      function updateOutputs() {
+        els.streamVolumeOut.textContent = `${els.streamVolume.value}%`;
+        els.beatVolumeOut.textContent = `${els.beatVolume.value}%`;
+        els.tempoOut.textContent = els.tempo.value;
+        els.swingOut.textContent = els.swing.value;
+        if (masterGain) {
+          masterGain.gain.setTargetAtTime(Number(els.beatVolume.value) / 100, audioContext.currentTime, 0.02);
+        }
+        if (soundcloudWidget && typeof soundcloudWidget.setVolume === "function") {
+          soundcloudWidget.setVolume(Number(els.streamVolume.value));
+        }
+      }
+
+      function setStatus(text) {
+        els.status.textContent = text;
+      }
+
+      function bindSoundcloudWidget() {
+        soundcloudWidget = null;
+        isStreamPlaying = false;
+        updatePlaybackButtons();
+        soundcloudReady = new Promise((resolve) => {
+          window.setTimeout(() => {
+            if (!window.SC || !window.SC.Widget) {
+              resolve(false);
+              return;
+            }
+            soundcloudWidget = window.SC.Widget(els.player);
+            soundcloudWidget.bind(window.SC.Widget.Events.READY, () => {
+              soundcloudWidget.setVolume(Number(els.streamVolume.value));
+              resolve(true);
+            });
+            soundcloudWidget.bind(window.SC.Widget.Events.PLAY, () => {
+              isStreamPlaying = true;
+              updatePlaybackButtons();
+            });
+            soundcloudWidget.bind(window.SC.Widget.Events.PAUSE, () => {
+              isStreamPlaying = false;
+              updatePlaybackButtons();
+            });
+            soundcloudWidget.bind(window.SC.Widget.Events.FINISH, () => {
+              isStreamPlaying = false;
+              updatePlaybackButtons();
+            });
+          }, 0);
+        });
+      }
+
+      async function withSoundcloudWidget(action) {
+        const timeout = new Promise((resolve) => window.setTimeout(() => resolve(false), 3500));
+        const ready = await Promise.race([soundcloudReady, timeout]);
+        if (!ready || !soundcloudWidget) {
+          setStatus("Use the SoundCloud player if stream control is unavailable");
+          return false;
+        }
+        action(soundcloudWidget);
+        return true;
+      }
+
+      function updatePlaybackButtons() {
+        els.playBlend.innerHTML = isStreamPlaying && isPlaying
+          ? '<span aria-hidden="true">■</span><span>Stop Blend</span>'
+          : '<span aria-hidden="true">▶</span><span>Play Blend</span>';
+      }
+
+      async function startStream() {
+        return withSoundcloudWidget((widget) => {
+          widget.play();
+          isStreamPlaying = true;
+          updatePlaybackButtons();
+        });
+      }
+
+      async function stopStream() {
+        return withSoundcloudWidget((widget) => {
+          widget.pause();
+          isStreamPlaying = false;
+          updatePlaybackButtons();
+        });
+      }
+
+      async function playBlend() {
+        await startBeat();
+        const streamStarted = await startStream();
+        setStatus(streamStarted ? "Live blend playing" : "Beat playing; use the SoundCloud play button for the stream");
+      }
+
+      async function stopAll() {
+        stopBeat();
+        await stopStream();
+        setStatus("Blend stopped");
+      }
+
+      async function toggleBlend() {
+        if (isPlaying || isStreamPlaying) {
+          await stopAll();
+        } else {
+          await playBlend();
+        }
+      }
+
+      function makeNoiseBuffer() {
+        const length = audioContext.sampleRate * 0.16;
+        const buffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < length; i += 1) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        return buffer;
+      }
+
+      function hitKick(time, velocity) {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(112, time);
+        osc.frequency.exponentialRampToValueAtTime(42, time + 0.14);
+        gain.gain.setValueAtTime(0.0001, time);
+        gain.gain.exponentialRampToValueAtTime(0.95 * velocity, time + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.22);
+        osc.connect(gain).connect(masterGain);
+        osc.start(time);
+        osc.stop(time + 0.24);
+      }
+
+      function hitSnare(time, velocity) {
+        const noise = audioContext.createBufferSource();
+        const filter = audioContext.createBiquadFilter();
+        const gain = audioContext.createGain();
+        noise.buffer = makeNoiseBuffer();
+        filter.type = "bandpass";
+        filter.frequency.value = 1450;
+        filter.Q.value = 0.8;
+        gain.gain.setValueAtTime(0.0001, time);
+        gain.gain.exponentialRampToValueAtTime(0.38 * velocity, time + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.16);
+        noise.connect(filter).connect(gain).connect(masterGain);
+        noise.start(time);
+        noise.stop(time + 0.17);
+      }
+
+      function hitHat(time, velocity) {
+        const noise = audioContext.createBufferSource();
+        const filter = audioContext.createBiquadFilter();
+        const gain = audioContext.createGain();
+        noise.buffer = makeNoiseBuffer();
+        filter.type = "highpass";
+        filter.frequency.value = 7200;
+        gain.gain.setValueAtTime(0.0001, time);
+        gain.gain.exponentialRampToValueAtTime(0.16 * velocity, time + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.055);
+        noise.connect(filter).connect(gain).connect(masterGain);
+        noise.start(time);
+        noise.stop(time + 0.06);
+      }
+
+      function hitBell(time, velocity) {
+        [523.25, 784].forEach((frequency, i) => {
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          osc.type = "triangle";
+          osc.frequency.value = frequency;
+          gain.gain.setValueAtTime(0.0001, time);
+          gain.gain.exponentialRampToValueAtTime((i ? 0.05 : 0.09) * velocity, time + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.42);
+          osc.connect(gain).connect(masterGain);
+          osc.start(time);
+          osc.stop(time + 0.45);
+        });
+      }
+
+      function scheduleStep(time, activeStep) {
+        const pattern = beats[currentBeat].pattern;
+        if (pattern.kick[activeStep]) hitKick(time, pattern.kick[activeStep]);
+        if (pattern.snare[activeStep]) hitSnare(time, pattern.snare[activeStep]);
+        if (pattern.hat[activeStep]) hitHat(time, pattern.hat[activeStep]);
+        if (pattern.bell[activeStep]) hitBell(time, pattern.bell[activeStep]);
+        window.setTimeout(() => renderVisualizer(activeStep), Math.max(0, (time - audioContext.currentTime) * 1000));
+      }
+
+      function scheduler() {
+        const tempo = Number(els.tempo.value);
+        const baseStep = 60 / tempo / 4;
+        const swing = Number(els.swing.value) / 100;
+        while (nextStepTime < audioContext.currentTime + 0.12) {
+          scheduleStep(nextStepTime, step);
+          const swingOffset = step % 2 === 0 ? baseStep * swing : -baseStep * swing;
+          nextStepTime += Math.max(0.045, baseStep + swingOffset);
+          step = (step + 1) % 16;
+        }
+      }
+
+      function ensureAudio() {
+        if (audioContext) return;
+        audioContext = new AudioContext();
+        masterGain = audioContext.createGain();
+        masterGain.gain.value = Number(els.beatVolume.value) / 100;
+        masterGain.connect(audioContext.destination);
+
+      }
+
+      async function startBeat() {
+        ensureAudio();
+        if (audioContext.state === "suspended") {
+          await audioContext.resume();
+        }
+
+        if (isPlaying) return;
+        isPlaying = true;
+        step = 0;
+        nextStepTime = audioContext.currentTime + 0.04;
+        schedulerId = window.setInterval(scheduler, 25);
+        updatePlaybackButtons();
+        setStatus("Beat playing beside the stream");
+      }
+
+      function stopBeat() {
+        if (!isPlaying) return;
+        isPlaying = false;
+        window.clearInterval(schedulerId);
+        schedulerId = null;
+        if (audioContext) {
+          audioContext.close();
+          audioContext = null;
+          masterGain = null;
+        }
+        renderVisualizer();
+        updatePlaybackButtons();
+        setStatus("Beat stopped");
+      }
+
+      els.playBlend.addEventListener("click", toggleBlend);
+      els.randomAll.addEventListener("click", randomizeAll);
+      els.saveFavorite.addEventListener("click", saveFavorite);
+      els.openArchiveSearch.addEventListener("click", () => {
+        window.open("https://soundcloud.com/archive-of-indian-music/popular-tracks", "_blank", "noopener");
+      });
+      els.customTrackForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        addCustomTrack(els.customTrackUrl.value);
+      });
+      els.trackSearch.addEventListener("input", renderLists);
+      els.beatSearch.addEventListener("input", renderLists);
+      els.streamVolume.addEventListener("input", updateOutputs);
+      els.beatVolume.addEventListener("input", updateOutputs);
+      els.tempo.addEventListener("input", updateOutputs);
+      els.swing.addEventListener("input", updateOutputs);
+
+      restoreCustomTracks();
+      selectTrack(0);
+      selectBeat(0);
+    </script>
+  </body>
+</html>
