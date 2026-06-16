@@ -1,8 +1,8 @@
-# Tala AIM-First Strategy
+# Tāla AIM-First Strategy
 
 ## Direction
 
-Tala should begin with Indian archival music as its first focused collection area. This gives the product a strong cultural identity from day one instead of feeling like a generic remix tool.
+Tāla should begin with Indian archival music as its first focused collection area. This gives the product a strong cultural identity from day one instead of feeling like a generic remix tool.
 
 The Archive of Indian Music is the right inspiration source: it preserves gramophone recordings of India across classical, theatre, early cinema, folk, and other traditions. The product should be designed around the feeling of discovering these recordings, respecting their history, and making them newly listenable for contemporary audiences.
 
@@ -10,7 +10,7 @@ The Archive of Indian Music is the right inspiration source: it preserves gramop
 
 Archive of Indian Music currently states that its tracks are available only for audio streaming unless otherwise mentioned, and that downloading or commercial misuse is prohibited.
 
-That means Tala should not ingest, download, remix, export, or redistribute AIM recordings unless there is explicit permission or a partnership.
+That means Tāla should not ingest, download, remix, export, or redistribute AIM recordings unless there is explicit permission or a partnership.
 
 For now, AIM should be treated as:
 
@@ -29,7 +29,7 @@ Use these source types:
 - Public-domain Indian recordings from sources that allow reuse.
 - CC0 or remix-compatible Creative Commons recordings.
 - Field recordings, spoken word, devotional, folk, and instrumental material with clear reuse rights.
-- Original beat packs made for Tala.
+- Original beat packs made for Tāla.
 
 Avoid these until permission is secured:
 
@@ -62,20 +62,20 @@ Every catalog item should have a plain-language status:
 
 - Safe to remix: User can mix, save, export, and share according to the license.
 - Personal use only: User can save private projects but should not publish/export publicly.
-- Listen only: User can preview or bookmark, but cannot remix/export in Tala.
+- Listen only: User can preview or bookmark, but cannot remix/export in Tāla.
 - Needs permission: User must secure permission before using.
 
 For AIM specifically, default to "Listen only" unless a partnership changes that.
 
 ## Partnership Hypothesis
 
-Tala could eventually approach AIM with a respectful proposal:
+Tāla could eventually approach AIM with a respectful proposal:
 
-- Tala helps younger listeners discover historic Indian recordings.
+- Tāla helps younger listeners discover historic Indian recordings.
 - AIM keeps attribution, context, and source links attached to every use.
 - Some recordings could be licensed for non-commercial remix experiments.
 - Selected remixes could drive listeners back to AIM.
-- Tala could create educational or cultural remix collections around artists, genres, eras, and regions.
+- Tāla could create educational or cultural remix collections around artists, genres, eras, and regions.
 
 The partnership pitch should emphasize preservation, discovery, attribution, and cultural continuity rather than extraction or commercialization.
 
@@ -90,7 +90,7 @@ Start by building the product with:
 - Mobile-friendly listening library.
 - Rights metadata on every track from the beginning.
 
-This lets Tala prove the core experience without depending on a licensing deal.
+This lets Tāla prove the core experience without depending on a licensing deal.
 
 ## Open Questions
 

@@ -1,14 +1,14 @@
-# Tala Product Brief
+# Tāla Product Brief
 
 ## Overview
 
-Tala is a simple music-mixing tool for reviving archival recordings and historic music. A user drags in a main track, adds beats from a beat library, and quickly creates a fresh version of an old or overlooked recording.
+Tāla is a simple music-mixing tool for reviving archival recordings and historic music. A user drags in a main track, adds beats from a beat library, and quickly creates a fresh version of an old or overlooked recording.
 
 The product should feel approachable and immediate: less like a professional digital audio workstation and more like a focused creative surface for experimenting with sound.
 
 ## Product Thesis
 
-There is a large body of archival audio, historic music, field recordings, and older tracks that feels culturally rich but inaccessible to modern listeners. Tala gives creators a lightweight way to reintroduce that material by pairing it with contemporary beats and simple mixing controls.
+There is a large body of archival audio, historic music, field recordings, and older tracks that feels culturally rich but inaccessible to modern listeners. Tāla gives creators a lightweight way to reintroduce that material by pairing it with contemporary beats and simple mixing controls.
 
 The unique value is not maximum production power. It is fast creative revival: take something old, hear it differently, and make it feel alive again.
 
@@ -21,10 +21,10 @@ The unique value is not maximum production power. It is fast creative revival: t
 
 ## Core Use Case
 
-1. The user opens Tala.
+1. The user opens Tāla.
 2. The user drags in a main track from their track library or local files.
 3. The user drags in a beat from the beat library.
-4. Tala aligns the two enough for quick playback and experimentation.
+4. Tāla aligns the two enough for quick playback and experimentation.
 5. The user adjusts the blend and swaps beats until the track feels right.
 6. The user saves or exports the mix.
 
@@ -110,7 +110,7 @@ Future possibilities:
 
 ## Platform Strategy
 
-Tala should start as a SaaS web app. The web is the fastest way to support accounts, cloud libraries, saved projects, sharing, and listening across devices without asking non-technical users to install production software.
+Tāla should start as a SaaS web app. The web is the fastest way to support accounts, cloud libraries, saved projects, sharing, and listening across devices without asking non-technical users to install production software.
 
 Initial platform:
 
@@ -125,7 +125,7 @@ Later platform expansion:
 
 ## Source Strategy
 
-Tala should distinguish between music that is available to stream, music that is safe to remix, and music that can be commercially reused.
+Tāla should distinguish between music that is available to stream, music that is safe to remix, and music that can be commercially reused.
 
 The first editorial focus should be Indian archival music, using Archive of Indian Music as the cultural and curatorial north star while relying only on rights-safe sources for built-in remix material.
 
@@ -144,7 +144,7 @@ Potential archival and cultural sources:
 - Freesound for loops, field recordings, textures, and beat-building material.
 - Archive of Indian Music as a culturally aligned inspiration and potential partnership source.
 
-Archive of Indian Music is especially aligned with Tala's mission because it preserves gramophone recordings of India across Hindustani classical, Carnatic classical, theatre, early cinema, folk, and other traditions. However, AIM's website currently states that tracks are streaming-only unless otherwise mentioned, and that download or commercial misuse is prohibited. Tala should not treat AIM as a default remixable source without explicit permission or a partnership.
+Archive of Indian Music is especially aligned with Tāla's mission because it preserves gramophone recordings of India across Hindustani classical, Carnatic classical, theatre, early cinema, folk, and other traditions. However, AIM's website currently states that tracks are streaming-only unless otherwise mentioned, and that download or commercial misuse is prohibited. Tāla should not treat AIM as a default remixable source without explicit permission or a partnership.
 
 Rights requirements:
 
@@ -195,15 +195,15 @@ Early success should focus on whether people can quickly make something that fee
 
 ## Positioning
 
-Tala is for people who want to make old music feel new again.
+Tāla is for people who want to make old music feel new again.
 
 It is not trying to replace Ableton, Logic, Serato, or other professional tools. It is a focused creative instrument for exploring archival audio through modern rhythm, mood, and texture.
 
 ## Open Questions
 
 - What kinds of archival recordings should the first experience emphasize: public-domain music, field recordings, speeches, radio archives, personal collections, or all of the above?
-- Should Tala ship with sample archival tracks and beat packs, or should users bring all content themselves?
+- Should Tāla ship with sample archival tracks and beat packs, or should users bring all content themselves?
 - How important is automatic beat matching for the first usable version?
 - Should the product foreground historical context and attribution, or keep the first experience purely creative?
 - Which sources are safe enough for a built-in starter catalog?
-- Would Archive of Indian Music or similar archives be open to a remix-focused partnership, or should Tala only link out for listening?
+- Would Archive of Indian Music or similar archives be open to a remix-focused partnership, or should Tāla only link out for listening?
