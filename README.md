@@ -21,6 +21,7 @@ Tāla includes:
 - Stream volume through the SoundCloud embed, plus beat volume, tempo, and swing feel controls.
 - Favorite Blends for saving blend settings; Tāla saves only the source URL, beat choice, and slider settings.
 - Supabase passwordless email auth for creating or opening Favorite Blends.
+- Supabase Edge Functions for Lemon Squeezy webhook handling and payment reconciliation.
 - No export, download, capture, or combined audio rendering.
 
 ## Product Guardrail
@@ -29,4 +30,4 @@ The first experience is live co-playback, not stored remixing. Archival audio st
 
 ## Auth and Payments
 
-See [AUTH_AND_PAYMENTS.md](./AUTH_AND_PAYMENTS.md) for the account library and Lemon Squeezy lifetime unlock plan.
+See [AUTH_AND_PAYMENTS.md](./AUTH_AND_PAYMENTS.md) for the account library, Supabase Edge Functions, and Lemon Squeezy one-time lifetime unlock flow.

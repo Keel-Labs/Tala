@@ -678,6 +678,11 @@
 
       .favorite-item {
         cursor: default;
+        position: relative;
+        display: block;
+        height: auto;
+        min-height: 112px;
+        padding: 14px 48px 14px 14px;
       }
 
       .favorite-load {
@@ -688,25 +693,29 @@
         text-align: left;
         cursor: pointer;
         min-width: 0;
+        width: 100%;
       }
 
       .remove-favorite {
-        width: 34px;
-        height: 34px;
-        border: 2px solid rgba(37, 22, 52, 0.22);
-        border-radius: 50%;
-        background: #fff0cf;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 20px;
+        height: 20px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
         color: var(--ink);
         cursor: pointer;
-        font-size: 22px;
+        font-size: 20px;
         font-weight: 900;
         line-height: 1;
         display: grid;
         place-items: center;
+        padding: 0;
       }
 
       .remove-favorite:hover {
-        border-color: var(--red);
         color: var(--red);
       }
 
@@ -788,6 +797,45 @@
         margin: 14px 0;
       }
 
+      .account-session {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 2px solid rgba(37, 22, 52, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 249, 233, 0.96);
+        padding: 14px 16px;
+        margin: 14px 0 12px;
+      }
+
+      .account-session strong {
+        display: block;
+        color: var(--ink);
+        font-size: 18px;
+      }
+
+      .account-session span {
+        color: #5c4d66;
+      }
+
+      .account-feedback {
+        min-height: 24px;
+        margin: -4px 0 12px;
+        color: #5c4d66;
+        line-height: 1.45;
+      }
+
+      .account-feedback[data-state="success"] {
+        color: #1d6b5f;
+        font-weight: 700;
+      }
+
+      .account-feedback[data-state="error"] {
+        color: #b33a54;
+        font-weight: 700;
+      }
+
       .unlock-box {
         border: 2px solid rgba(37, 22, 52, 0.16);
         border-radius: 8px;
@@ -800,6 +848,13 @@
         display: block;
         font-size: 18px;
         margin-bottom: 4px;
+      }
+
+      .unlock-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
       }
 
       footer {
@@ -964,7 +1019,7 @@
             <a href="#library">Library</a>
             <a href="#about">About</a>
             <a href="https://github.com/Keel-Labs/Tala" target="_blank" rel="noopener">GitHub</a>
-            <button class="nav-account" id="accountButton" type="button">Continue</button>
+            <button class="nav-account" id="accountButton" type="button">Join</button>
           </nav>
         </div>
       </header>
@@ -1027,13 +1082,13 @@
               <div class="controls" aria-label="Blend controls">
                 <label class="control-row">
                   <span>Stream volume</span>
-                  <input id="streamVolume" type="range" min="0" max="100" value="80" />
-                  <output id="streamVolumeOut">80%</output>
+                  <input id="streamVolume" type="range" min="0" max="100" value="68" />
+                  <output id="streamVolumeOut">68%</output>
                 </label>
                 <label class="control-row">
                   <span>Beat volume</span>
-                  <input id="beatVolume" type="range" min="0" max="100" value="52" />
-                  <output id="beatVolumeOut">52%</output>
+                  <input id="beatVolume" type="range" min="0" max="100" value="72" />
+                  <output id="beatVolumeOut">72%</output>
                 </label>
                 <label class="control-row">
                   <span>Beat tempo</span>
@@ -1044,6 +1099,21 @@
                   <span>Swing feel</span>
                   <input id="swing" type="range" min="0" max="42" value="14" />
                   <output id="swingOut">14</output>
+                </label>
+                <label class="control-row">
+                  <span>Echo</span>
+                  <input id="echoAmount" type="range" min="0" max="100" value="14" />
+                  <output id="echoAmountOut">14%</output>
+                </label>
+                <label class="control-row">
+                  <span>Space</span>
+                  <input id="spaceAmount" type="range" min="0" max="100" value="18" />
+                  <output id="spaceAmountOut">18%</output>
+                </label>
+                <label class="control-row">
+                  <span>Tone</span>
+                  <input id="toneAmount" type="range" min="0" max="100" value="72" />
+                  <output id="toneAmountOut">72%</output>
                 </label>
               </div>
             </div>
@@ -1060,8 +1130,8 @@
             <div class="archive-tools">
               <form class="inline-form" id="customTrackForm">
                 <label>
-                  <span class="sr-only">Paste a SoundCloud track URL</span>
-                  <input class="search" id="customTrackUrl" type="url" placeholder="Paste a SoundCloud track URL" />
+                  <span class="sr-only">Paste a SoundCloud or Spotify URL</span>
+                  <input class="search" id="customTrackUrl" type="url" placeholder="Paste a SoundCloud or Spotify URL" />
                 </label>
                 <button class="button secondary small" type="submit">Load</button>
               </form>
@@ -1083,8 +1153,7 @@
           <div class="panel">
             <h3>Favorite Blends</h3>
             <div class="hint">
-              Continue with email and unlock Favorite Blends for $5.99 to save blend settings
-              across devices while supporting Tāla.
+              Save blends you want to come back to.
             </div>
             <div class="list" id="favoriteList"></div>
           </div>
@@ -1150,16 +1219,27 @@
               <span class="sr-only">Email address</span>
               <input class="search" id="accountEmail" type="email" placeholder="you@example.com" autocomplete="email" required />
             </label>
-            <button class="button secondary small" type="submit">Continue</button>
+            <button class="button secondary small" id="accountSubmit" type="submit">Continue</button>
           </form>
+          <p class="account-feedback" id="accountFeedback" aria-live="polite"></p>
+          <div class="account-session" id="accountSession" hidden>
+            <div>
+              <strong>Signed in</strong>
+              <span id="accountSessionEmail"></span>
+            </div>
+            <button class="button secondary small" id="signOutButton" type="button">Sign out</button>
+          </div>
 
           <div class="unlock-box">
-            <strong>Favorite Blends - $5.99</strong>
-            <p>
-              Save Favorite Blend settings to your account and return to them across devices.
-              Tāla never saves source audio.
+            <strong id="unlockTitle">Favorite Blends - one-time $5.99</strong>
+            <p id="unlockCopy">
+              Unlock Favorite Blends for a one-time lifetime payment of $5.99.
+              Tāla saves your favorites, not source audio.
             </p>
-            <button class="button favorite" id="unlockButton" type="button" disabled>Unlock Favorite Blends</button>
+            <div class="unlock-actions">
+              <button class="button favorite" id="unlockButton" type="button" disabled>Unlock Favorite Blends</button>
+              <button class="button secondary small" id="completeUnlockButton" type="button" hidden>Check payment</button>
+            </div>
             <p class="hint" id="unlockHint">
               Continue with email first, then checkout will be available.
             </p>
@@ -1174,132 +1254,132 @@
       const tracks = [
         {
           title: "Lata Mangeshkar & Chorus - Panchi Banoon",
-          meta: "Archive of Indian Music popular track on SoundCloud",
+          meta: "Popular track",
           url: "https://soundcloud.com/archive-of-indian-music/lata-mangeshkar-chorus-panchi-banoon"
         },
         {
           title: "Bade Ghulam Ali Khan - Aaye Na Balam",
-          meta: "Archive of Indian Music popular track on SoundCloud",
+          meta: "Popular track",
           url: "https://soundcloud.com/archive-of-indian-music/bade-ghulam-ali-khan-aaye-na-1"
         },
         {
           title: "Lata Mangeshkar - Khuda Nigehbaan Ho Tumhara",
-          meta: "Archive of Indian Music popular track on SoundCloud",
+          meta: "Popular track",
           url: "https://soundcloud.com/archive-of-indian-music/lata-mangeshkar-khuda-nigehbaan-ho-tumhara"
         },
         {
           title: "Lata Mangeshkar - Bekas Pe Karam Kijiye",
-          meta: "Archive of Indian Music popular track on SoundCloud",
+          meta: "Popular track",
           url: "https://soundcloud.com/archive-of-indian-music/lata-mangeshkar-bekas-pe-karam-kijiye"
         },
         {
           title: "Bade Ghulam Ali Khan - Kate Na Birha Ki Raat",
-          meta: "Archive of Indian Music popular track on SoundCloud - Piloo",
+          meta: "Popular track · Piloo",
           url: "https://soundcloud.com/archive-of-indian-music/bade-ghulam-ali-khan-kate-na"
         },
         {
           title: "P. V. Anantasayanam & Party - Sri Venkateshwara Suprabhatham",
-          meta: "Archive of Indian Music popular track on SoundCloud",
+          meta: "Popular track",
           url: "https://soundcloud.com/archive-of-indian-music/p-v-anantasayanam-party-sri"
         },
         {
           title: "Bade Ghulam Ali Khan - Tirachhi Nazariya Ki Baan",
-          meta: "Archive of Indian Music popular track on SoundCloud",
+          meta: "Popular track",
           url: "https://soundcloud.com/archive-of-indian-music/bade-ghulam-ali-khan-tirachhi"
         },
         {
           title: "Ustad Ghulam Ali Khan - Bazooband Khul Khul Jaye",
-          meta: "Archive of Indian Music popular track on SoundCloud - Bhairavi",
+          meta: "Popular track · Bhairavi",
           url: "https://soundcloud.com/archive-of-indian-music/ustad-ghulam-ali-khan"
         },
         {
           title: "M. S. Subbulakshmi - Senjurutti",
-          meta: "Archive of Indian Music popular track on SoundCloud - child artist recording",
+          meta: "Popular track · child artist recording",
           url: "https://soundcloud.com/archive-of-indian-music/m-s-subbulakshmi-as-a-10-yr"
         },
         {
           title: "Asha Bhosle - Chalo Chale",
-          meta: "Archive of Indian Music popular track on SoundCloud",
+          meta: "Popular track",
           url: "https://soundcloud.com/archive-of-indian-music/asha-bhosle-chalo-chale"
         },
         {
           title: "Bidaram Krishnappa of Mysore - Sringara Lahari",
-          meta: "Archive of Indian Music popular track on SoundCloud - Neelambari",
+          meta: "Popular track · Neelambari",
           url: "https://soundcloud.com/archive-of-indian-music/bidaram-krishnappa-of-mysore-2"
         },
         {
           title: "Zohra Bai - Chalo Ri Mayi Auliya",
-          meta: "Archive of Indian Music on SoundCloud - Puriya",
+          meta: "Puriya",
           url: "https://soundcloud.com/archive-of-indian-music/zohra-bai-chalo-ri-mayi-auliya"
         },
         {
           title: "Gauhar Jan - Bhairavi 01",
-          meta: "Archive of Indian Music on SoundCloud - Gauhar Jan collection",
+          meta: "Gauhar Jan collection",
           url: "https://soundcloud.com/archive-of-indian-music/2764-gauhar-jan-01"
         },
         {
           title: "Gauhar Jan - Bhairavi 02",
-          meta: "Archive of Indian Music on SoundCloud - Gauhar Jan collection",
+          meta: "Gauhar Jan collection",
           url: "https://soundcloud.com/archive-of-indian-music/2765-gauhar-jan-02"
         },
         {
           title: "Khyal - Multani by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          meta: "Zohra Bai Agrewali",
           url: "https://soundcloud.com/archive-of-indian-music/3635-khyal-multani-by-zohra"
         },
         {
           title: "Terana - Palass by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          meta: "Zohra Bai Agrewali",
           url: "https://soundcloud.com/archive-of-indian-music/3636-terana-palass-by-zohra"
         },
         {
           title: "Ghazal by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - all rights reserved stream",
+          meta: "All rights reserved stream",
           url: "https://soundcloud.com/archive-of-indian-music/3637-ghazal-by-zohra-bai-g-c-8"
         },
         {
           title: "Majmuah by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          meta: "Zohra Bai Agrewali",
           url: "https://soundcloud.com/archive-of-indian-music/3638-majmuah-by-zohra-bai-g-c"
         },
         {
           title: "Savni by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          meta: "Zohra Bai Agrewali",
           url: "https://soundcloud.com/archive-of-indian-music/3639-savni-by-zohra-bai-g-c-9"
         },
         {
           title: "Zila by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - all rights reserved stream",
+          meta: "All rights reserved stream",
           url: "https://soundcloud.com/archive-of-indian-music/3640-zila-by-zohra-bai-g-c-9"
         },
         {
           title: "Des by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - Zohra Bai Agrewali",
+          meta: "Zohra Bai Agrewali",
           url: "https://soundcloud.com/archive-of-indian-music/3641-des-by-zohra-bai-g-c-8"
         },
         {
           title: "Sarang by Zohra Bai",
-          meta: "Archive of Indian Music on SoundCloud - all rights reserved stream",
+          meta: "All rights reserved stream",
           url: "https://soundcloud.com/archive-of-indian-music/3642-sarang-by-zohra-bai-g-c-8"
         },
         {
           title: "Bal Gandharva G.C.16",
-          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          meta: "Marathi theatre recording",
           url: "https://soundcloud.com/archive-of-indian-music/3578-79-bal-gandharva-g-c-16"
         },
         {
           title: "Bal Gandharva G.C.21",
-          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          meta: "Marathi theatre recording",
           url: "https://soundcloud.com/archive-of-indian-music/3580-81-bal-gandharva-g-c-21"
         },
         {
           title: "Bal Gandharva G.C.21 P.8740",
-          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          meta: "Marathi theatre recording",
           url: "https://soundcloud.com/archive-of-indian-music/3582-83-bal-gandharva-g-c-21"
         },
         {
           title: "Bal Gandharva G.C.16 P.5059",
-          meta: "Archive of Indian Music on SoundCloud - Marathi theatre recording",
+          meta: "Marathi theatre recording",
           url: "https://soundcloud.com/archive-of-indian-music/3584-85-balgandharva-g-c-16"
         }
       ];
@@ -1487,8 +1567,16 @@
         closeAccountModal: document.querySelector("#closeAccountModal"),
         accountForm: document.querySelector("#accountForm"),
         accountEmail: document.querySelector("#accountEmail"),
+        accountSubmit: document.querySelector("#accountSubmit"),
         accountSummary: document.querySelector("#accountSummary"),
+        accountFeedback: document.querySelector("#accountFeedback"),
+        accountSession: document.querySelector("#accountSession"),
+        accountSessionEmail: document.querySelector("#accountSessionEmail"),
+        signOutButton: document.querySelector("#signOutButton"),
+        unlockTitle: document.querySelector("#unlockTitle"),
+        unlockCopy: document.querySelector("#unlockCopy"),
         unlockButton: document.querySelector("#unlockButton"),
+        completeUnlockButton: document.querySelector("#completeUnlockButton"),
         unlockHint: document.querySelector("#unlockHint"),
         playBlend: document.querySelector("#playBlend"),
         randomAll: document.querySelector("#randomAll"),
@@ -1509,14 +1597,30 @@
         tempo: document.querySelector("#tempo"),
         tempoOut: document.querySelector("#tempoOut"),
         swing: document.querySelector("#swing"),
-        swingOut: document.querySelector("#swingOut")
+        swingOut: document.querySelector("#swingOut"),
+        echoAmount: document.querySelector("#echoAmount"),
+        echoAmountOut: document.querySelector("#echoAmountOut"),
+        spaceAmount: document.querySelector("#spaceAmount"),
+        spaceAmountOut: document.querySelector("#spaceAmountOut"),
+        toneAmount: document.querySelector("#toneAmount"),
+        toneAmountOut: document.querySelector("#toneAmountOut")
       };
 
       let currentTrack = 0;
       let currentBeat = 0;
       let audioContext;
       let masterGain;
+      let toneFilter;
+      let dryGain;
+      let delayNode;
+      let delayFeedback;
+      let delayWetGain;
+      let convolverNode;
+      let reverbWetGain;
       let schedulerId;
+      let audioClosePromise = null;
+      let soundcloudBindId = 0;
+      let soundcloudAutoPlayOnReady = false;
       let nextStepTime = 0;
       let step = 0;
       let isPlaying = false;
@@ -1525,13 +1629,15 @@
       let soundcloudReady = Promise.resolve(false);
       const customTracksKey = "tala:customTracks";
       const favoritesKey = "tala:favorites";
-      const lifetimeUnlockKey = "tala:lifetimeUnlock";
+      const postAuthModalKey = "tala:postAuthModal";
+      const postAuthReasonKey = "tala:postAuthReason";
+      const checkoutStartedKey = "tala:checkoutStarted";
       const legacyCustomTracksKey = "mixer:customTracks";
       const legacyFavoritesKey = "mixer:favorites";
       const lemonCheckoutUrl = "https://keel-pro.lemonsqueezy.com/checkout/buy/905604c1-9648-45df-ac61-7dcc07a21516";
       const supabaseConfig = {
-        url: "",
-        anonKey: ""
+        url: "https://bjjxlilrxhjebjytrnxi.supabase.co",
+        anonKey: "sb_publishable__Vd43aIGh_xXB1waSsdr7Q_c8uSebGX"
       };
       const authRedirectTo = window.location.origin === "null"
         ? window.location.href
@@ -1541,17 +1647,20 @@
         : null;
       let favorites = JSON.parse(localStorage.getItem(favoritesKey) || localStorage.getItem(legacyFavoritesKey) || "[]");
       let account = null;
-      let hasLifetimeUnlock = localStorage.getItem(lifetimeUnlockKey) === "true";
+      let hasLifetimeUnlock = false;
       let authMessage = authClient
         ? ""
         : "Add your Supabase URL and anon key to enable email login.";
+      let authMessageState = "neutral";
       let accountModalReason = "";
+      let pendingAuthEmail = "";
+      let entitlementCheckInFlight = false;
 
-      function embedUrl(trackUrl) {
+      function embedUrl(trackUrl, autoPlay = false) {
         const params = new URLSearchParams({
           url: trackUrl,
           color: "#b9342f",
-          auto_play: "false",
+          auto_play: autoPlay ? "true" : "false",
           hide_related: "true",
           show_comments: "false",
           show_user: "true",
@@ -1562,21 +1671,52 @@
         return `https://w.soundcloud.com/player/?${params.toString()}`;
       }
 
-      function selectTrack(index) {
+      function spotifyEmbedUrl(type, id) {
+        return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+      }
+
+      function getTrackProvider(track) {
+        return track.provider || "soundcloud";
+      }
+
+      function getTrackEmbedUrl(track, autoPlay = false) {
+        if (getTrackProvider(track) === "spotify") {
+          return spotifyEmbedUrl(track.spotifyType, track.spotifyId);
+        }
+        return embedUrl(track.url, autoPlay);
+      }
+
+      function selectTrack(index, options = {}) {
         currentTrack = index;
         const track = tracks[currentTrack];
+        const provider = getTrackProvider(track);
+        const autoPlay = Boolean(options.autoPlay) && provider === "soundcloud";
         els.trackTitle.textContent = track.title;
         els.trackMeta.textContent = track.meta;
-        els.player.src = embedUrl(track.url);
-        bindSoundcloudWidget();
+        els.player.src = getTrackEmbedUrl(track, autoPlay);
+        els.player.title = provider === "spotify"
+          ? "Spotify embedded player"
+          : "Archive of Indian Music SoundCloud player";
+        els.streamVolume.disabled = provider === "spotify";
+        if (provider === "soundcloud") {
+          soundcloudAutoPlayOnReady = autoPlay;
+          bindSoundcloudWidget();
+          setStatus("Archival stream selected");
+        } else {
+          soundcloudWidget = null;
+          soundcloudReady = Promise.resolve(false);
+          soundcloudAutoPlayOnReady = false;
+          setStatus("Spotify stream selected");
+        }
         renderLists();
-        setStatus("Archival stream selected");
       }
 
       function addCustomTrack(url) {
         const trimmedUrl = url.trim();
-        if (!/^https:\/\/soundcloud\.com\/.+\/.+/.test(trimmedUrl)) {
-          setStatus("Paste a full SoundCloud track URL");
+        const soundcloudMatch = trimmedUrl.match(/^https:\/\/soundcloud\.com\/.+\/.+/);
+        const spotifyMatch = trimmedUrl.match(/^https:\/\/open\.spotify\.com\/(track|album|playlist|episode|show)\/([A-Za-z0-9]+)(?:\?.*)?$/);
+        if (!soundcloudMatch && !spotifyMatch) {
+          setStatus("Paste a full SoundCloud or Spotify URL");
           return;
         }
 
@@ -1587,34 +1727,108 @@
         }
 
         const slug = trimmedUrl.split("/").filter(Boolean).pop() || "custom-stream";
-        const title = slug
-          .replace(/-/g, " ")
-          .replace(/\b\w/g, (letter) => letter.toUpperCase());
-        tracks.unshift({
-          title,
-          meta: "User-added SoundCloud stream - no audio stored",
-          url: trimmedUrl
-        });
-        saveCustomTrack({ title, meta: "User-added SoundCloud stream - no audio stored", url: trimmedUrl });
+        const track = spotifyMatch
+          ? {
+              title: `Spotify ${spotifyMatch[1] === "track" ? "song" : spotifyMatch[1]}`,
+              meta: "Spotify embed",
+              url: trimmedUrl,
+              provider: "spotify",
+              isCustom: true,
+              spotifyType: spotifyMatch[1],
+              spotifyId: spotifyMatch[2]
+            }
+          : {
+              title: slug
+                .replace(/-/g, " ")
+                .replace(/\b\w/g, (letter) => letter.toUpperCase()),
+              meta: "Added SoundCloud stream",
+              url: trimmedUrl,
+              provider: "soundcloud",
+              isCustom: true
+            };
+        tracks.unshift(track);
+        saveCustomTrack(track);
         els.customTrackUrl.value = "";
         selectTrack(0);
-        setStatus("SoundCloud stream loaded");
+        setStatus(`${track.provider === "spotify" ? "Spotify" : "SoundCloud"} stream loaded`);
+        if (track.provider === "spotify") {
+          hydrateSpotifyTrack(track);
+        }
       }
 
       function saveCustomTrack(track) {
         const saved = JSON.parse(localStorage.getItem(customTracksKey) || "[]")
           .filter((item) => item.url !== track.url);
-        saved.unshift(track);
+        saved.unshift({ ...track, isCustom: true });
         localStorage.setItem(customTracksKey, JSON.stringify(saved.slice(0, 50)));
+      }
+
+      function syncCustomTrack(track) {
+        saveCustomTrack(track);
+        renderLists();
+        if (tracks[currentTrack]?.url === track.url) {
+          els.trackTitle.textContent = track.title;
+          els.trackMeta.textContent = track.meta;
+        }
+      }
+
+      async function hydrateSpotifyTrack(track) {
+        if (track.provider !== "spotify") return;
+        try {
+          const response = await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(track.url)}`);
+          if (!response.ok) return;
+          const data = await response.json();
+          const title = typeof data.title === "string" ? data.title.trim() : "";
+          const author = typeof data.author_name === "string" ? data.author_name.trim() : "";
+          if (title) {
+            track.title = title;
+          }
+          if (author) {
+            track.meta = author;
+          } else if (title) {
+            track.meta = "Spotify embed";
+          }
+          syncCustomTrack(track);
+        } catch (_error) {
+          // Keep the fallback Spotify label if metadata lookup is unavailable.
+        }
       }
 
       function restoreCustomTracks() {
         const saved = JSON.parse(localStorage.getItem(customTracksKey) || localStorage.getItem(legacyCustomTracksKey) || "[]");
         saved.slice().reverse().forEach((track) => {
-          if (!tracks.some((item) => item.url === track.url)) {
-            tracks.unshift(track);
+          const normalizedTrack = { ...track, isCustom: true };
+          if (!tracks.some((item) => item.url === normalizedTrack.url)) {
+            tracks.unshift(normalizedTrack);
           }
         });
+        tracks.filter((track) => track.provider === "spotify").forEach((track) => {
+          hydrateSpotifyTrack(track);
+        });
+      }
+
+      function removeCustomTrack(index) {
+        const track = tracks[index];
+        if (!track || !track.isCustom) return;
+
+        const wasSelected = index === currentTrack;
+        tracks.splice(index, 1);
+
+        const saved = JSON.parse(localStorage.getItem(customTracksKey) || "[]")
+          .filter((item) => item.url !== track.url);
+        localStorage.setItem(customTracksKey, JSON.stringify(saved));
+
+        if (!tracks.length) return;
+
+        if (wasSelected) {
+          currentTrack = 0;
+          selectTrack(0);
+        } else {
+          if (index < currentTrack) currentTrack -= 1;
+          renderLists();
+        }
+
+        setStatus("Added stream removed");
       }
 
       function selectBeat(index) {
@@ -1639,10 +1853,31 @@
         return next;
       }
 
+      function randomTrackIndex(previous) {
+        const autoplayableTracks = tracks
+          .map((track, index) => ({ track, index }))
+          .filter(({ track }) => getTrackProvider(track) === "soundcloud");
+
+        if (!autoplayableTracks.length) {
+          return randomIndex(tracks.length, previous);
+        }
+
+        if (autoplayableTracks.length === 1) {
+          return autoplayableTracks[0].index;
+        }
+
+        let next = previous;
+        while (next === previous) {
+          next = autoplayableTracks[Math.floor(Math.random() * autoplayableTracks.length)].index;
+        }
+        return next;
+      }
+
       async function randomizeAll() {
-        selectTrack(randomIndex(tracks.length, currentTrack));
+        selectTrack(randomTrackIndex(currentTrack), { autoPlay: true });
         selectBeat(randomIndex(beats.length, currentBeat));
-        await playBlend();
+        await startBeat();
+        setStatus("Live blend starting");
       }
 
       function includesQuery(item, query) {
@@ -1661,10 +1896,13 @@
           .filter(({ beat }) => includesQuery(beat, beatQuery));
 
         els.trackList.innerHTML = visibleTracks.length ? visibleTracks.map(({ track, index }) => `
-          <button class="item" type="button" aria-pressed="${index === currentTrack}" data-track="${index}">
-            <span><strong>${track.title}</strong><span class="meta">${track.meta}</span></span>
+          <div class="item favorite-item" aria-pressed="${index === currentTrack}">
+            <button class="favorite-load" type="button" data-track="${index}">
+              <span><strong>${track.title}</strong><span class="meta">${track.meta}</span></span>
+            </button>
             <span class="tag">Stream</span>
-          </button>
+            ${track.isCustom ? `<button class="remove-favorite" type="button" data-remove-track="${index}" aria-label="Remove added stream">×</button>` : ""}
+          </div>
         `).join("") : '<div class="empty">No archival streams match that search.</div>';
 
         els.beatList.innerHTML = visibleBeats.length ? visibleBeats.map(({ beat, index }) => `
@@ -1677,6 +1915,12 @@
         els.trackList.querySelectorAll("[data-track]").forEach((button) => {
           button.addEventListener("click", () => selectTrack(Number(button.dataset.track)));
         });
+        els.trackList.querySelectorAll("[data-remove-track]").forEach((button) => {
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            removeCustomTrack(Number(button.dataset.removeTrack));
+          });
+        });
         els.beatList.querySelectorAll("[data-beat]").forEach((button) => {
           button.addEventListener("click", () => selectBeat(Number(button.dataset.beat)));
         });
@@ -1685,7 +1929,7 @@
 
       function renderFavorites() {
         if (!favorites.length) {
-          els.favoriteList.innerHTML = '<div class="empty">Favorite a blend to add it to Favorite Blends.</div>';
+          els.favoriteList.innerHTML = '<div class="empty">Favorite a blend to save it here.</div>';
           return;
         }
 
@@ -1703,7 +1947,10 @@
           button.addEventListener("click", () => loadFavorite(Number(button.dataset.favorite)));
         });
         els.favoriteList.querySelectorAll("[data-remove-favorite]").forEach((button) => {
-          button.addEventListener("click", () => removeFavorite(Number(button.dataset.removeFavorite)));
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            removeFavorite(Number(button.dataset.removeFavorite));
+          });
         });
       }
 
@@ -1718,10 +1965,13 @@
           streamVolume: Number(els.streamVolume.value),
           beatVolume: Number(els.beatVolume.value),
           tempo: Number(els.tempo.value),
-          swing: Number(els.swing.value)
+          swing: Number(els.swing.value),
+          echoAmount: Number(els.echoAmount.value),
+          spaceAmount: Number(els.spaceAmount.value),
+          toneAmount: Number(els.toneAmount.value)
         };
-        const key = `${favorite.trackUrl}|${favorite.beatTitle}|${favorite.streamVolume}|${favorite.beatVolume}|${favorite.tempo}|${favorite.swing}`;
-        favorites = favorites.filter((item) => `${item.trackUrl}|${item.beatTitle}|${item.streamVolume}|${item.beatVolume}|${item.tempo}|${item.swing}` !== key);
+        const key = `${favorite.trackUrl}|${favorite.beatTitle}|${favorite.streamVolume}|${favorite.beatVolume}|${favorite.tempo}|${favorite.swing}|${favorite.echoAmount}|${favorite.spaceAmount}|${favorite.toneAmount}`;
+        favorites = favorites.filter((item) => `${item.trackUrl}|${item.beatTitle}|${item.streamVolume}|${item.beatVolume}|${item.tempo}|${item.swing}|${item.echoAmount ?? 14}|${item.spaceAmount ?? 18}|${item.toneAmount ?? 72}` !== key);
         favorites.unshift(favorite);
         favorites = favorites.slice(0, 12);
         localStorage.setItem(favoritesKey, JSON.stringify(favorites));
@@ -1729,16 +1979,24 @@
         setStatus("Blend added to Favorite Blends");
       }
 
-      function loadFavorite(index) {
+      async function loadFavorite(index) {
         const favorite = favorites[index];
+        if (!favorite) return;
+
+        await stopAll();
+
         const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
-        if (trackIndex >= 0) selectTrack(trackIndex);
+        if (trackIndex >= 0) selectTrack(trackIndex, { autoPlay: true });
         selectBeat(favorite.beatIndex);
         els.streamVolume.value = favorite.streamVolume;
         els.beatVolume.value = favorite.beatVolume;
         els.tempo.value = favorite.tempo;
         els.swing.value = favorite.swing;
+        els.echoAmount.value = favorite.echoAmount ?? 14;
+        els.spaceAmount.value = favorite.spaceAmount ?? 18;
+        els.toneAmount.value = favorite.toneAmount ?? 72;
         updateOutputs();
+        await startBeat();
         setStatus("Favorite blend loaded");
       }
 
@@ -1763,16 +2021,39 @@
         }).join("");
       }
 
+      function beatGainFromSlider(value) {
+        const normalized = Number(value) / 100;
+        return Math.min(1.45, 0.04 + normalized * 1.22);
+      }
+
+      function toneFrequencyFromSlider(value) {
+        const normalized = Number(value) / 100;
+        return 600 + normalized * 11400;
+      }
+
       function updateOutputs() {
-        els.streamVolumeOut.textContent = `${els.streamVolume.value}%`;
+        els.streamVolumeOut.textContent = els.streamVolume.disabled ? "Embed" : `${els.streamVolume.value}%`;
         els.beatVolumeOut.textContent = `${els.beatVolume.value}%`;
         els.tempoOut.textContent = els.tempo.value;
         els.swingOut.textContent = els.swing.value;
+        els.echoAmountOut.textContent = `${els.echoAmount.value}%`;
+        els.spaceAmountOut.textContent = `${els.spaceAmount.value}%`;
+        els.toneAmountOut.textContent = `${els.toneAmount.value}%`;
         if (masterGain) {
-          masterGain.gain.setTargetAtTime(Number(els.beatVolume.value) / 100, audioContext.currentTime, 0.02);
+          masterGain.gain.setTargetAtTime(beatGainFromSlider(els.beatVolume.value), audioContext.currentTime, 0.02);
         }
         if (soundcloudWidget && typeof soundcloudWidget.setVolume === "function") {
           soundcloudWidget.setVolume(Number(els.streamVolume.value));
+        }
+        if (toneFilter && audioContext) {
+          toneFilter.frequency.setTargetAtTime(toneFrequencyFromSlider(els.toneAmount.value), audioContext.currentTime, 0.04);
+        }
+        if (delayWetGain && delayFeedback && audioContext) {
+          delayWetGain.gain.setTargetAtTime(Number(els.echoAmount.value) / 180, audioContext.currentTime, 0.04);
+          delayFeedback.gain.setTargetAtTime(Number(els.echoAmount.value) / 170, audioContext.currentTime, 0.04);
+        }
+        if (reverbWetGain && audioContext) {
+          reverbWetGain.gain.setTargetAtTime(Number(els.spaceAmount.value) / 160, audioContext.currentTime, 0.04);
         }
       }
 
@@ -1780,34 +2061,84 @@
         els.status.textContent = text;
       }
 
+      function showElement(element, visible, displayValue = "block") {
+        element.hidden = !visible;
+        element.style.display = visible ? displayValue : "none";
+      }
+
       function renderAccount() {
         if (account) {
           els.accountButton.textContent = hasLifetimeUnlock ? "Account" : "Unlock Favorite Blends";
           els.accountSummary.textContent = hasLifetimeUnlock
             ? `Signed in as ${account.email}. Favorite Blends are unlocked.`
-            : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends to save blend settings across devices.`;
+            : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`;
+          showElement(els.accountForm, false, "grid");
+          showElement(els.accountFeedback, Boolean(authMessage), "block");
+          showElement(els.accountSession, true, "flex");
+          els.accountSessionEmail.textContent = account.email;
           els.accountEmail.value = account.email;
+          els.accountEmail.disabled = true;
+          els.accountSubmit.textContent = "Continue";
+          els.accountSubmit.disabled = true;
+          els.accountFeedback.textContent = authMessage;
+          els.accountFeedback.dataset.state = authMessageState;
         } else {
-          els.accountButton.textContent = "Continue";
-          els.accountSummary.textContent = authClient
-            ? accountModalReason || "Continue with email to create or open your Favorite Blends. Then unlock saving across devices."
-            : "Email login needs a Supabase project before it can be used.";
-          els.accountEmail.value = "";
+          els.accountButton.textContent = "Join";
+          if (authClient && pendingAuthEmail && authMessageState === "success") {
+            els.accountSummary.textContent = `Check your inbox. We sent a secure sign-in link to ${pendingAuthEmail}.`;
+          } else {
+            els.accountSummary.textContent = authClient
+              ? accountModalReason || "Continue with email to create or open your Favorite Blends. Then unlock saving across devices."
+              : "Email login needs a Supabase project before it can be used.";
+          }
+          showElement(els.accountForm, true, "grid");
+          showElement(els.accountFeedback, true, "block");
+          showElement(els.accountSession, false, "flex");
+          els.accountSessionEmail.textContent = "";
+          els.accountEmail.value = pendingAuthEmail || "";
+          els.accountEmail.disabled = false;
+          els.accountSubmit.textContent = pendingAuthEmail && authClient ? "Resend email" : "Continue";
+          els.accountSubmit.disabled = false;
+          els.accountFeedback.textContent = authMessage;
+          els.accountFeedback.dataset.state = authMessageState;
         }
+        els.unlockTitle.textContent = hasLifetimeUnlock
+          ? "Favorite Blends unlocked"
+          : "Favorite Blends - one-time $5.99";
+        els.unlockCopy.textContent = hasLifetimeUnlock
+          ? "Your favorites will save to your account. Tāla saves your choices, not source audio."
+          : "Unlock Favorite Blends for a one-time lifetime payment of $5.99. Tāla saves your favorites, not source audio.";
         els.unlockButton.textContent = hasLifetimeUnlock ? "Favorite Blends unlocked" : "Unlock Favorite Blends";
         els.unlockButton.disabled = hasLifetimeUnlock || !account;
-        els.unlockHint.textContent = hasLifetimeUnlock
-          ? "You can save and reload Favorite Blend settings."
-          : account
-            ? "Secure checkout opens in a new tab."
-            : authMessage || "Continue with email first, then checkout will be available.";
+        showElement(els.completeUnlockButton, !hasLifetimeUnlock && Boolean(account), "inline-flex");
+        els.completeUnlockButton.textContent = entitlementCheckInFlight ? "Checking..." : "Check payment";
+        els.completeUnlockButton.disabled = entitlementCheckInFlight;
+        els.unlockHint.textContent = authMessage && account && !hasLifetimeUnlock
+          ? authMessage
+          : hasLifetimeUnlock
+            ? "You can save and reload Favorite Blend settings."
+            : account
+              ? sessionStorage.getItem(checkoutStartedKey) === "true"
+                ? "If you already finished checkout, click “Check payment” to sync your unlock."
+                : "Secure checkout opens in a new tab."
+              : "Continue with email first, then checkout will be available.";
       }
 
       function openAccountModal(reason = "") {
-        accountModalReason = reason;
+        accountModalReason = typeof reason === "string" ? reason : "";
         renderAccount();
         els.accountModal.hidden = false;
-        window.setTimeout(() => els.accountEmail.focus(), 0);
+        window.setTimeout(() => {
+          if (account) {
+            if (!els.unlockButton.disabled) {
+              els.unlockButton.focus();
+            } else {
+              els.signOutButton.focus();
+            }
+          } else {
+            els.accountEmail.focus();
+          }
+        }, 0);
       }
 
       function closeAccountModal() {
@@ -1815,15 +2146,110 @@
         accountModalReason = "";
       }
 
+      async function readEntitlementRow() {
+        if (!authClient || !account) return null;
+
+        const byUser = await authClient
+          .from("entitlements")
+          .select("email, lifetime_saves_unlocked, lemon_order_id, updated_at")
+          .eq("user_id", account.id)
+          .maybeSingle();
+
+        if (byUser.error && byUser.error.code !== "PGRST116") {
+          throw byUser.error;
+        }
+        if (byUser.data) return byUser.data;
+
+        const byEmail = await authClient
+          .from("entitlements")
+          .select("email, lifetime_saves_unlocked, lemon_order_id, updated_at")
+          .eq("email", account.email.toLowerCase())
+          .maybeSingle();
+
+        if (byEmail.error && byEmail.error.code !== "PGRST116") {
+          throw byEmail.error;
+        }
+        return byEmail.data || null;
+      }
+
+      async function refreshEntitlementStatus({ reconcile = false } = {}) {
+        if (!authClient || !account || entitlementCheckInFlight) {
+          return hasLifetimeUnlock;
+        }
+
+        entitlementCheckInFlight = true;
+        renderAccount();
+
+        try {
+          if (reconcile) {
+            setStatus("Checking payment status");
+            const { data, error } = await authClient.functions.invoke("lemon-reconcile", {
+              body: {}
+            });
+            if (error) {
+              throw error;
+            }
+            if (data?.message) {
+              authMessage = data.message;
+              authMessageState = data.unlocked ? "success" : "neutral";
+            }
+          }
+
+          const entitlement = await readEntitlementRow();
+          hasLifetimeUnlock = Boolean(
+            entitlement?.lifetime_saves_unlocked ||
+            hasPaidEntitlement({ app_metadata: null, user_metadata: null })
+          );
+
+          if (hasLifetimeUnlock) {
+            sessionStorage.removeItem(checkoutStartedKey);
+            authMessage = "";
+            authMessageState = "neutral";
+            setStatus("Favorite Blends unlocked");
+          } else if (reconcile) {
+            authMessage = authMessage || "No paid Favorite Blends unlock was found for this email yet.";
+            authMessageState = "error";
+            setStatus("Payment not found yet");
+          }
+
+          renderAccount();
+          return hasLifetimeUnlock;
+        } catch (error) {
+          authMessage = error?.message || "Could not check payment status yet.";
+          authMessageState = "error";
+          renderAccount();
+          setStatus("Could not check payment status");
+          return false;
+        } finally {
+          entitlementCheckInFlight = false;
+          renderAccount();
+        }
+      }
+
+      async function signOutAccount() {
+        if (authClient) {
+          await authClient.auth.signOut();
+        }
+        account = null;
+        hasLifetimeUnlock = false;
+        authMessage = "";
+        authMessageState = "neutral";
+        pendingAuthEmail = "";
+        sessionStorage.removeItem(checkoutStartedKey);
+        renderAccount();
+        setStatus("Signed out");
+      }
+
       function hasPaidEntitlement(user) {
         return Boolean(
           user?.app_metadata?.lifetime_saves_unlocked ||
-          user?.user_metadata?.lifetime_saves_unlocked ||
-          localStorage.getItem(lifetimeUnlockKey) === "true"
+          user?.user_metadata?.lifetime_saves_unlocked
         );
       }
 
       function applyAuthSession(session) {
+        const shouldResumeModal = sessionStorage.getItem(postAuthModalKey) === "true";
+        const resumeReason = sessionStorage.getItem(postAuthReasonKey) || "";
         account = session?.user
           ? {
               id: session.user.id,
@@ -1831,8 +2257,26 @@
             }
           : null;
         hasLifetimeUnlock = hasPaidEntitlement(session?.user);
-        authMessage = account ? "" : authMessage;
+        if (account) {
+          pendingAuthEmail = "";
+          authMessage = "";
+          authMessageState = "neutral";
+          sessionStorage.removeItem(postAuthModalKey);
+          sessionStorage.removeItem(postAuthReasonKey);
+        }
         renderAccount();
+        if (account && shouldResumeModal && !hasLifetimeUnlock) {
+          openAccountModal(resumeReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
+        } else if (account && sessionStorage.getItem(checkoutStartedKey) === "true" && !hasLifetimeUnlock) {
+          openAccountModal(`Signed in as ${account.email}. If you already completed checkout, finish unlocking Favorite Blends on this device.`);
+        }
+        if (account) {
+          window.setTimeout(() => {
+            refreshEntitlementStatus({
+              reconcile: sessionStorage.getItem(checkoutStartedKey) === "true"
+            });
+          }, 0);
+        }
       }
 
       async function initializeAuth() {
@@ -1844,6 +2288,7 @@
         const { data, error } = await authClient.auth.getSession();
         if (error) {
           authMessage = "Could not load your session. Try continuing with email again.";
+          authMessageState = "error";
           setStatus("Auth session unavailable");
         } else {
           applyAuthSession(data.session);
@@ -1858,6 +2303,7 @@
       async function continueWithEmail(email) {
         if (!authClient) {
           authMessage = "Add your Supabase URL and anon key to enable email login.";
+          authMessageState = "error";
           renderAccount();
           setStatus("Email login is not configured yet");
           return;
@@ -1873,12 +2319,17 @@
 
         if (error) {
           authMessage = error.message || "Could not send login email. Please try again.";
+          authMessageState = "error";
           renderAccount();
           setStatus("Could not send login email");
           return;
         }
 
-        authMessage = "Check your email for a secure login link.";
+        pendingAuthEmail = email;
+        sessionStorage.setItem(postAuthModalKey, "true");
+        sessionStorage.setItem(postAuthReasonKey, accountModalReason || "Finish signing in, then unlock Favorite Blends.");
+        authMessage = "Check your inbox for the magic link, then open it on this device to finish signing in.";
+        authMessageState = "success";
         renderAccount();
         setStatus("Magic link sent");
       }
@@ -1891,6 +2342,7 @@
           return;
         }
         if (lemonCheckoutUrl) {
+          sessionStorage.setItem(checkoutStartedKey, "true");
           window.location.href = lemonCheckoutUrl;
           return;
         }
@@ -1904,7 +2356,7 @@
           return false;
         }
         if (!hasLifetimeUnlock) {
-          openAccountModal(`Signed in as ${account.email}. Unlock Favorite Blends to save blend settings across devices.`);
+          openAccountModal(`Signed in as ${account.email}. Unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
           setStatus("Unlock Favorite Blends to save this blend");
           return false;
         }
@@ -1912,33 +2364,60 @@
       }
 
       function bindSoundcloudWidget() {
+        const bindId = ++soundcloudBindId;
+        const shouldAutoPlay = soundcloudAutoPlayOnReady;
+        soundcloudAutoPlayOnReady = false;
         soundcloudWidget = null;
         isStreamPlaying = false;
         updatePlaybackButtons();
         soundcloudReady = new Promise((resolve) => {
-          window.setTimeout(() => {
+          let attached = false;
+          let settled = false;
+          const settle = (value) => {
+            if (settled || bindId !== soundcloudBindId) return;
+            settled = true;
+            resolve(value);
+          };
+
+          const attachWidget = () => {
+            if (attached || bindId !== soundcloudBindId) return;
+            attached = true;
             if (!window.SC || !window.SC.Widget) {
-              resolve(false);
+              settle(false);
               return;
             }
-            soundcloudWidget = window.SC.Widget(els.player);
-            soundcloudWidget.bind(window.SC.Widget.Events.READY, () => {
-              soundcloudWidget.setVolume(Number(els.streamVolume.value));
-              resolve(true);
+            const widget = window.SC.Widget(els.player);
+            soundcloudWidget = widget;
+            widget.bind(window.SC.Widget.Events.READY, () => {
+              if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              widget.setVolume(Number(els.streamVolume.value));
+              if (shouldAutoPlay) {
+                widget.play();
+                isStreamPlaying = true;
+                updatePlaybackButtons();
+              }
+              settle(true);
             });
-            soundcloudWidget.bind(window.SC.Widget.Events.PLAY, () => {
+            widget.bind(window.SC.Widget.Events.PLAY, () => {
+              if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
               isStreamPlaying = true;
               updatePlaybackButtons();
             });
-            soundcloudWidget.bind(window.SC.Widget.Events.PAUSE, () => {
+            widget.bind(window.SC.Widget.Events.PAUSE, () => {
+              if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
               isStreamPlaying = false;
               updatePlaybackButtons();
             });
-            soundcloudWidget.bind(window.SC.Widget.Events.FINISH, () => {
+            widget.bind(window.SC.Widget.Events.FINISH, () => {
+              if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
               isStreamPlaying = false;
               updatePlaybackButtons();
             });
-          }, 0);
+          };
+
+          els.player.addEventListener("load", attachWidget, { once: true });
+          window.setTimeout(attachWidget, 250);
+          window.setTimeout(() => settle(false), 5000);
         });
       }
 
@@ -1954,12 +2433,16 @@
       }
 
       function updatePlaybackButtons() {
-        els.playBlend.innerHTML = isStreamPlaying && isPlaying
+        els.playBlend.innerHTML = isStreamPlaying || isPlaying
           ? '<span aria-hidden="true">■</span><span>Stop Blend</span>'
           : '<span aria-hidden="true">▶</span><span>Play Blend</span>';
       }
 
       async function startStream() {
+        if (getTrackProvider(tracks[currentTrack]) === "spotify") {
+          setStatus("Beat playing; start the Spotify stream in the embed");
+          return false;
+        }
         return withSoundcloudWidget((widget) => {
           widget.play();
           isStreamPlaying = true;
@@ -1968,6 +2451,9 @@
       }
 
       async function stopStream() {
+        if (getTrackProvider(tracks[currentTrack]) === "spotify") {
+          return false;
+        }
         return withSoundcloudWidget((widget) => {
           widget.pause();
           isStreamPlaying = false;
@@ -2003,6 +2489,19 @@
           data[i] = Math.random() * 2 - 1;
         }
         return buffer;
+      }
+
+      function makeImpulseResponse() {
+        const length = audioContext.sampleRate * 1.8;
+        const impulse = audioContext.createBuffer(2, length, audioContext.sampleRate);
+        for (let channel = 0; channel < impulse.numberOfChannels; channel += 1) {
+          const data = impulse.getChannelData(channel);
+          for (let i = 0; i < length; i += 1) {
+            const decay = Math.pow(1 - i / length, 3.2);
+            data[i] = (Math.random() * 2 - 1) * decay;
+          }
+        }
+        return impulse;
       }
 
       function hitKick(time, velocity) {
@@ -2086,17 +2585,42 @@
         }
       }
 
-      function ensureAudio() {
+      async function ensureAudio() {
+        if (audioClosePromise) {
+          await audioClosePromise;
+        }
         if (audioContext) return;
         audioContext = new AudioContext();
         masterGain = audioContext.createGain();
-        masterGain.gain.value = Number(els.beatVolume.value) / 100;
-        masterGain.connect(audioContext.destination);
+        toneFilter = audioContext.createBiquadFilter();
+        toneFilter.type = "lowpass";
+        dryGain = audioContext.createGain();
+        delayNode = audioContext.createDelay(0.8);
+        delayFeedback = audioContext.createGain();
+        delayWetGain = audioContext.createGain();
+        convolverNode = audioContext.createConvolver();
+        reverbWetGain = audioContext.createGain();
 
+        masterGain.gain.value = beatGainFromSlider(els.beatVolume.value);
+        toneFilter.frequency.value = toneFrequencyFromSlider(els.toneAmount.value);
+        toneFilter.Q.value = 0.6;
+        dryGain.gain.value = 1;
+        delayNode.delayTime.value = 0.28;
+        delayFeedback.gain.value = Number(els.echoAmount.value) / 170;
+        delayWetGain.gain.value = Number(els.echoAmount.value) / 180;
+        convolverNode.buffer = makeImpulseResponse();
+        reverbWetGain.gain.value = Number(els.spaceAmount.value) / 160;
+
+        masterGain.connect(toneFilter);
+        toneFilter.connect(dryGain).connect(audioContext.destination);
+        toneFilter.connect(delayNode);
+        delayNode.connect(delayWetGain).connect(audioContext.destination);
+        delayNode.connect(delayFeedback).connect(delayNode);
+        toneFilter.connect(convolverNode).connect(reverbWetGain).connect(audioContext.destination);
       }
 
       async function startBeat() {
-        ensureAudio();
+        await ensureAudio();
         if (audioContext.state === "suspended") {
           await audioContext.resume();
         }
@@ -2110,15 +2634,35 @@
         setStatus("Beat playing beside the stream");
       }
 
-      function stopBeat() {
-        if (!isPlaying) return;
+      async function stopBeat() {
         isPlaying = false;
-        window.clearInterval(schedulerId);
-        schedulerId = null;
+        if (schedulerId) {
+          window.clearInterval(schedulerId);
+          schedulerId = null;
+        }
+        if (audioContext && masterGain) {
+          try {
+            masterGain.gain.cancelScheduledValues(audioContext.currentTime);
+            masterGain.gain.setValueAtTime(0, audioContext.currentTime);
+          } catch (_error) {
+            // Ignore gain ramp cleanup if the context is already shutting down.
+          }
+        }
         if (audioContext) {
-          audioContext.close();
+          const contextToClose = audioContext;
           audioContext = null;
           masterGain = null;
+          toneFilter = null;
+          dryGain = null;
+          delayNode = null;
+          delayFeedback = null;
+          delayWetGain = null;
+          convolverNode = null;
+          reverbWetGain = null;
+          audioClosePromise = contextToClose.close().catch(() => {}).finally(() => {
+            audioClosePromise = null;
+          });
+          await audioClosePromise;
         }
         renderVisualizer();
         updatePlaybackButtons();
@@ -2130,6 +2674,10 @@
       els.saveFavorite.addEventListener("click", saveFavorite);
       els.accountButton.addEventListener("click", openAccountModal);
       els.closeAccountModal.addEventListener("click", closeAccountModal);
+      els.signOutButton.addEventListener("click", signOutAccount);
+      els.completeUnlockButton.addEventListener("click", () => {
+        refreshEntitlementStatus({ reconcile: true });
+      });
       els.accountModal.addEventListener("click", (event) => {
         if (event.target === els.accountModal) closeAccountModal();
       });
@@ -2156,6 +2704,9 @@
       els.beatVolume.addEventListener("input", updateOutputs);
       els.tempo.addEventListener("input", updateOutputs);
       els.swing.addEventListener("input", updateOutputs);
+      els.echoAmount.addEventListener("input", updateOutputs);
+      els.spaceAmount.addEventListener("input", updateOutputs);
+      els.toneAmount.addEventListener("input", updateOutputs);
 
       restoreCustomTracks();
       selectTrack(0);
