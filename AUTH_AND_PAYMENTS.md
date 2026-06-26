@@ -49,6 +49,15 @@ const supabaseConfig = {
 
 The publishable key is intended for browser use, but database access must still be protected with Row Level Security.
 
+## Branded auth email
+
+Before public launch, replace the default Supabase Auth email sender and template.
+
+Use:
+
+- [BRANDED_AUTH_EMAIL_TEMPLATE.md](./BRANDED_AUTH_EMAIL_TEMPLATE.md) for the magic-link subject/body
+- custom SMTP in Supabase Auth so the sender appears as Tāla rather than Supabase
+
 ## Real Unlock Architecture
 
 This repo now includes:
@@ -163,3 +172,8 @@ order_refunded
 
 6. Keep Favorite Blends storage on the server keyed by authenticated user ID.
 7. Publish Terms, Privacy, and refund/support language before taking payments broadly.
+
+## Go-live references
+
+- [LIVE_MODE_CHECKLIST.md](./LIVE_MODE_CHECKLIST.md)
+- [LAUNCH_LEGAL_SUPPORT_COPY.md](./LAUNCH_LEGAL_SUPPORT_COPY.md)

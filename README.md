@@ -31,3 +31,9 @@ The first experience is live co-playback, not stored remixing. Archival audio st
 ## Auth and Payments
 
 See [AUTH_AND_PAYMENTS.md](./AUTH_AND_PAYMENTS.md) for the account library, Supabase Edge Functions, and Lemon Squeezy one-time lifetime unlock flow.
+
+## Launch Assets
+
+- [BRANDED_AUTH_EMAIL_TEMPLATE.md](./BRANDED_AUTH_EMAIL_TEMPLATE.md)
+- [LIVE_MODE_CHECKLIST.md](./LIVE_MODE_CHECKLIST.md)
+- [LAUNCH_LEGAL_SUPPORT_COPY.md](./LAUNCH_LEGAL_SUPPORT_COPY.md)
