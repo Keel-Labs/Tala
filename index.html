@@ -1251,68 +1251,275 @@
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      const tracks = [
+      const archiveCatalog = [
         {
           title: "Khyal - Multani by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3635-khyal-multani-by-zohra"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3635-khyal-multani-by-zohra",
+          group: "zohra"
         },
         {
           title: "Terana - Palass by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3636-terana-palass-by-zohra"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3636-terana-palass-by-zohra",
+          group: "zohra"
         },
         {
           title: "Ghazal by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3637-ghazal-by-zohra-bai-g-c-8"
+          meta: "Hindustani vocal · ghazal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3637-ghazal-by-zohra-bai-g-c-8",
+          group: "zohra"
         },
         {
           title: "Majmuah by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3638-majmuah-by-zohra-bai-g-c"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3638-majmuah-by-zohra-bai-g-c",
+          group: "zohra"
         },
         {
           title: "Savni by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3639-savni-by-zohra-bai-g-c-9"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3639-savni-by-zohra-bai-g-c-9",
+          group: "zohra"
         },
         {
           title: "Zila by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3640-zila-by-zohra-bai-g-c-9"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3640-zila-by-zohra-bai-g-c-9",
+          group: "zohra"
         },
         {
           title: "Des by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3641-des-by-zohra-bai-g-c-8"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3641-des-by-zohra-bai-g-c-8",
+          group: "zohra"
         },
         {
           title: "Sarang by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3642-sarang-by-zohra-bai-g-c-8"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3642-sarang-by-zohra-bai-g-c-8",
+          group: "zohra"
         },
         {
           title: "Bal Gandharva G.C.16",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3578-79-bal-gandharva-g-c-16"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3578-79-bal-gandharva-g-c-16",
+          group: "bal-gandharva"
         },
         {
           title: "Bal Gandharva G.C.21",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3580-81-bal-gandharva-g-c-21"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3580-81-bal-gandharva-g-c-21",
+          group: "bal-gandharva"
         },
         {
           title: "Bal Gandharva G.C.21 P.8740",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3582-83-bal-gandharva-g-c-21"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3582-83-bal-gandharva-g-c-21",
+          group: "bal-gandharva"
         },
         {
           title: "Bal Gandharva G.C.16 P.5059",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3584-85-balgandharva-g-c-16"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3584-85-balgandharva-g-c-16",
+          group: "bal-gandharva"
+        },
+        {
+          title: "Mangalam by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3118-miscellany-mangalam-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Nannuvidachi by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · Reetigowla · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3119-nannuvidachi-reetigowla-t",
+          group: "tnr"
+        },
+        {
+          title: "Raga Alapana I by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3120-raga-alapana-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Raga Alapana II by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3121-raga-alapana-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Yachaspathi Pt. 1 by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3122-yachaspathi-pt-1-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Yachaspathi Pt. 2 by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3123-yachaspathi-pt-2-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Master Habib Qawal Nizami",
+          meta: "Urdu qawali · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3112-master-habib-qawal-nizami",
+          group: "habib"
+        },
+        {
+          title: "Master Habib Qawal Nizami Party",
+          meta: "Urdu qawali · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3113-master-habib-qawal-nizami",
+          group: "habib"
+        },
+        {
+          title: "Parimala Rangapathe I by Madura Mani Iyer",
+          meta: "Carnatic vocal · Kambhoji · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3110-parimala-rangapathe",
+          group: "madurai-mani"
+        },
+        {
+          title: "Parimala Rangapathe II by Madura Mani Iyer",
+          meta: "Carnatic vocal · Kambhoji · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3111-parimala-rangapathe",
+          group: "madurai-mani"
+        },
+        {
+          title: "Tagore Song by Purabi Mukherjee I",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3106-tagore-purabi-mukherjee",
+          group: "tagore"
+        },
+        {
+          title: "Tagore Song by Purabi Mukherjee II",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3107-tagore-purabi-mukherjee",
+          group: "tagore"
+        },
+        {
+          title: "Tagore Song by Kanika Banerjee I",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3108-tagore-kanika-banerjee",
+          group: "tagore"
+        },
+        {
+          title: "Tagore Song by Kanika Banerjee II",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3109-tagore-kanika-banerjee",
+          group: "tagore"
+        },
+        {
+          title: "Purna Shadjamam by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2978-nagaraja-rao-purna",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Lavanya Rama by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2979-nagaraja-rao-purna",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Kamas by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2980-nagaraja-rao-kamas-gc",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Mohanam by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2981-nagaraja-rao-mohanam-gc",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Kunthalavarali by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2982-nagaraja-rao-g-c-8-18912",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Raghuvamsha Sudam by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2983-nagaraja-rao-raghuvamsha",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Hindustani Kapi by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2984-nagaraja-rao-hindustani",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Kalyani by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2985-nagaraja-rao-kalyani-g-c",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Imrat Khan I",
+          meta: "Hindustani sitar · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2830-imratkhan-n-92612-ojw-1",
+          group: "imrat-khan"
+        },
+        {
+          title: "Imrat Khan II",
+          meta: "Hindustani sitar · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2831-imratkhan-n-92612-ojw-1",
+          group: "imrat-khan"
+        },
+        {
+          title: "Gurukripaleka Pt. 1 by Adhilakshmu",
+          meta: "Telugu song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2800-adhilakshmu-gurukripaleka",
+          group: "adhilakshmu"
+        },
+        {
+          title: "Gurukripaleka Pt. 2 by Adhilakshmu",
+          meta: "Telugu song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2801-adhilakshmu-gurukripaleka",
+          group: "adhilakshmu"
+        },
+        {
+          title: "Vannathamaraiyai by Miss Angamuthu",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2798-vannathamaraiyai-miss",
+          group: "angamuthu"
         }
       ];
+
+      function shuffleArray(items) {
+        const copy = [...items];
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function buildStarterTracks(count = 20) {
+        const grouped = archiveCatalog.reduce((acc, track) => {
+          const key = track.group || "archive";
+          if (!acc[key]) acc[key] = [];
+          acc[key].push({ ...track });
+          return acc;
+        }, {});
+
+        const groups = Object.values(grouped).map((items) => shuffleArray(items));
+        const picked = [];
+
+        while (picked.length < count && groups.some((items) => items.length)) {
+          groups.forEach((items) => {
+            if (picked.length < count && items.length) {
+              picked.push(items.shift());
+            }
+          });
+        }
+
+        return picked;
+      }
+
+      const tracks = buildStarterTracks();
 
       const beats = [
         {
