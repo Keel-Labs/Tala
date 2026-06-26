@@ -568,6 +568,31 @@
         margin-bottom: 12px;
       }
 
+      .shelf-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .shelf-chip {
+        min-height: 34px;
+        border: 2px solid rgba(37, 22, 52, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 249, 233, 0.92);
+        color: var(--ink);
+        padding: 0 12px;
+        font-size: 13px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .shelf-chip[aria-pressed="true"] {
+        border-color: var(--ink);
+        background: #fff0cf;
+        box-shadow: inset 0 -2px 0 var(--gold);
+      }
+
       .inline-form {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -1127,6 +1152,7 @@
               <span class="sr-only">Search archival streams</span>
               <input class="search" id="trackSearch" type="search" placeholder="Search this queue" />
             </label>
+            <div class="shelf-strip" id="trackShelves" aria-label="Archive discovery shelves"></div>
             <div class="archive-tools">
               <form class="inline-form" id="customTrackForm">
                 <label>
@@ -1722,6 +1748,7 @@
         customTrackForm: document.querySelector("#customTrackForm"),
         customTrackUrl: document.querySelector("#customTrackUrl"),
         trackSearch: document.querySelector("#trackSearch"),
+        trackShelves: document.querySelector("#trackShelves"),
         beatSearch: document.querySelector("#beatSearch"),
         trackList: document.querySelector("#trackList"),
         beatList: document.querySelector("#beatList"),
@@ -1792,6 +1819,17 @@
       let accountModalReason = "";
       let pendingAuthEmail = "";
       let entitlementCheckInFlight = false;
+      let activeTrackShelf = "all";
+
+      const trackShelves = [
+        { id: "all", label: "All" },
+        { id: "hindustani", label: "Hindustani" },
+        { id: "carnatic", label: "Carnatic" },
+        { id: "qawwali", label: "Qawwali" },
+        { id: "theatre", label: "Theatre" },
+        { id: "tagore", label: "Tagore" },
+        { id: "added", label: "Added" }
+      ];
 
       function embedUrl(trackUrl, autoPlay = false) {
         const params = new URLSearchParams({
@@ -1810,6 +1848,57 @@
 
       function spotifyEmbedUrl(type, id) {
         return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+      }
+
+      function getTrackShelf(track) {
+        if (track.isCustom) return "added";
+        const shelfByGroup = {
+          zohra: "hindustani",
+          "imrat-khan": "hindustani",
+          habib: "qawwali",
+          "bal-gandharva": "theatre",
+          tagore: "tagore",
+          tnr: "carnatic",
+          "madurai-mani": "carnatic",
+          "nagaraja-rao": "carnatic",
+          adhilakshmu: "carnatic",
+          angamuthu: "carnatic"
+        };
+        return shelfByGroup[track.group] || "all";
+      }
+
+      function matchesActiveShelf(track) {
+        return activeTrackShelf === "all" || getTrackShelf(track) === activeTrackShelf;
+      }
+
+      function renderTrackShelves() {
+        const counts = tracks.reduce((acc, track) => {
+          const shelf = getTrackShelf(track);
+          acc.all = (acc.all || 0) + 1;
+          acc[shelf] = (acc[shelf] || 0) + 1;
+          return acc;
+        }, {});
+
+        els.trackShelves.innerHTML = trackShelves
+          .filter((shelf) => shelf.id === "all" || counts[shelf.id] || shelf.id === activeTrackShelf)
+          .map((shelf) => `
+            <button
+              class="shelf-chip"
+              type="button"
+              data-shelf="${shelf.id}"
+              aria-pressed="${shelf.id === activeTrackShelf}"
+            >
+              ${shelf.label}${counts[shelf.id] ? ` · ${counts[shelf.id]}` : ""}
+            </button>
+          `)
+          .join("");
+
+        els.trackShelves.querySelectorAll("[data-shelf]").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeTrackShelf = button.dataset.shelf;
+            renderLists();
+          });
+        });
       }
 
       function getTrackProvider(track) {
@@ -1886,6 +1975,7 @@
         tracks.unshift(track);
         saveCustomTrack(track);
         els.customTrackUrl.value = "";
+        activeTrackShelf = "added";
         selectTrack(0);
         setStatus(`${track.provider === "spotify" ? "Spotify" : "SoundCloud"} stream loaded`);
         if (track.provider === "spotify") {
@@ -1954,6 +2044,9 @@
         const saved = JSON.parse(localStorage.getItem(customTracksKey) || "[]")
           .filter((item) => item.url !== track.url);
         localStorage.setItem(customTracksKey, JSON.stringify(saved));
+        if (activeTrackShelf === "added" && !saved.length) {
+          activeTrackShelf = "all";
+        }
 
         if (!tracks.length) return;
 
@@ -2025,9 +2118,10 @@
       function renderLists() {
         const trackQuery = els.trackSearch.value;
         const beatQuery = els.beatSearch.value;
+        renderTrackShelves();
         const visibleTracks = tracks
           .map((track, index) => ({ track, index }))
-          .filter(({ track }) => includesQuery(track, trackQuery));
+          .filter(({ track }) => matchesActiveShelf(track) && includesQuery(track, trackQuery));
         const visibleBeats = beats
           .map((beat, index) => ({ beat, index }))
           .filter(({ beat }) => includesQuery(beat, beatQuery));
@@ -2040,7 +2134,7 @@
             <span class="tag">Stream</span>
             ${track.isCustom ? `<button class="remove-favorite" type="button" data-remove-track="${index}" aria-label="Remove added stream">×</button>` : ""}
           </div>
-        `).join("") : '<div class="empty">No archival streams match that search.</div>';
+        `).join("") : `<div class="empty">${activeTrackShelf === "added" ? "No added streams yet." : "No archival streams match that shelf and search."}</div>`;
 
         els.beatList.innerHTML = visibleBeats.length ? visibleBeats.map(({ beat, index }) => `
           <button class="item" type="button" aria-pressed="${index === currentBeat}" data-beat="${index}">
