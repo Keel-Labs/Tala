@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tāla - Ephemeral Blend</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Press+Start+2P&display=swap");
     </style>
     <style>
       :root {
@@ -40,7 +40,7 @@
           linear-gradient(180deg, #2f164a 0%, #1c0f2d 42%, #12091f 100%);
         color: #fff5d7;
         font-family:
-          "VT323", "Courier New", ui-monospace, monospace;
+          "JetBrains Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
         letter-spacing: 0;
         overflow-x: hidden;
       }
@@ -145,7 +145,7 @@
         padding: 8px 11px;
         border-radius: 0;
         white-space: nowrap;
-        font-size: 16px;
+        font-size: 13px;
       }
 
       .site-nav {
@@ -159,7 +159,7 @@
       .site-nav a,
       .nav-account {
         color: #ffe8b5;
-        font-size: 18px;
+        font-size: 14px;
         font-weight: 900;
         text-decoration: none;
       }
@@ -226,9 +226,9 @@
       .intro p {
         margin: 0;
         color: #ffe8b5;
-        line-height: 1.35;
+        line-height: 1.65;
         max-width: 620px;
-        font-size: 24px;
+        font-size: 17px;
       }
 
       .retro-deck {
@@ -260,17 +260,6 @@
         box-shadow: 0 0 0 3px #4d2c66;
         animation: spinRecord 20s steps(24) infinite;
         image-rendering: pixelated;
-      }
-
-      .retro-deck::after {
-        content: "PLAY";
-        position: absolute;
-        right: 28px;
-        top: 24px;
-        color: var(--green);
-        font-family: "Press Start 2P", "Courier New", monospace;
-        font-size: 22px;
-        text-shadow: 3px 3px 0 rgba(18, 9, 31, 0.8);
       }
 
       .cassette-lines {
@@ -325,7 +314,7 @@
         cursor: pointer;
         box-shadow: 5px 5px 0 var(--red);
         font-weight: 800;
-        text-transform: uppercase;
+        text-transform: none;
         letter-spacing: 0;
       }
 
@@ -354,7 +343,7 @@
       .button.small {
         min-height: 38px;
         padding: 0 12px;
-        font-size: 18px;
+        font-size: 14px;
         box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.42);
       }
 
@@ -422,7 +411,7 @@
       }
 
       .label {
-        font-size: 16px;
+        font-size: 12px;
         color: var(--muted);
         text-transform: uppercase;
         font-weight: 800;
@@ -437,8 +426,8 @@
 
       .meta {
         color: var(--muted);
-        font-size: 18px;
-        line-height: 1.2;
+        font-size: 14px;
+        line-height: 1.45;
       }
 
       .player-frame {
@@ -973,9 +962,56 @@
         text-underline-offset: 3px;
       }
 
+      .footer-links button {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        color: #ffe8b5;
+        font-weight: 900;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+        font: inherit;
+      }
+
       .footer-note {
         color: rgba(255, 232, 181, 0.78);
         margin-top: 10px;
+      }
+
+      .legal-modal {
+        width: min(780px, 100%);
+        max-height: min(84vh, 920px);
+        overflow: auto;
+        border: 3px solid var(--gold);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: 8px 8px 0 var(--red), 0 0 40px rgba(23, 214, 197, 0.28);
+        padding: 18px;
+      }
+
+      .legal-modal h2 {
+        margin: 0;
+        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-size: 28px;
+      }
+
+      .legal-modal h3 {
+        margin: 22px 0 8px;
+        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-size: 20px;
+      }
+
+      .legal-modal p {
+        color: #5c4d66;
+        line-height: 1.6;
+        margin: 0 0 12px;
+      }
+
+      .legal-meta {
+        color: var(--muted);
+        margin: 6px 0 16px;
       }
 
       .sr-only {
@@ -1234,33 +1270,35 @@
           <div>
             <div class="footer-title">Tāla</div>
             <p>
-              Built by Medha Ghatikesh at Keel Labs. Hand crafted in California for archival
-              discovery, playful listening, and cultural memory.
+              Made with love in sunny California by
+              <a href="https://github.com/medha" target="_blank" rel="noopener">Medha Ghatikesh</a>
+              at Keel Labs.
             </p>
           </div>
           <section class="about-grid" id="about" aria-label="About Tāla">
             <article class="about-card" id="archive-purpose">
-              <h3>Archive & Purpose</h3>
+              <h3>About</h3>
               <p>
-                Recordings stream from
-                <a href="https://archiveofindianmusic.org/" target="_blank" rel="noopener">Archive of Indian Music</a>
-                on SoundCloud. Tāla is a way to discover historic recordings by playing with
-                rhythm beside them and hearing them with fresh ears.
+                Tāla is an ephemeral listening platform for discovering and interacting with
+                historic recordings. Tracks are sourced from the
+                <a href="https://archiveofindianmusic.org/" target="_blank" rel="noopener">Archive of Indian Music</a>.
+                Tāla does not own these recordings or their underlying rights.
               </p>
             </article>
             <article class="about-card" id="saved-settings">
               <h3>Favorite Blends</h3>
               <p>
                 If a blend feels right, save the stream, beat, volumes, tempo, and swing to your
-                account. Favorite Blends save choices and settings, not source audio.
+                account. Favorite Blends save choices and settings only, never source audio.
               </p>
             </article>
             <article class="about-card" id="listening-notice">
               <h3>Listening Notice</h3>
               <p>
-                Tāla is for private listening. Please do not record, download, export,
-                redistribute, or commercially use archive audio or captured blends without
-                permission.
+                Archive recordings remain subject to the rights and terms of their original
+                source and rights holders. Tāla streams them for private listening only and does
+                not record, download, export, or distribute source audio. Track availability
+                depends on the Archive of Indian Music and other connected streaming sources.
               </p>
             </article>
           </section>
@@ -1269,6 +1307,8 @@
             <a href="https://soundcloud.com/archive-of-indian-music/popular-tracks" target="_blank" rel="noopener">AIM on SoundCloud</a>
             <a href="https://github.com/Keel-Labs/Tala" target="_blank" rel="noopener">GitHub</a>
             <a href="https://github.com/sponsors/medha" target="_blank" rel="noopener">Support</a>
+            <button id="openTerms" type="button">Terms</button>
+            <button id="openPrivacy" type="button">Privacy</button>
           </div>
         </div>
       </footer>
@@ -1278,7 +1318,7 @@
           <div class="modal-head">
             <div>
               <h2 id="accountTitle">Favorite Blends</h2>
-              <p id="accountSummary">Continue with email to create or open your Favorite Blends. Then unlock saving across devices.</p>
+              <p id="accountSummary">Continue with email to create or open your Favorite Blends. Then unlock saving to your account.</p>
             </div>
             <button class="modal-close" id="closeAccountModal" type="button" aria-label="Close account dialog">×</button>
           </div>
@@ -1313,6 +1353,19 @@
               Continue with email first, then checkout will be available.
             </p>
           </div>
+        </section>
+      </div>
+
+      <div class="modal-backdrop" id="legalModal" hidden>
+        <section class="legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
+          <div class="modal-head">
+            <div>
+              <h2 id="legalTitle">Terms</h2>
+              <p class="legal-meta">Last updated June 26, 2026</p>
+            </div>
+            <button class="modal-close" id="closeLegalModal" type="button" aria-label="Close legal dialog">×</button>
+          </div>
+          <div id="legalBody"></div>
         </section>
       </div>
     </div>
@@ -1845,6 +1898,12 @@
         unlockButton: document.querySelector("#unlockButton"),
         completeUnlockButton: document.querySelector("#completeUnlockButton"),
         unlockHint: document.querySelector("#unlockHint"),
+        legalModal: document.querySelector("#legalModal"),
+        closeLegalModal: document.querySelector("#closeLegalModal"),
+        legalTitle: document.querySelector("#legalTitle"),
+        legalBody: document.querySelector("#legalBody"),
+        openTerms: document.querySelector("#openTerms"),
+        openPrivacy: document.querySelector("#openPrivacy"),
         playBlend: document.querySelector("#playBlend"),
         randomAll: document.querySelector("#randomAll"),
         saveFavorite: document.querySelector("#saveFavorite"),
@@ -1874,6 +1933,40 @@
         toneAmountOut: document.querySelector("#toneAmountOut")
       };
 
+      const legalContent = {
+        terms: {
+          title: "Terms",
+          body: `
+            <p>Tāla is an ephemeral listening platform for discovering and interacting with historic recordings. By using Tāla, you agree to use it only in ways that respect the rights, terms, and availability of the original streaming sources.</p>
+            <h3>Use of archival streams</h3>
+            <p>Tracks available through Tāla are streamed from third-party sources, including the Archive of Indian Music and SoundCloud. Tāla does not own these recordings or their underlying rights.</p>
+            <p>You may use Tāla for private listening. You may not use Tāla to record, download, export, redistribute, or commercially exploit source audio or captured blends unless you have permission from the relevant rights holders.</p>
+            <h3>Favorite Blends</h3>
+            <p>Favorite Blends is a one-time paid unlock. It saves your chosen stream URL, beat choice, and listening settings to your account. It does not save source audio.</p>
+            <h3>Availability</h3>
+            <p>Tāla depends on connected streaming sources and embedded players. Streams, metadata, and playback behavior may change or disappear if those sources change or remove content.</p>
+            <h3>Payments and refunds</h3>
+            <p>Payments are processed by Lemon Squeezy. Questions about access or billing can be sent to <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>. Any refund handling is subject to the payment processor and applicable law.</p>
+            <h3>Contact</h3>
+            <p>For support, contact <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>.</p>
+          `
+        },
+        privacy: {
+          title: "Privacy",
+          body: `
+            <p>Tāla is designed to keep listening ephemeral. Tāla does not record or store source audio from archival streams.</p>
+            <h3>What Tāla stores</h3>
+            <p>If you create an account and unlock Favorite Blends, Tāla may store your email address, the stream URL you chose, your selected beat, and your listening settings such as volume, tempo, swing, and effects.</p>
+            <h3>What Tāla does not store</h3>
+            <p>Tāla does not store the archival source audio, rendered remixes, or exported audio files.</p>
+            <h3>Third-party services</h3>
+            <p>Tāla relies on third-party services including Supabase for authentication and account storage, Lemon Squeezy for payments, and streaming providers such as SoundCloud and Spotify for embedded playback.</p>
+            <h3>Contact</h3>
+            <p>Questions about privacy can be sent to <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>.</p>
+          `
+        }
+      };
+
       let currentTrack = 0;
       let currentBeat = 0;
       let audioContext;
@@ -1897,6 +1990,7 @@
       let soundcloudReady = Promise.resolve(false);
       const customTracksKey = "tala:customTracks";
       const favoritesKey = "tala:favorites";
+      const pendingFavoriteKey = "tala:pendingFavorite";
       const postAuthModalKey = "tala:postAuthModal";
       const postAuthReasonKey = "tala:postAuthReason";
       const checkoutStartedKey = "tala:checkoutStarted";
@@ -1924,6 +2018,7 @@
       let pendingAuthEmail = "";
       let entitlementCheckInFlight = false;
       let activeTrackShelf = "all";
+      let pendingFavoriteDraft = JSON.parse(localStorage.getItem(pendingFavoriteKey) || "null");
 
       const trackShelves = [
         { id: "all", label: "All" },
@@ -2296,10 +2391,8 @@
         });
       }
 
-      function saveFavorite() {
-        if (!canSaveFavorite()) return;
-
-        const favorite = {
+      function captureFavoriteDraft() {
+        return {
           trackUrl: tracks[currentTrack].url,
           trackTitle: tracks[currentTrack].title,
           beatTitle: beats[currentBeat].title,
@@ -2312,11 +2405,67 @@
           spaceAmount: Number(els.spaceAmount.value),
           toneAmount: Number(els.toneAmount.value)
         };
-        const key = `${favorite.trackUrl}|${favorite.beatTitle}|${favorite.streamVolume}|${favorite.beatVolume}|${favorite.tempo}|${favorite.swing}|${favorite.echoAmount}|${favorite.spaceAmount}|${favorite.toneAmount}`;
-        favorites = favorites.filter((item) => `${item.trackUrl}|${item.beatTitle}|${item.streamVolume}|${item.beatVolume}|${item.tempo}|${item.swing}|${item.echoAmount ?? 14}|${item.spaceAmount ?? 18}|${item.toneAmount ?? 72}` !== key);
+      }
+
+      function favoriteKey(favorite) {
+        return `${favorite.trackUrl}|${favorite.beatTitle}|${favorite.streamVolume}|${favorite.beatVolume}|${favorite.tempo}|${favorite.swing}|${favorite.echoAmount}|${favorite.spaceAmount}|${favorite.toneAmount}`;
+      }
+
+      function persistPendingFavoriteDraft(reason = "") {
+        pendingFavoriteDraft = captureFavoriteDraft();
+        localStorage.setItem(pendingFavoriteKey, JSON.stringify(pendingFavoriteDraft));
+        if (reason) {
+          setStatus(reason);
+        }
+      }
+
+      function clearPendingFavoriteDraft() {
+        pendingFavoriteDraft = null;
+        localStorage.removeItem(pendingFavoriteKey);
+      }
+
+      async function applyFavoriteDraft(favorite, options = {}) {
+        if (!favorite) return;
+
+        const {
+          autoPlayTrack = false,
+          autoPlayBeat = false,
+          statusText = ""
+        } = options;
+
+        const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
+        if (trackIndex >= 0) {
+          selectTrack(trackIndex, { autoPlay: autoPlayTrack });
+        }
+        await selectBeat(favorite.beatIndex, { autoPlay: autoPlayBeat });
+        els.streamVolume.value = favorite.streamVolume;
+        els.beatVolume.value = favorite.beatVolume;
+        els.tempo.value = favorite.tempo;
+        els.swing.value = favorite.swing;
+        els.echoAmount.value = favorite.echoAmount ?? 14;
+        els.spaceAmount.value = favorite.spaceAmount ?? 18;
+        els.toneAmount.value = favorite.toneAmount ?? 72;
+        updateOutputs();
+        if (statusText) {
+          setStatus(statusText);
+        }
+      }
+
+      function saveFavorite() {
+        if (!canSaveFavorite()) return;
+
+        const favorite = pendingFavoriteDraft || captureFavoriteDraft();
+        const key = favoriteKey(favorite);
+        favorites = favorites.filter((item) => favoriteKey({
+          ...item,
+          echoAmount: item.echoAmount ?? 14,
+          spaceAmount: item.spaceAmount ?? 18,
+          toneAmount: item.toneAmount ?? 72
+        }) !== key);
         favorites.unshift(favorite);
         favorites = favorites.slice(0, 12);
         localStorage.setItem(favoritesKey, JSON.stringify(favorites));
+        clearPendingFavoriteDraft();
         renderFavorites();
         setStatus("Blend added to Favorite Blends");
       }
@@ -2327,17 +2476,7 @@
 
         await stopAll();
 
-        const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
-        if (trackIndex >= 0) selectTrack(trackIndex, { autoPlay: true });
-        await selectBeat(favorite.beatIndex);
-        els.streamVolume.value = favorite.streamVolume;
-        els.beatVolume.value = favorite.beatVolume;
-        els.tempo.value = favorite.tempo;
-        els.swing.value = favorite.swing;
-        els.echoAmount.value = favorite.echoAmount ?? 14;
-        els.spaceAmount.value = favorite.spaceAmount ?? 18;
-        els.toneAmount.value = favorite.toneAmount ?? 72;
-        updateOutputs();
+        await applyFavoriteDraft(favorite, { autoPlayTrack: true });
         await startBeat();
         setStatus("Favorite blend loaded");
       }
@@ -2412,8 +2551,12 @@
         if (account) {
           els.accountButton.textContent = hasLifetimeUnlock ? "Account" : "Unlock Favorite Blends";
           els.accountSummary.textContent = hasLifetimeUnlock
-            ? `Signed in as ${account.email}. Favorite Blends are unlocked.`
-            : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`;
+            ? pendingFavoriteDraft
+              ? `Signed in as ${account.email}. Your pending blend is ready to save.`
+              : `Signed in as ${account.email}. Favorite Blends are unlocked.`
+            : pendingFavoriteDraft
+              ? `Signed in as ${account.email}. Your pending blend is safe here. Unlock Favorite Blends to save it.`
+              : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`;
           showElement(els.accountForm, false, "grid");
           showElement(els.accountFeedback, Boolean(authMessage), "block");
           showElement(els.accountSession, true, "flex");
@@ -2430,7 +2573,9 @@
             els.accountSummary.textContent = `Check your inbox. We sent a secure sign-in link to ${pendingAuthEmail}.`;
           } else {
             els.accountSummary.textContent = authClient
-              ? accountModalReason || "Continue with email to create or open your Favorite Blends. Then unlock saving across devices."
+              ? pendingFavoriteDraft
+                ? "Continue with email to save this exact blend to Favorite Blends. Your current mix is being held for you."
+                : accountModalReason || "Continue with email to create or open your Favorite Blends. Then unlock saving to your account."
               : "Email login needs a Supabase project before it can be used.";
           }
           showElement(els.accountForm, true, "grid");
@@ -2448,7 +2593,9 @@
           ? "Favorite Blends unlocked"
           : "Favorite Blends - one-time $5.99";
         els.unlockCopy.textContent = hasLifetimeUnlock
-          ? "Your favorites will save to your account. Tāla saves your choices, not source audio."
+          ? pendingFavoriteDraft
+            ? "Your pending blend is ready. Save it to your account whenever you're ready. Tāla saves your choices, not source audio."
+            : "Your favorites will save to your account. Tāla saves your choices, not source audio."
           : "Unlock Favorite Blends for a one-time lifetime payment of $5.99. Tāla saves your favorites, not source audio.";
         els.unlockButton.textContent = hasLifetimeUnlock ? "Favorite Blends unlocked" : "Unlock Favorite Blends";
         els.unlockButton.disabled = hasLifetimeUnlock || !account;
@@ -2486,6 +2633,21 @@
       function closeAccountModal() {
         els.accountModal.hidden = true;
         accountModalReason = "";
+      }
+
+      function openLegalModal(kind) {
+        const content = legalContent[kind];
+        if (!content) return;
+        els.legalTitle.textContent = content.title;
+        els.legalBody.innerHTML = content.body;
+        els.legalModal.hidden = false;
+        window.setTimeout(() => {
+          els.closeLegalModal.focus();
+        }, 0);
+      }
+
+      function closeLegalModal() {
+        els.legalModal.hidden = true;
       }
 
       async function readEntitlementRow() {
@@ -2548,6 +2710,9 @@
             authMessage = "";
             authMessageState = "neutral";
             setStatus("Favorite Blends unlocked");
+            if (pendingFavoriteDraft) {
+              saveFavorite();
+            }
           } else if (reconcile) {
             authMessage = authMessage || "No paid Favorite Blends unlock was found for this email yet.";
             authMessageState = "error";
@@ -2607,6 +2772,13 @@
           sessionStorage.removeItem(postAuthReasonKey);
         }
         renderAccount();
+        if (account && pendingFavoriteDraft) {
+          applyFavoriteDraft(pendingFavoriteDraft, {
+            statusText: hasLifetimeUnlock
+              ? "Signed in. Your pending blend is ready to save."
+              : "Signed in. Your pending blend is safe while you finish unlocking Favorite Blends."
+          });
+        }
         if (account && shouldResumeModal && !hasLifetimeUnlock) {
           openAccountModal(resumeReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
         } else if (account && sessionStorage.getItem(checkoutStartedKey) === "true" && !hasLifetimeUnlock) {
@@ -2640,6 +2812,14 @@
           applyAuthSession(session);
           if (session?.user) setStatus("Favorite Blends ready");
         });
+      }
+
+      async function refreshSessionFromStorage() {
+        if (!authClient) return;
+        const { data, error } = await authClient.auth.getSession();
+        if (!error) {
+          applyAuthSession(data.session);
+        }
       }
 
       async function continueWithEmail(email) {
@@ -2693,13 +2873,13 @@
 
       function canSaveFavorite() {
         if (!account) {
+          persistPendingFavoriteDraft("Continue with email to save Favorite Blends");
           openAccountModal("Continue with email to save this blend to Favorite Blends.");
-          setStatus("Continue with email to save Favorite Blends");
           return false;
         }
         if (!hasLifetimeUnlock) {
+          persistPendingFavoriteDraft("Unlock Favorite Blends to save this blend");
           openAccountModal(`Signed in as ${account.email}. Unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
-          setStatus("Unlock Favorite Blends to save this blend");
           return false;
         }
         return true;
@@ -3016,12 +3196,18 @@
       els.saveFavorite.addEventListener("click", saveFavorite);
       els.accountButton.addEventListener("click", openAccountModal);
       els.closeAccountModal.addEventListener("click", closeAccountModal);
+      els.openTerms.addEventListener("click", () => openLegalModal("terms"));
+      els.openPrivacy.addEventListener("click", () => openLegalModal("privacy"));
+      els.closeLegalModal.addEventListener("click", closeLegalModal);
       els.signOutButton.addEventListener("click", signOutAccount);
       els.completeUnlockButton.addEventListener("click", () => {
         refreshEntitlementStatus({ reconcile: true });
       });
       els.accountModal.addEventListener("click", (event) => {
         if (event.target === els.accountModal) closeAccountModal();
+      });
+      els.legalModal.addEventListener("click", (event) => {
+        if (event.target === els.legalModal) closeLegalModal();
       });
       els.accountForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -3031,6 +3217,24 @@
       window.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && !els.accountModal.hidden) {
           closeAccountModal();
+        }
+        if (event.key === "Escape" && !els.legalModal.hidden) {
+          closeLegalModal();
+        }
+      });
+      window.addEventListener("focus", refreshSessionFromStorage);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          refreshSessionFromStorage();
+        }
+      });
+      window.addEventListener("storage", (event) => {
+        if (event.key === pendingFavoriteKey) {
+          pendingFavoriteDraft = JSON.parse(event.newValue || "null");
+          renderAccount();
+        }
+        if (event.key && event.key.includes("supabase.auth.token")) {
+          refreshSessionFromStorage();
         }
       });
       els.openArchiveSearch.addEventListener("click", () => {
@@ -3053,6 +3257,11 @@
       restoreCustomTracks();
       selectTrack(0);
       selectBeat(0);
+      if (pendingFavoriteDraft) {
+        applyFavoriteDraft(pendingFavoriteDraft, {
+          statusText: "Your pending blend has been restored."
+        });
+      }
       initializeAuth();
     </script>
   </body>
