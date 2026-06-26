@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tāla - Ephemeral Blend</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
+    </style>
+    <style>
       :root {
         color-scheme: dark;
-        --ink: #251634;
-        --muted: #6b5c73;
-        --line: #f6b35f;
-        --paper: #261339;
-        --surface: #fff0cf;
-        --red: #ff5f7d;
-        --teal: #17d6c5;
-        --gold: #ffd36e;
-        --green: #9cff7a;
-        --violet: #6c2c8f;
-        --midnight: #160c24;
-        --shadow: 0 22px 0 rgba(22, 12, 36, 0.55), 0 28px 70px rgba(255, 95, 125, 0.22);
+        --ink: #231731;
+        --muted: #5f5270;
+        --line: #ffb454;
+        --paper: #20112f;
+        --surface: #fff1cf;
+        --red: #ff667d;
+        --teal: #26d9d0;
+        --gold: #ffd764;
+        --green: #a7ff5f;
+        --violet: #7a3cff;
+        --midnight: #12091f;
+        --pixel-shadow: 4px 4px 0 rgba(20, 10, 30, 0.9);
+        --shadow: 0 0 0 3px rgba(18, 9, 31, 0.9), 8px 8px 0 rgba(255, 102, 125, 0.72);
       }
 
       * {
@@ -29,14 +33,14 @@
         margin: 0;
         min-height: 100vh;
         background:
-          radial-gradient(circle at 14% 18%, rgba(255, 95, 125, 0.28), transparent 28%),
-          radial-gradient(circle at 80% 10%, rgba(23, 214, 197, 0.22), transparent 26%),
-          linear-gradient(90deg, rgba(255, 211, 110, 0.08) 1px, transparent 1px) 0 0 / 42px 42px,
-          linear-gradient(rgba(255, 211, 110, 0.08) 1px, transparent 1px) 0 0 / 42px 42px,
-          linear-gradient(135deg, #2b1741 0%, #21102f 42%, #4f163f 100%);
+          linear-gradient(90deg, rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          linear-gradient(rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          radial-gradient(circle at 15% 18%, rgba(255, 102, 125, 0.22), transparent 26%),
+          radial-gradient(circle at 82% 8%, rgba(38, 217, 208, 0.2), transparent 22%),
+          linear-gradient(180deg, #2f164a 0%, #1c0f2d 42%, #12091f 100%);
         color: #fff5d7;
         font-family:
-          "Trebuchet MS", "Arial Rounded MT Bold", ui-sans-serif, system-ui, sans-serif;
+          "VT323", "Courier New", ui-monospace, monospace;
         letter-spacing: 0;
         overflow-x: hidden;
       }
@@ -49,13 +53,13 @@
         background:
           repeating-linear-gradient(
             0deg,
-            rgba(255, 255, 255, 0.045) 0,
-            rgba(255, 255, 255, 0.045) 1px,
+            rgba(255, 255, 255, 0.03) 0,
+            rgba(255, 255, 255, 0.03) 1px,
             transparent 1px,
-            transparent 4px
+            transparent 6px
           );
-        mix-blend-mode: soft-light;
-        opacity: 0.34;
+        mix-blend-mode: screen;
+        opacity: 0.25;
         z-index: 0;
       }
 
@@ -74,9 +78,8 @@
 
       header {
         padding: 22px clamp(18px, 4vw, 48px);
-        border-bottom: 2px solid rgba(255, 211, 110, 0.45);
-        background: rgba(22, 12, 36, 0.82);
-        backdrop-filter: blur(14px);
+        border-bottom: 3px solid rgba(255, 215, 100, 0.6);
+        background: rgba(22, 12, 36, 0.96);
         position: sticky;
         top: 0;
         z-index: 10;
@@ -99,44 +102,50 @@
       }
 
       .mark {
-        width: 38px;
-        height: 38px;
-        border: 2px solid var(--gold);
-        display: grid;
-        place-items: center;
-        background: #ff5f7d;
-        box-shadow: 4px 4px 0 var(--teal), 0 0 18px rgba(255, 95, 125, 0.6);
+        width: 48px;
+        height: 48px;
+        border: 3px solid var(--gold);
+        display: block;
+        background:
+          linear-gradient(90deg, transparent 0 31px, #ffecc4 31px 35px, transparent 35px),
+          radial-gradient(circle at 18px 20px, #ff8a00 0 4px, #2e1b41 4px 9px, #111 9px 15px, transparent 15px),
+          linear-gradient(180deg, #ff768f 0 58%, #5e2b8a 58% 100%);
+        box-shadow: 4px 4px 0 var(--teal);
         flex: 0 0 auto;
-        border-radius: 7px;
+        border-radius: 0;
+        position: relative;
+        image-rendering: pixelated;
       }
 
       .mark::before {
         content: "";
+        position: absolute;
         width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        border: 2px solid var(--gold);
-        background: var(--midnight);
+        height: 4px;
+        right: 5px;
+        top: 11px;
+        background: #ffecc4;
+        box-shadow: 0 4px 0 #ffecc4, -4px 4px 0 #ffecc4, -8px 8px 0 #ffecc4;
       }
 
       h1 {
-        font-family: "Cooper Black", "Bauhaus 93", "Arial Black", fantasy;
-        font-size: clamp(24px, 4vw, 46px);
+        font-family: "Press Start 2P", "Courier New", monospace;
+        font-size: clamp(20px, 3vw, 32px);
         line-height: 1;
         margin: 0;
         letter-spacing: 0;
         color: var(--gold);
-        text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(23, 214, 197, 0.55);
+        text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(38, 217, 208, 0.5);
       }
 
       .mode-pill {
-        border: 1px solid rgba(255, 211, 110, 0.55);
-        background: rgba(255, 240, 207, 0.1);
+        border: 2px solid rgba(255, 215, 100, 0.55);
+        background: rgba(255, 240, 207, 0.12);
         color: #ffe8b5;
         padding: 8px 11px;
-        border-radius: 999px;
+        border-radius: 0;
         white-space: nowrap;
-        font-size: 13px;
+        font-size: 16px;
       }
 
       .site-nav {
@@ -150,17 +159,18 @@
       .site-nav a,
       .nav-account {
         color: #ffe8b5;
-        font-size: 14px;
+        font-size: 18px;
         font-weight: 900;
         text-decoration: none;
       }
 
       .nav-account {
-        border: 1px solid rgba(255, 211, 110, 0.55);
-        border-radius: 999px;
+        border: 2px solid rgba(255, 215, 100, 0.55);
+        border-radius: 0;
         background: rgba(255, 240, 207, 0.1);
         padding: 7px 10px;
         cursor: pointer;
+        box-shadow: 3px 3px 0 rgba(255, 102, 125, 0.45);
       }
 
       .site-nav a:hover,
@@ -200,9 +210,9 @@
       }
 
       .intro h2 {
-        font-family: "Cooper Black", "Bauhaus 93", "Arial Black", fantasy;
-        font-size: clamp(34px, 7vw, 76px);
-        line-height: 0.95;
+        font-family: "Press Start 2P", "Courier New", monospace;
+        font-size: clamp(24px, 5vw, 50px);
+        line-height: 1.14;
         margin: 0;
         max-width: 720px;
         letter-spacing: 0;
@@ -216,21 +226,21 @@
       .intro p {
         margin: 0;
         color: #ffe8b5;
-        line-height: 1.65;
+        line-height: 1.35;
         max-width: 620px;
-        font-size: 17px;
+        font-size: 24px;
       }
 
       .retro-deck {
         width: min(420px, 100%);
-        min-height: 130px;
-        border: 2px solid var(--gold);
-        border-radius: 8px;
+        min-height: 148px;
+        border: 3px solid var(--gold);
+        border-radius: 0;
         background:
-          linear-gradient(135deg, rgba(255, 95, 125, 0.25), transparent 48%),
-          linear-gradient(90deg, rgba(23, 214, 197, 0.12), rgba(255, 211, 110, 0.12)),
-          rgba(22, 12, 36, 0.72);
-        box-shadow: 6px 6px 0 var(--red), 0 0 32px rgba(23, 214, 197, 0.22);
+          linear-gradient(180deg, rgba(255, 118, 143, 0.22), transparent 46%),
+          linear-gradient(90deg, rgba(38, 217, 208, 0.12), rgba(255, 215, 100, 0.12)),
+          rgba(22, 12, 36, 0.84);
+        box-shadow: 8px 8px 0 var(--red);
         position: relative;
         overflow: hidden;
       }
@@ -238,45 +248,55 @@
       .vinyl {
         content: "";
         position: absolute;
-        width: 118px;
-        height: 118px;
+        width: 108px;
+        height: 108px;
         border-radius: 50%;
-        left: 22px;
-        top: 6px;
+        left: 26px;
+        top: 20px;
         background:
-          conic-gradient(from 20deg, transparent 0deg 34deg, rgba(255, 240, 207, 0.12) 35deg 50deg, transparent 51deg 360deg),
-          radial-gradient(circle, var(--gold) 0 8px, #21102f 9px 18px, transparent 19px),
-          repeating-radial-gradient(circle, #1a1027 0 7px, #372145 8px 10px);
-        border: 5px solid #0d0715;
-        box-shadow: 0 0 20px rgba(255, 211, 110, 0.35);
-        animation: spinRecord 14s linear infinite;
-        opacity: 0.84;
+          radial-gradient(circle, #ffcf64 0 7px, #2a163f 7px 16px, transparent 16px),
+          repeating-radial-gradient(circle, #0d0715 0 6px, #372145 6px 9px);
+        border: 4px solid #0d0715;
+        box-shadow: 0 0 0 3px #4d2c66;
+        animation: spinRecord 20s steps(24) infinite;
+        image-rendering: pixelated;
       }
 
       .retro-deck::after {
-        content: "ON AIR";
+        content: "PLAY";
         position: absolute;
-        right: 24px;
-        top: 28px;
+        right: 28px;
+        top: 24px;
         color: var(--green);
-        font-family: "Arial Black", sans-serif;
-        font-size: 28px;
-        text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
+        font-family: "Press Start 2P", "Courier New", monospace;
+        font-size: 22px;
+        text-shadow: 3px 3px 0 rgba(18, 9, 31, 0.8);
       }
 
       .cassette-lines {
         position: absolute;
         right: 24px;
-        bottom: 26px;
-        width: 160px;
-        height: 34px;
-        border: 2px solid rgba(255, 240, 207, 0.8);
-        border-radius: 4px;
+        bottom: 24px;
+        width: 142px;
+        height: 54px;
+        border: 3px solid rgba(255, 240, 207, 0.8);
+        border-radius: 0;
         background:
-          radial-gradient(circle at 24px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
-          radial-gradient(circle at 132px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
-          linear-gradient(90deg, transparent 42px, rgba(255, 240, 207, 0.62) 43px 116px, transparent 117px);
-        transform: rotate(-2deg);
+          linear-gradient(180deg, transparent 0 8px, rgba(255, 240, 207, 0.78) 8px 14px, transparent 14px 100%),
+          radial-gradient(circle at 30px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          radial-gradient(circle at 110px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          linear-gradient(90deg, transparent 44px, rgba(255, 240, 207, 0.62) 44px 98px, transparent 98px);
+      }
+
+      .cassette-lines::before {
+        content: "";
+        position: absolute;
+        width: 54px;
+        height: 6px;
+        left: -20px;
+        top: -12px;
+        background: #ffecc4;
+        box-shadow: 6px 6px 0 #ffecc4, 12px 12px 0 #ffecc4, 18px 18px 0 #ffecc4;
       }
 
       @keyframes spinRecord {
@@ -293,18 +313,20 @@
 
       .button {
         min-height: 44px;
-        border: 2px solid var(--gold);
+        border: 3px solid var(--gold);
         background: #32184b;
         color: #fff4d0;
         padding: 0 16px;
-        border-radius: 7px;
+        border-radius: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 9px;
         cursor: pointer;
-        box-shadow: 4px 4px 0 var(--red), 0 0 18px rgba(23, 214, 197, 0.16);
+        box-shadow: 5px 5px 0 var(--red);
         font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0;
       }
 
       .button.secondary {
@@ -332,8 +354,8 @@
       .button.small {
         min-height: 38px;
         padding: 0 12px;
-        font-size: 14px;
-        box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.22);
+        font-size: 18px;
+        box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.42);
       }
 
       .button:active {
@@ -350,7 +372,7 @@
         background: var(--surface);
         border: 3px solid var(--gold);
         box-shadow: var(--shadow);
-        border-radius: 8px;
+        border-radius: 0;
         overflow: hidden;
         color: var(--ink);
       }
@@ -400,7 +422,7 @@
       }
 
       .label {
-        font-size: 12px;
+        font-size: 16px;
         color: var(--muted);
         text-transform: uppercase;
         font-weight: 800;
@@ -408,15 +430,15 @@
 
       .track-name {
         font-weight: 900;
-        font-size: clamp(21px, 3vw, 30px);
-        line-height: 1.08;
+        font-size: clamp(24px, 3vw, 34px);
+        line-height: 1.06;
         color: var(--ink);
       }
 
       .meta {
         color: var(--muted);
-        font-size: 14px;
-        line-height: 1.4;
+        font-size: 18px;
+        line-height: 1.2;
       }
 
       .player-frame {
@@ -663,15 +685,16 @@
       .item {
         width: 100%;
         min-height: 0;
-        height: 112px;
+        min-height: 92px;
+        height: auto;
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
+        align-items: start;
         gap: 10px;
         border: 2px solid rgba(37, 22, 52, 0.16);
         background: rgba(255, 249, 233, 0.96);
         color: var(--ink);
-        padding: 10px 12px;
+        padding: 12px;
         border-radius: 7px;
         text-align: left;
         cursor: pointer;
@@ -708,6 +731,25 @@
         height: auto;
         min-height: 112px;
         padding: 14px 48px 14px 14px;
+      }
+
+      .queue-item {
+        position: relative;
+      }
+
+      .queue-item.has-remove {
+        padding-right: 42px;
+      }
+
+      .queue-load {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        text-align: left;
+        cursor: pointer;
+        min-width: 0;
+        width: 100%;
       }
 
       .favorite-load {
@@ -751,6 +793,7 @@
         border-radius: 999px;
         padding: 5px 8px;
         white-space: nowrap;
+        align-self: start;
       }
 
       .empty {
@@ -1495,6 +1538,90 @@
           group: "imrat-khan"
         },
         {
+          title: "A. Sundaram N.3204 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2802-a-sumdaram-n-3204-80-2251",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3204 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2803-a-sumdaram-n-3204-80-2252",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3227 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2804-a-sumdaram-n-3227-80-2299",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3227 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2805-a-sumdaram-n-3227-80-2300",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2467 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2806-a-sundaram-n-2467-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2467 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2807-a-sundaram-n-2467-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.8013 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2808-a-sundaram-n-8013-80-5686",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.8013 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2809-a-sundaram-n-8013-80-5687",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2974 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2810-a-sundaram-n-2974-80-1188",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2974 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2811-a-sundaram-n-2974-80-1189",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2189 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2812-a-sundaram-n-2189-g-c-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2189 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2813-a-sundaram-n-2189-g-c-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3468 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2814-a-sundaram-n-3468-80-3270",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3468 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2815-a-sundaram-n-3468-80-3271",
+          group: "sundaram"
+        },
+        {
           title: "Gurukripaleka Pt. 1 by Adhilakshmu",
           meta: "Telugu song · current archive track on SoundCloud",
           url: "https://soundcloud.com/archive-of-indian-music/2800-adhilakshmu-gurukripaleka",
@@ -1514,38 +1641,15 @@
         }
       ];
 
-      function shuffleArray(items) {
-        const copy = [...items];
-        for (let i = copy.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [copy[i], copy[j]] = [copy[j], copy[i]];
-        }
-        return copy;
+      archiveCatalog.forEach((track) => {
+        track.meta = track.meta.replace(/ · current archive track on SoundCloud$/i, "");
+      });
+
+      function formatTrackMeta(track) {
+        return track.meta;
       }
 
-      function buildStarterTracks(count = 20) {
-        const grouped = archiveCatalog.reduce((acc, track) => {
-          const key = track.group || "archive";
-          if (!acc[key]) acc[key] = [];
-          acc[key].push({ ...track });
-          return acc;
-        }, {});
-
-        const groups = Object.values(grouped).map((items) => shuffleArray(items));
-        const picked = [];
-
-        while (picked.length < count && groups.some((items) => items.length)) {
-          groups.forEach((items) => {
-            if (picked.length < count && items.length) {
-              picked.push(items.shift());
-            }
-          });
-        }
-
-        return picked;
-      }
-
-      const tracks = buildStarterTracks();
+      const tracks = archiveCatalog.map((track) => ({ ...track }));
 
       const beats = [
         {
@@ -1861,6 +1965,7 @@
           tnr: "carnatic",
           "madurai-mani": "carnatic",
           "nagaraja-rao": "carnatic",
+          sundaram: "carnatic",
           adhilakshmu: "carnatic",
           angamuthu: "carnatic"
         };
@@ -1918,7 +2023,7 @@
         const provider = getTrackProvider(track);
         const autoPlay = Boolean(options.autoPlay) && provider === "soundcloud";
         els.trackTitle.textContent = track.title;
-        els.trackMeta.textContent = track.meta;
+        els.trackMeta.textContent = formatTrackMeta(track);
         els.player.src = getTrackEmbedUrl(track, autoPlay);
         els.player.title = provider === "spotify"
           ? "Spotify embedded player"
@@ -1995,7 +2100,7 @@
         renderLists();
         if (tracks[currentTrack]?.url === track.url) {
           els.trackTitle.textContent = track.title;
-          els.trackMeta.textContent = track.meta;
+          els.trackMeta.textContent = formatTrackMeta(track);
         }
       }
 
@@ -2061,7 +2166,7 @@
         setStatus("Added stream removed");
       }
 
-      function selectBeat(index) {
+      async function selectBeat(index, options = {}) {
         currentBeat = index;
         const beat = beats[currentBeat];
         els.beatTitle.textContent = beat.title;
@@ -2072,6 +2177,10 @@
         renderVisualizer();
         renderLists();
         setStatus("Beat pattern selected");
+
+        if (options.autoPlay) {
+          await startBeat();
+        }
       }
 
       function randomIndex(length, previous) {
@@ -2105,7 +2214,7 @@
 
       async function randomizeAll() {
         selectTrack(randomTrackIndex(currentTrack), { autoPlay: true });
-        selectBeat(randomIndex(beats.length, currentBeat));
+        await selectBeat(randomIndex(beats.length, currentBeat));
         await startBeat();
         setStatus("Live blend starting");
       }
@@ -2127,9 +2236,9 @@
           .filter(({ beat }) => includesQuery(beat, beatQuery));
 
         els.trackList.innerHTML = visibleTracks.length ? visibleTracks.map(({ track, index }) => `
-          <div class="item favorite-item" aria-pressed="${index === currentTrack}">
-            <button class="favorite-load" type="button" data-track="${index}">
-              <span><strong>${track.title}</strong><span class="meta">${track.meta}</span></span>
+          <div class="item queue-item ${track.isCustom ? "has-remove" : ""}" aria-pressed="${index === currentTrack}">
+            <button class="queue-load" type="button" data-track="${index}">
+              <span><strong>${track.title}</strong><span class="meta">${formatTrackMeta(track)}</span></span>
             </button>
             <span class="tag">Stream</span>
             ${track.isCustom ? `<button class="remove-favorite" type="button" data-remove-track="${index}" aria-label="Remove added stream">×</button>` : ""}
@@ -2144,7 +2253,7 @@
         `).join("") : '<div class="empty">No beat patterns match that search.</div>';
 
         els.trackList.querySelectorAll("[data-track]").forEach((button) => {
-          button.addEventListener("click", () => selectTrack(Number(button.dataset.track)));
+          button.addEventListener("click", () => selectTrack(Number(button.dataset.track), { autoPlay: true }));
         });
         els.trackList.querySelectorAll("[data-remove-track]").forEach((button) => {
           button.addEventListener("click", (event) => {
@@ -2153,7 +2262,9 @@
           });
         });
         els.beatList.querySelectorAll("[data-beat]").forEach((button) => {
-          button.addEventListener("click", () => selectBeat(Number(button.dataset.beat)));
+          button.addEventListener("click", () => {
+            selectBeat(Number(button.dataset.beat), { autoPlay: true });
+          });
         });
         renderFavorites();
       }
@@ -2218,7 +2329,7 @@
 
         const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
         if (trackIndex >= 0) selectTrack(trackIndex, { autoPlay: true });
-        selectBeat(favorite.beatIndex);
+        await selectBeat(favorite.beatIndex);
         els.streamVolume.value = favorite.streamVolume;
         els.beatVolume.value = favorite.beatVolume;
         els.tempo.value = favorite.tempo;
