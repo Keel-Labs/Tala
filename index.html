@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tāla - Ephemeral Blend</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Press+Start+2P&display=swap");
+    </style>
+    <style>
       :root {
         color-scheme: dark;
-        --ink: #251634;
-        --muted: #6b5c73;
-        --line: #f6b35f;
-        --paper: #261339;
-        --surface: #fff0cf;
-        --red: #ff5f7d;
-        --teal: #17d6c5;
-        --gold: #ffd36e;
-        --green: #9cff7a;
-        --violet: #6c2c8f;
-        --midnight: #160c24;
-        --shadow: 0 22px 0 rgba(22, 12, 36, 0.55), 0 28px 70px rgba(255, 95, 125, 0.22);
+        --ink: #231731;
+        --muted: #5f5270;
+        --line: #ffb454;
+        --paper: #20112f;
+        --surface: #fff1cf;
+        --red: #ff667d;
+        --teal: #26d9d0;
+        --gold: #ffd764;
+        --green: #a7ff5f;
+        --violet: #7a3cff;
+        --midnight: #12091f;
+        --pixel-shadow: 4px 4px 0 rgba(20, 10, 30, 0.9);
+        --shadow: 0 0 0 3px rgba(18, 9, 31, 0.9), 8px 8px 0 rgba(255, 102, 125, 0.72);
       }
 
       * {
@@ -29,14 +33,14 @@
         margin: 0;
         min-height: 100vh;
         background:
-          radial-gradient(circle at 14% 18%, rgba(255, 95, 125, 0.28), transparent 28%),
-          radial-gradient(circle at 80% 10%, rgba(23, 214, 197, 0.22), transparent 26%),
-          linear-gradient(90deg, rgba(255, 211, 110, 0.08) 1px, transparent 1px) 0 0 / 42px 42px,
-          linear-gradient(rgba(255, 211, 110, 0.08) 1px, transparent 1px) 0 0 / 42px 42px,
-          linear-gradient(135deg, #2b1741 0%, #21102f 42%, #4f163f 100%);
+          linear-gradient(90deg, rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          linear-gradient(rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          radial-gradient(circle at 15% 18%, rgba(255, 102, 125, 0.22), transparent 26%),
+          radial-gradient(circle at 82% 8%, rgba(38, 217, 208, 0.2), transparent 22%),
+          linear-gradient(180deg, #2f164a 0%, #1c0f2d 42%, #12091f 100%);
         color: #fff5d7;
         font-family:
-          "Trebuchet MS", "Arial Rounded MT Bold", ui-sans-serif, system-ui, sans-serif;
+          "JetBrains Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
         letter-spacing: 0;
         overflow-x: hidden;
       }
@@ -49,13 +53,13 @@
         background:
           repeating-linear-gradient(
             0deg,
-            rgba(255, 255, 255, 0.045) 0,
-            rgba(255, 255, 255, 0.045) 1px,
+            rgba(255, 255, 255, 0.03) 0,
+            rgba(255, 255, 255, 0.03) 1px,
             transparent 1px,
-            transparent 4px
+            transparent 6px
           );
-        mix-blend-mode: soft-light;
-        opacity: 0.34;
+        mix-blend-mode: screen;
+        opacity: 0.25;
         z-index: 0;
       }
 
@@ -74,9 +78,8 @@
 
       header {
         padding: 22px clamp(18px, 4vw, 48px);
-        border-bottom: 2px solid rgba(255, 211, 110, 0.45);
-        background: rgba(22, 12, 36, 0.82);
-        backdrop-filter: blur(14px);
+        border-bottom: 3px solid rgba(255, 215, 100, 0.6);
+        background: rgba(22, 12, 36, 0.96);
         position: sticky;
         top: 0;
         z-index: 10;
@@ -99,42 +102,48 @@
       }
 
       .mark {
-        width: 38px;
-        height: 38px;
-        border: 2px solid var(--gold);
-        display: grid;
-        place-items: center;
-        background: #ff5f7d;
-        box-shadow: 4px 4px 0 var(--teal), 0 0 18px rgba(255, 95, 125, 0.6);
+        width: 48px;
+        height: 48px;
+        border: 3px solid var(--gold);
+        display: block;
+        background:
+          linear-gradient(90deg, transparent 0 31px, #ffecc4 31px 35px, transparent 35px),
+          radial-gradient(circle at 18px 20px, #ff8a00 0 4px, #2e1b41 4px 9px, #111 9px 15px, transparent 15px),
+          linear-gradient(180deg, #ff768f 0 58%, #5e2b8a 58% 100%);
+        box-shadow: 4px 4px 0 var(--teal);
         flex: 0 0 auto;
-        border-radius: 7px;
+        border-radius: 0;
+        position: relative;
+        image-rendering: pixelated;
       }
 
       .mark::before {
         content: "";
+        position: absolute;
         width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        border: 2px solid var(--gold);
-        background: var(--midnight);
+        height: 4px;
+        right: 5px;
+        top: 11px;
+        background: #ffecc4;
+        box-shadow: 0 4px 0 #ffecc4, -4px 4px 0 #ffecc4, -8px 8px 0 #ffecc4;
       }
 
       h1 {
-        font-family: "Cooper Black", "Bauhaus 93", "Arial Black", fantasy;
-        font-size: clamp(24px, 4vw, 46px);
+        font-family: "Press Start 2P", "Courier New", monospace;
+        font-size: clamp(20px, 3vw, 32px);
         line-height: 1;
         margin: 0;
         letter-spacing: 0;
         color: var(--gold);
-        text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(23, 214, 197, 0.55);
+        text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(38, 217, 208, 0.5);
       }
 
       .mode-pill {
-        border: 1px solid rgba(255, 211, 110, 0.55);
-        background: rgba(255, 240, 207, 0.1);
+        border: 2px solid rgba(255, 215, 100, 0.55);
+        background: rgba(255, 240, 207, 0.12);
         color: #ffe8b5;
         padding: 8px 11px;
-        border-radius: 999px;
+        border-radius: 0;
         white-space: nowrap;
         font-size: 13px;
       }
@@ -156,11 +165,12 @@
       }
 
       .nav-account {
-        border: 1px solid rgba(255, 211, 110, 0.55);
-        border-radius: 999px;
+        border: 2px solid rgba(255, 215, 100, 0.55);
+        border-radius: 0;
         background: rgba(255, 240, 207, 0.1);
         padding: 7px 10px;
         cursor: pointer;
+        box-shadow: 3px 3px 0 rgba(255, 102, 125, 0.45);
       }
 
       .site-nav a:hover,
@@ -200,9 +210,9 @@
       }
 
       .intro h2 {
-        font-family: "Cooper Black", "Bauhaus 93", "Arial Black", fantasy;
-        font-size: clamp(34px, 7vw, 76px);
-        line-height: 0.95;
+        font-family: "Press Start 2P", "Courier New", monospace;
+        font-size: clamp(24px, 5vw, 50px);
+        line-height: 1.14;
         margin: 0;
         max-width: 720px;
         letter-spacing: 0;
@@ -223,14 +233,14 @@
 
       .retro-deck {
         width: min(420px, 100%);
-        min-height: 130px;
-        border: 2px solid var(--gold);
-        border-radius: 8px;
+        min-height: 148px;
+        border: 3px solid var(--gold);
+        border-radius: 0;
         background:
-          linear-gradient(135deg, rgba(255, 95, 125, 0.25), transparent 48%),
-          linear-gradient(90deg, rgba(23, 214, 197, 0.12), rgba(255, 211, 110, 0.12)),
-          rgba(22, 12, 36, 0.72);
-        box-shadow: 6px 6px 0 var(--red), 0 0 32px rgba(23, 214, 197, 0.22);
+          linear-gradient(180deg, rgba(255, 118, 143, 0.22), transparent 46%),
+          linear-gradient(90deg, rgba(38, 217, 208, 0.12), rgba(255, 215, 100, 0.12)),
+          rgba(22, 12, 36, 0.84);
+        box-shadow: 8px 8px 0 var(--red);
         position: relative;
         overflow: hidden;
       }
@@ -238,45 +248,44 @@
       .vinyl {
         content: "";
         position: absolute;
-        width: 118px;
-        height: 118px;
+        width: 108px;
+        height: 108px;
         border-radius: 50%;
-        left: 22px;
-        top: 6px;
+        left: 26px;
+        top: 20px;
         background:
-          conic-gradient(from 20deg, transparent 0deg 34deg, rgba(255, 240, 207, 0.12) 35deg 50deg, transparent 51deg 360deg),
-          radial-gradient(circle, var(--gold) 0 8px, #21102f 9px 18px, transparent 19px),
-          repeating-radial-gradient(circle, #1a1027 0 7px, #372145 8px 10px);
-        border: 5px solid #0d0715;
-        box-shadow: 0 0 20px rgba(255, 211, 110, 0.35);
-        animation: spinRecord 14s linear infinite;
-        opacity: 0.84;
-      }
-
-      .retro-deck::after {
-        content: "ON AIR";
-        position: absolute;
-        right: 24px;
-        top: 28px;
-        color: var(--green);
-        font-family: "Arial Black", sans-serif;
-        font-size: 28px;
-        text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
+          radial-gradient(circle, #ffcf64 0 7px, #2a163f 7px 16px, transparent 16px),
+          repeating-radial-gradient(circle, #0d0715 0 6px, #372145 6px 9px);
+        border: 4px solid #0d0715;
+        box-shadow: 0 0 0 3px #4d2c66;
+        animation: spinRecord 20s steps(24) infinite;
+        image-rendering: pixelated;
       }
 
       .cassette-lines {
         position: absolute;
         right: 24px;
-        bottom: 26px;
-        width: 160px;
-        height: 34px;
-        border: 2px solid rgba(255, 240, 207, 0.8);
-        border-radius: 4px;
+        bottom: 24px;
+        width: 142px;
+        height: 54px;
+        border: 3px solid rgba(255, 240, 207, 0.8);
+        border-radius: 0;
         background:
-          radial-gradient(circle at 24px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
-          radial-gradient(circle at 132px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
-          linear-gradient(90deg, transparent 42px, rgba(255, 240, 207, 0.62) 43px 116px, transparent 117px);
-        transform: rotate(-2deg);
+          linear-gradient(180deg, transparent 0 8px, rgba(255, 240, 207, 0.78) 8px 14px, transparent 14px 100%),
+          radial-gradient(circle at 30px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          radial-gradient(circle at 110px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          linear-gradient(90deg, transparent 44px, rgba(255, 240, 207, 0.62) 44px 98px, transparent 98px);
+      }
+
+      .cassette-lines::before {
+        content: "";
+        position: absolute;
+        width: 54px;
+        height: 6px;
+        left: -20px;
+        top: -12px;
+        background: #ffecc4;
+        box-shadow: 6px 6px 0 #ffecc4, 12px 12px 0 #ffecc4, 18px 18px 0 #ffecc4;
       }
 
       @keyframes spinRecord {
@@ -293,18 +302,20 @@
 
       .button {
         min-height: 44px;
-        border: 2px solid var(--gold);
+        border: 3px solid var(--gold);
         background: #32184b;
         color: #fff4d0;
         padding: 0 16px;
-        border-radius: 7px;
+        border-radius: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 9px;
         cursor: pointer;
-        box-shadow: 4px 4px 0 var(--red), 0 0 18px rgba(23, 214, 197, 0.16);
+        box-shadow: 5px 5px 0 var(--red);
         font-weight: 800;
+        text-transform: none;
+        letter-spacing: 0;
       }
 
       .button.secondary {
@@ -333,7 +344,7 @@
         min-height: 38px;
         padding: 0 12px;
         font-size: 14px;
-        box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.22);
+        box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.42);
       }
 
       .button:active {
@@ -350,7 +361,7 @@
         background: var(--surface);
         border: 3px solid var(--gold);
         box-shadow: var(--shadow);
-        border-radius: 8px;
+        border-radius: 0;
         overflow: hidden;
         color: var(--ink);
       }
@@ -408,15 +419,15 @@
 
       .track-name {
         font-weight: 900;
-        font-size: clamp(21px, 3vw, 30px);
-        line-height: 1.08;
+        font-size: clamp(24px, 3vw, 34px);
+        line-height: 1.06;
         color: var(--ink);
       }
 
       .meta {
         color: var(--muted);
         font-size: 14px;
-        line-height: 1.4;
+        line-height: 1.45;
       }
 
       .player-frame {
@@ -568,6 +579,31 @@
         margin-bottom: 12px;
       }
 
+      .shelf-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .shelf-chip {
+        min-height: 34px;
+        border: 2px solid rgba(37, 22, 52, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 249, 233, 0.92);
+        color: var(--ink);
+        padding: 0 12px;
+        font-size: 13px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .shelf-chip[aria-pressed="true"] {
+        border-color: var(--ink);
+        background: #fff0cf;
+        box-shadow: inset 0 -2px 0 var(--gold);
+      }
+
       .inline-form {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -638,15 +674,16 @@
       .item {
         width: 100%;
         min-height: 0;
-        height: 112px;
+        min-height: 92px;
+        height: auto;
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
+        align-items: start;
         gap: 10px;
         border: 2px solid rgba(37, 22, 52, 0.16);
         background: rgba(255, 249, 233, 0.96);
         color: var(--ink);
-        padding: 10px 12px;
+        padding: 12px;
         border-radius: 7px;
         text-align: left;
         cursor: pointer;
@@ -683,6 +720,25 @@
         height: auto;
         min-height: 112px;
         padding: 14px 48px 14px 14px;
+      }
+
+      .queue-item {
+        position: relative;
+      }
+
+      .queue-item.has-remove {
+        padding-right: 42px;
+      }
+
+      .queue-load {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        text-align: left;
+        cursor: pointer;
+        min-width: 0;
+        width: 100%;
       }
 
       .favorite-load {
@@ -726,6 +782,7 @@
         border-radius: 999px;
         padding: 5px 8px;
         white-space: nowrap;
+        align-self: start;
       }
 
       .empty {
@@ -905,9 +962,56 @@
         text-underline-offset: 3px;
       }
 
+      .footer-links button {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        color: #ffe8b5;
+        font-weight: 900;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+        font: inherit;
+      }
+
       .footer-note {
         color: rgba(255, 232, 181, 0.78);
         margin-top: 10px;
+      }
+
+      .legal-modal {
+        width: min(780px, 100%);
+        max-height: min(84vh, 920px);
+        overflow: auto;
+        border: 3px solid var(--gold);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: 8px 8px 0 var(--red), 0 0 40px rgba(23, 214, 197, 0.28);
+        padding: 18px;
+      }
+
+      .legal-modal h2 {
+        margin: 0;
+        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-size: 28px;
+      }
+
+      .legal-modal h3 {
+        margin: 22px 0 8px;
+        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-size: 20px;
+      }
+
+      .legal-modal p {
+        color: #5c4d66;
+        line-height: 1.6;
+        margin: 0 0 12px;
+      }
+
+      .legal-meta {
+        color: var(--muted);
+        margin: 6px 0 16px;
       }
 
       .sr-only {
@@ -1127,6 +1231,7 @@
               <span class="sr-only">Search archival streams</span>
               <input class="search" id="trackSearch" type="search" placeholder="Search this queue" />
             </label>
+            <div class="shelf-strip" id="trackShelves" aria-label="Archive discovery shelves"></div>
             <div class="archive-tools">
               <form class="inline-form" id="customTrackForm">
                 <label>
@@ -1165,33 +1270,35 @@
           <div>
             <div class="footer-title">Tāla</div>
             <p>
-              Built by Medha Ghatikesh at Keel Labs. Hand crafted in California for archival
-              discovery, playful listening, and cultural memory.
+              Made with love in sunny California by
+              <a href="https://github.com/medha" target="_blank" rel="noopener">Medha Ghatikesh</a>
+              at Keel Labs.
             </p>
           </div>
           <section class="about-grid" id="about" aria-label="About Tāla">
             <article class="about-card" id="archive-purpose">
-              <h3>Archive & Purpose</h3>
+              <h3>About</h3>
               <p>
-                Recordings stream from
-                <a href="https://archiveofindianmusic.org/" target="_blank" rel="noopener">Archive of Indian Music</a>
-                on SoundCloud. Tāla is a way to discover historic recordings by playing with
-                rhythm beside them and hearing them with fresh ears.
+                Tāla is an ephemeral listening platform for discovering and interacting with
+                historic recordings. Tracks are sourced from the
+                <a href="https://archiveofindianmusic.org/" target="_blank" rel="noopener">Archive of Indian Music</a>.
+                Tāla does not own these recordings or their underlying rights.
               </p>
             </article>
             <article class="about-card" id="saved-settings">
               <h3>Favorite Blends</h3>
               <p>
                 If a blend feels right, save the stream, beat, volumes, tempo, and swing to your
-                account. Favorite Blends save choices and settings, not source audio.
+                account. Favorite Blends save choices and settings only, never source audio.
               </p>
             </article>
             <article class="about-card" id="listening-notice">
               <h3>Listening Notice</h3>
               <p>
-                Tāla is for private listening. Please do not record, download, export,
-                redistribute, or commercially use archive audio or captured blends without
-                permission.
+                Archive recordings remain subject to the rights and terms of their original
+                source and rights holders. Tāla streams them for private listening only and does
+                not record, download, export, or distribute source audio. Track availability
+                depends on the Archive of Indian Music and other connected streaming sources.
               </p>
             </article>
           </section>
@@ -1200,6 +1307,8 @@
             <a href="https://soundcloud.com/archive-of-indian-music/popular-tracks" target="_blank" rel="noopener">AIM on SoundCloud</a>
             <a href="https://github.com/Keel-Labs/Tala" target="_blank" rel="noopener">GitHub</a>
             <a href="https://github.com/sponsors/medha" target="_blank" rel="noopener">Support</a>
+            <button id="openTerms" type="button">Terms</button>
+            <button id="openPrivacy" type="button">Privacy</button>
           </div>
         </div>
       </footer>
@@ -1209,7 +1318,7 @@
           <div class="modal-head">
             <div>
               <h2 id="accountTitle">Favorite Blends</h2>
-              <p id="accountSummary">Continue with email to create or open your Favorite Blends. Then unlock saving across devices.</p>
+              <p id="accountSummary">Continue with email to create or open your Favorite Blends. Then unlock saving to your account.</p>
             </div>
             <button class="modal-close" id="closeAccountModal" type="button" aria-label="Close account dialog">×</button>
           </div>
@@ -1246,73 +1355,354 @@
           </div>
         </section>
       </div>
+
+      <div class="modal-backdrop" id="legalModal" hidden>
+        <section class="legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
+          <div class="modal-head">
+            <div>
+              <h2 id="legalTitle">Terms</h2>
+              <p class="legal-meta">Last updated June 26, 2026</p>
+            </div>
+            <button class="modal-close" id="closeLegalModal" type="button" aria-label="Close legal dialog">×</button>
+          </div>
+          <div id="legalBody"></div>
+        </section>
+      </div>
     </div>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      const tracks = [
+      const archiveCatalog = [
         {
           title: "Khyal - Multani by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3635-khyal-multani-by-zohra"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3635-khyal-multani-by-zohra",
+          group: "zohra"
         },
         {
           title: "Terana - Palass by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3636-terana-palass-by-zohra"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3636-terana-palass-by-zohra",
+          group: "zohra"
         },
         {
           title: "Ghazal by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3637-ghazal-by-zohra-bai-g-c-8"
+          meta: "Hindustani vocal · ghazal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3637-ghazal-by-zohra-bai-g-c-8",
+          group: "zohra"
         },
         {
           title: "Majmuah by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3638-majmuah-by-zohra-bai-g-c"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3638-majmuah-by-zohra-bai-g-c",
+          group: "zohra"
         },
         {
           title: "Savni by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3639-savni-by-zohra-bai-g-c-9"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3639-savni-by-zohra-bai-g-c-9",
+          group: "zohra"
         },
         {
           title: "Zila by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3640-zila-by-zohra-bai-g-c-9"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3640-zila-by-zohra-bai-g-c-9",
+          group: "zohra"
         },
         {
           title: "Des by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3641-des-by-zohra-bai-g-c-8"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3641-des-by-zohra-bai-g-c-8",
+          group: "zohra"
         },
         {
           title: "Sarang by Zohra Bai",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3642-sarang-by-zohra-bai-g-c-8"
+          meta: "Hindustani vocal · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3642-sarang-by-zohra-bai-g-c-8",
+          group: "zohra"
         },
         {
           title: "Bal Gandharva G.C.16",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3578-79-bal-gandharva-g-c-16"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3578-79-bal-gandharva-g-c-16",
+          group: "bal-gandharva"
         },
         {
           title: "Bal Gandharva G.C.21",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3580-81-bal-gandharva-g-c-21"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3580-81-bal-gandharva-g-c-21",
+          group: "bal-gandharva"
         },
         {
           title: "Bal Gandharva G.C.21 P.8740",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3582-83-bal-gandharva-g-c-21"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3582-83-bal-gandharva-g-c-21",
+          group: "bal-gandharva"
         },
         {
           title: "Bal Gandharva G.C.16 P.5059",
-          meta: "Current archive track on SoundCloud",
-          url: "https://soundcloud.com/archive-of-indian-music/3584-85-balgandharva-g-c-16"
+          meta: "Marathi Natya Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3584-85-balgandharva-g-c-16",
+          group: "bal-gandharva"
+        },
+        {
+          title: "Mangalam by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3118-miscellany-mangalam-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Nannuvidachi by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · Reetigowla · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3119-nannuvidachi-reetigowla-t",
+          group: "tnr"
+        },
+        {
+          title: "Raga Alapana I by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3120-raga-alapana-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Raga Alapana II by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3121-raga-alapana-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Yachaspathi Pt. 1 by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3122-yachaspathi-pt-1-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Yachaspathi Pt. 2 by T. N. Rajaratnam Pillai",
+          meta: "Carnatic nadaswaram · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3123-yachaspathi-pt-2-t-n",
+          group: "tnr"
+        },
+        {
+          title: "Master Habib Qawal Nizami",
+          meta: "Urdu qawali · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3112-master-habib-qawal-nizami",
+          group: "habib"
+        },
+        {
+          title: "Master Habib Qawal Nizami Party",
+          meta: "Urdu qawali · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3113-master-habib-qawal-nizami",
+          group: "habib"
+        },
+        {
+          title: "Parimala Rangapathe I by Madura Mani Iyer",
+          meta: "Carnatic vocal · Kambhoji · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3110-parimala-rangapathe",
+          group: "madurai-mani"
+        },
+        {
+          title: "Parimala Rangapathe II by Madura Mani Iyer",
+          meta: "Carnatic vocal · Kambhoji · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3111-parimala-rangapathe",
+          group: "madurai-mani"
+        },
+        {
+          title: "Tagore Song by Purabi Mukherjee I",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3106-tagore-purabi-mukherjee",
+          group: "tagore"
+        },
+        {
+          title: "Tagore Song by Purabi Mukherjee II",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3107-tagore-purabi-mukherjee",
+          group: "tagore"
+        },
+        {
+          title: "Tagore Song by Kanika Banerjee I",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3108-tagore-kanika-banerjee",
+          group: "tagore"
+        },
+        {
+          title: "Tagore Song by Kanika Banerjee II",
+          meta: "Bengali Rabindra Sangeet · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/3109-tagore-kanika-banerjee",
+          group: "tagore"
+        },
+        {
+          title: "Purna Shadjamam by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2978-nagaraja-rao-purna",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Lavanya Rama by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2979-nagaraja-rao-purna",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Kamas by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2980-nagaraja-rao-kamas-gc",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Mohanam by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2981-nagaraja-rao-mohanam-gc",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Kunthalavarali by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2982-nagaraja-rao-g-c-8-18912",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Raghuvamsha Sudam by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2983-nagaraja-rao-raghuvamsha",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Hindustani Kapi by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2984-nagaraja-rao-hindustani",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Kalyani by Nagaraja Rao",
+          meta: "Carnatic flute · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2985-nagaraja-rao-kalyani-g-c",
+          group: "nagaraja-rao"
+        },
+        {
+          title: "Imrat Khan I",
+          meta: "Hindustani sitar · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2830-imratkhan-n-92612-ojw-1",
+          group: "imrat-khan"
+        },
+        {
+          title: "Imrat Khan II",
+          meta: "Hindustani sitar · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2831-imratkhan-n-92612-ojw-1",
+          group: "imrat-khan"
+        },
+        {
+          title: "A. Sundaram N.3204 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2802-a-sumdaram-n-3204-80-2251",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3204 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2803-a-sumdaram-n-3204-80-2252",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3227 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2804-a-sumdaram-n-3227-80-2299",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3227 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2805-a-sumdaram-n-3227-80-2300",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2467 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2806-a-sundaram-n-2467-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2467 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2807-a-sundaram-n-2467-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.8013 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2808-a-sundaram-n-8013-80-5686",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.8013 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2809-a-sundaram-n-8013-80-5687",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2974 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2810-a-sundaram-n-2974-80-1188",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2974 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2811-a-sundaram-n-2974-80-1189",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2189 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2812-a-sundaram-n-2189-g-c-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.2189 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2813-a-sundaram-n-2189-g-c-i7",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3468 I",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2814-a-sundaram-n-3468-80-3270",
+          group: "sundaram"
+        },
+        {
+          title: "A. Sundaram N.3468 II",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2815-a-sundaram-n-3468-80-3271",
+          group: "sundaram"
+        },
+        {
+          title: "Gurukripaleka Pt. 1 by Adhilakshmu",
+          meta: "Telugu song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2800-adhilakshmu-gurukripaleka",
+          group: "adhilakshmu"
+        },
+        {
+          title: "Gurukripaleka Pt. 2 by Adhilakshmu",
+          meta: "Telugu song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2801-adhilakshmu-gurukripaleka",
+          group: "adhilakshmu"
+        },
+        {
+          title: "Vannathamaraiyai by Miss Angamuthu",
+          meta: "Tamil song · current archive track on SoundCloud",
+          url: "https://soundcloud.com/archive-of-indian-music/2798-vannathamaraiyai-miss",
+          group: "angamuthu"
         }
       ];
+
+      archiveCatalog.forEach((track) => {
+        track.meta = track.meta.replace(/ · current archive track on SoundCloud$/i, "");
+      });
+
+      function formatTrackMeta(track) {
+        return track.meta;
+      }
+
+      const tracks = archiveCatalog.map((track) => ({ ...track }));
 
       const beats = [
         {
@@ -1508,6 +1898,12 @@
         unlockButton: document.querySelector("#unlockButton"),
         completeUnlockButton: document.querySelector("#completeUnlockButton"),
         unlockHint: document.querySelector("#unlockHint"),
+        legalModal: document.querySelector("#legalModal"),
+        closeLegalModal: document.querySelector("#closeLegalModal"),
+        legalTitle: document.querySelector("#legalTitle"),
+        legalBody: document.querySelector("#legalBody"),
+        openTerms: document.querySelector("#openTerms"),
+        openPrivacy: document.querySelector("#openPrivacy"),
         playBlend: document.querySelector("#playBlend"),
         randomAll: document.querySelector("#randomAll"),
         saveFavorite: document.querySelector("#saveFavorite"),
@@ -1515,6 +1911,7 @@
         customTrackForm: document.querySelector("#customTrackForm"),
         customTrackUrl: document.querySelector("#customTrackUrl"),
         trackSearch: document.querySelector("#trackSearch"),
+        trackShelves: document.querySelector("#trackShelves"),
         beatSearch: document.querySelector("#beatSearch"),
         trackList: document.querySelector("#trackList"),
         beatList: document.querySelector("#beatList"),
@@ -1534,6 +1931,40 @@
         spaceAmountOut: document.querySelector("#spaceAmountOut"),
         toneAmount: document.querySelector("#toneAmount"),
         toneAmountOut: document.querySelector("#toneAmountOut")
+      };
+
+      const legalContent = {
+        terms: {
+          title: "Terms",
+          body: `
+            <p>Tāla is an ephemeral listening platform for discovering and interacting with historic recordings. By using Tāla, you agree to use it only in ways that respect the rights, terms, and availability of the original streaming sources.</p>
+            <h3>Use of archival streams</h3>
+            <p>Tracks available through Tāla are streamed from third-party sources, including the Archive of Indian Music and SoundCloud. Tāla does not own these recordings or their underlying rights.</p>
+            <p>You may use Tāla for private listening. You may not use Tāla to record, download, export, redistribute, or commercially exploit source audio or captured blends unless you have permission from the relevant rights holders.</p>
+            <h3>Favorite Blends</h3>
+            <p>Favorite Blends is a one-time paid unlock. It saves your chosen stream URL, beat choice, and listening settings to your account. It does not save source audio.</p>
+            <h3>Availability</h3>
+            <p>Tāla depends on connected streaming sources and embedded players. Streams, metadata, and playback behavior may change or disappear if those sources change or remove content.</p>
+            <h3>Payments and refunds</h3>
+            <p>Payments are processed by Lemon Squeezy. Questions about access or billing can be sent to <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>. Any refund handling is subject to the payment processor and applicable law.</p>
+            <h3>Contact</h3>
+            <p>For support, contact <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>.</p>
+          `
+        },
+        privacy: {
+          title: "Privacy",
+          body: `
+            <p>Tāla is designed to keep listening ephemeral. Tāla does not record or store source audio from archival streams.</p>
+            <h3>What Tāla stores</h3>
+            <p>If you create an account and unlock Favorite Blends, Tāla may store your email address, the stream URL you chose, your selected beat, and your listening settings such as volume, tempo, swing, and effects.</p>
+            <h3>What Tāla does not store</h3>
+            <p>Tāla does not store the archival source audio, rendered remixes, or exported audio files.</p>
+            <h3>Third-party services</h3>
+            <p>Tāla relies on third-party services including Supabase for authentication and account storage, Lemon Squeezy for payments, and streaming providers such as SoundCloud and Spotify for embedded playback.</p>
+            <h3>Contact</h3>
+            <p>Questions about privacy can be sent to <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>.</p>
+          `
+        }
       };
 
       let currentTrack = 0;
@@ -1559,6 +1990,7 @@
       let soundcloudReady = Promise.resolve(false);
       const customTracksKey = "tala:customTracks";
       const favoritesKey = "tala:favorites";
+      const pendingFavoriteKey = "tala:pendingFavorite";
       const postAuthModalKey = "tala:postAuthModal";
       const postAuthReasonKey = "tala:postAuthReason";
       const checkoutStartedKey = "tala:checkoutStarted";
@@ -1585,6 +2017,18 @@
       let accountModalReason = "";
       let pendingAuthEmail = "";
       let entitlementCheckInFlight = false;
+      let activeTrackShelf = "all";
+      let pendingFavoriteDraft = JSON.parse(localStorage.getItem(pendingFavoriteKey) || "null");
+
+      const trackShelves = [
+        { id: "all", label: "All" },
+        { id: "hindustani", label: "Hindustani" },
+        { id: "carnatic", label: "Carnatic" },
+        { id: "qawwali", label: "Qawwali" },
+        { id: "theatre", label: "Theatre" },
+        { id: "tagore", label: "Tagore" },
+        { id: "added", label: "Added" }
+      ];
 
       function embedUrl(trackUrl, autoPlay = false) {
         const params = new URLSearchParams({
@@ -1605,6 +2049,58 @@
         return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
       }
 
+      function getTrackShelf(track) {
+        if (track.isCustom) return "added";
+        const shelfByGroup = {
+          zohra: "hindustani",
+          "imrat-khan": "hindustani",
+          habib: "qawwali",
+          "bal-gandharva": "theatre",
+          tagore: "tagore",
+          tnr: "carnatic",
+          "madurai-mani": "carnatic",
+          "nagaraja-rao": "carnatic",
+          sundaram: "carnatic",
+          adhilakshmu: "carnatic",
+          angamuthu: "carnatic"
+        };
+        return shelfByGroup[track.group] || "all";
+      }
+
+      function matchesActiveShelf(track) {
+        return activeTrackShelf === "all" || getTrackShelf(track) === activeTrackShelf;
+      }
+
+      function renderTrackShelves() {
+        const counts = tracks.reduce((acc, track) => {
+          const shelf = getTrackShelf(track);
+          acc.all = (acc.all || 0) + 1;
+          acc[shelf] = (acc[shelf] || 0) + 1;
+          return acc;
+        }, {});
+
+        els.trackShelves.innerHTML = trackShelves
+          .filter((shelf) => shelf.id === "all" || counts[shelf.id] || shelf.id === activeTrackShelf)
+          .map((shelf) => `
+            <button
+              class="shelf-chip"
+              type="button"
+              data-shelf="${shelf.id}"
+              aria-pressed="${shelf.id === activeTrackShelf}"
+            >
+              ${shelf.label}${counts[shelf.id] ? ` · ${counts[shelf.id]}` : ""}
+            </button>
+          `)
+          .join("");
+
+        els.trackShelves.querySelectorAll("[data-shelf]").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeTrackShelf = button.dataset.shelf;
+            renderLists();
+          });
+        });
+      }
+
       function getTrackProvider(track) {
         return track.provider || "soundcloud";
       }
@@ -1622,7 +2118,7 @@
         const provider = getTrackProvider(track);
         const autoPlay = Boolean(options.autoPlay) && provider === "soundcloud";
         els.trackTitle.textContent = track.title;
-        els.trackMeta.textContent = track.meta;
+        els.trackMeta.textContent = formatTrackMeta(track);
         els.player.src = getTrackEmbedUrl(track, autoPlay);
         els.player.title = provider === "spotify"
           ? "Spotify embedded player"
@@ -1679,6 +2175,7 @@
         tracks.unshift(track);
         saveCustomTrack(track);
         els.customTrackUrl.value = "";
+        activeTrackShelf = "added";
         selectTrack(0);
         setStatus(`${track.provider === "spotify" ? "Spotify" : "SoundCloud"} stream loaded`);
         if (track.provider === "spotify") {
@@ -1698,7 +2195,7 @@
         renderLists();
         if (tracks[currentTrack]?.url === track.url) {
           els.trackTitle.textContent = track.title;
-          els.trackMeta.textContent = track.meta;
+          els.trackMeta.textContent = formatTrackMeta(track);
         }
       }
 
@@ -1747,6 +2244,9 @@
         const saved = JSON.parse(localStorage.getItem(customTracksKey) || "[]")
           .filter((item) => item.url !== track.url);
         localStorage.setItem(customTracksKey, JSON.stringify(saved));
+        if (activeTrackShelf === "added" && !saved.length) {
+          activeTrackShelf = "all";
+        }
 
         if (!tracks.length) return;
 
@@ -1761,7 +2261,7 @@
         setStatus("Added stream removed");
       }
 
-      function selectBeat(index) {
+      async function selectBeat(index, options = {}) {
         currentBeat = index;
         const beat = beats[currentBeat];
         els.beatTitle.textContent = beat.title;
@@ -1772,6 +2272,10 @@
         renderVisualizer();
         renderLists();
         setStatus("Beat pattern selected");
+
+        if (options.autoPlay) {
+          await startBeat();
+        }
       }
 
       function randomIndex(length, previous) {
@@ -1805,7 +2309,7 @@
 
       async function randomizeAll() {
         selectTrack(randomTrackIndex(currentTrack), { autoPlay: true });
-        selectBeat(randomIndex(beats.length, currentBeat));
+        await selectBeat(randomIndex(beats.length, currentBeat));
         await startBeat();
         setStatus("Live blend starting");
       }
@@ -1818,22 +2322,23 @@
       function renderLists() {
         const trackQuery = els.trackSearch.value;
         const beatQuery = els.beatSearch.value;
+        renderTrackShelves();
         const visibleTracks = tracks
           .map((track, index) => ({ track, index }))
-          .filter(({ track }) => includesQuery(track, trackQuery));
+          .filter(({ track }) => matchesActiveShelf(track) && includesQuery(track, trackQuery));
         const visibleBeats = beats
           .map((beat, index) => ({ beat, index }))
           .filter(({ beat }) => includesQuery(beat, beatQuery));
 
         els.trackList.innerHTML = visibleTracks.length ? visibleTracks.map(({ track, index }) => `
-          <div class="item favorite-item" aria-pressed="${index === currentTrack}">
-            <button class="favorite-load" type="button" data-track="${index}">
-              <span><strong>${track.title}</strong><span class="meta">${track.meta}</span></span>
+          <div class="item queue-item ${track.isCustom ? "has-remove" : ""}" aria-pressed="${index === currentTrack}">
+            <button class="queue-load" type="button" data-track="${index}">
+              <span><strong>${track.title}</strong><span class="meta">${formatTrackMeta(track)}</span></span>
             </button>
             <span class="tag">Stream</span>
             ${track.isCustom ? `<button class="remove-favorite" type="button" data-remove-track="${index}" aria-label="Remove added stream">×</button>` : ""}
           </div>
-        `).join("") : '<div class="empty">No archival streams match that search.</div>';
+        `).join("") : `<div class="empty">${activeTrackShelf === "added" ? "No added streams yet." : "No archival streams match that shelf and search."}</div>`;
 
         els.beatList.innerHTML = visibleBeats.length ? visibleBeats.map(({ beat, index }) => `
           <button class="item" type="button" aria-pressed="${index === currentBeat}" data-beat="${index}">
@@ -1843,7 +2348,7 @@
         `).join("") : '<div class="empty">No beat patterns match that search.</div>';
 
         els.trackList.querySelectorAll("[data-track]").forEach((button) => {
-          button.addEventListener("click", () => selectTrack(Number(button.dataset.track)));
+          button.addEventListener("click", () => selectTrack(Number(button.dataset.track), { autoPlay: true }));
         });
         els.trackList.querySelectorAll("[data-remove-track]").forEach((button) => {
           button.addEventListener("click", (event) => {
@@ -1852,7 +2357,9 @@
           });
         });
         els.beatList.querySelectorAll("[data-beat]").forEach((button) => {
-          button.addEventListener("click", () => selectBeat(Number(button.dataset.beat)));
+          button.addEventListener("click", () => {
+            selectBeat(Number(button.dataset.beat), { autoPlay: true });
+          });
         });
         renderFavorites();
       }
@@ -1884,10 +2391,8 @@
         });
       }
 
-      function saveFavorite() {
-        if (!canSaveFavorite()) return;
-
-        const favorite = {
+      function captureFavoriteDraft() {
+        return {
           trackUrl: tracks[currentTrack].url,
           trackTitle: tracks[currentTrack].title,
           beatTitle: beats[currentBeat].title,
@@ -1900,11 +2405,67 @@
           spaceAmount: Number(els.spaceAmount.value),
           toneAmount: Number(els.toneAmount.value)
         };
-        const key = `${favorite.trackUrl}|${favorite.beatTitle}|${favorite.streamVolume}|${favorite.beatVolume}|${favorite.tempo}|${favorite.swing}|${favorite.echoAmount}|${favorite.spaceAmount}|${favorite.toneAmount}`;
-        favorites = favorites.filter((item) => `${item.trackUrl}|${item.beatTitle}|${item.streamVolume}|${item.beatVolume}|${item.tempo}|${item.swing}|${item.echoAmount ?? 14}|${item.spaceAmount ?? 18}|${item.toneAmount ?? 72}` !== key);
+      }
+
+      function favoriteKey(favorite) {
+        return `${favorite.trackUrl}|${favorite.beatTitle}|${favorite.streamVolume}|${favorite.beatVolume}|${favorite.tempo}|${favorite.swing}|${favorite.echoAmount}|${favorite.spaceAmount}|${favorite.toneAmount}`;
+      }
+
+      function persistPendingFavoriteDraft(reason = "") {
+        pendingFavoriteDraft = captureFavoriteDraft();
+        localStorage.setItem(pendingFavoriteKey, JSON.stringify(pendingFavoriteDraft));
+        if (reason) {
+          setStatus(reason);
+        }
+      }
+
+      function clearPendingFavoriteDraft() {
+        pendingFavoriteDraft = null;
+        localStorage.removeItem(pendingFavoriteKey);
+      }
+
+      async function applyFavoriteDraft(favorite, options = {}) {
+        if (!favorite) return;
+
+        const {
+          autoPlayTrack = false,
+          autoPlayBeat = false,
+          statusText = ""
+        } = options;
+
+        const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
+        if (trackIndex >= 0) {
+          selectTrack(trackIndex, { autoPlay: autoPlayTrack });
+        }
+        await selectBeat(favorite.beatIndex, { autoPlay: autoPlayBeat });
+        els.streamVolume.value = favorite.streamVolume;
+        els.beatVolume.value = favorite.beatVolume;
+        els.tempo.value = favorite.tempo;
+        els.swing.value = favorite.swing;
+        els.echoAmount.value = favorite.echoAmount ?? 14;
+        els.spaceAmount.value = favorite.spaceAmount ?? 18;
+        els.toneAmount.value = favorite.toneAmount ?? 72;
+        updateOutputs();
+        if (statusText) {
+          setStatus(statusText);
+        }
+      }
+
+      function saveFavorite() {
+        if (!canSaveFavorite()) return;
+
+        const favorite = pendingFavoriteDraft || captureFavoriteDraft();
+        const key = favoriteKey(favorite);
+        favorites = favorites.filter((item) => favoriteKey({
+          ...item,
+          echoAmount: item.echoAmount ?? 14,
+          spaceAmount: item.spaceAmount ?? 18,
+          toneAmount: item.toneAmount ?? 72
+        }) !== key);
         favorites.unshift(favorite);
         favorites = favorites.slice(0, 12);
         localStorage.setItem(favoritesKey, JSON.stringify(favorites));
+        clearPendingFavoriteDraft();
         renderFavorites();
         setStatus("Blend added to Favorite Blends");
       }
@@ -1915,17 +2476,7 @@
 
         await stopAll();
 
-        const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
-        if (trackIndex >= 0) selectTrack(trackIndex, { autoPlay: true });
-        selectBeat(favorite.beatIndex);
-        els.streamVolume.value = favorite.streamVolume;
-        els.beatVolume.value = favorite.beatVolume;
-        els.tempo.value = favorite.tempo;
-        els.swing.value = favorite.swing;
-        els.echoAmount.value = favorite.echoAmount ?? 14;
-        els.spaceAmount.value = favorite.spaceAmount ?? 18;
-        els.toneAmount.value = favorite.toneAmount ?? 72;
-        updateOutputs();
+        await applyFavoriteDraft(favorite, { autoPlayTrack: true });
         await startBeat();
         setStatus("Favorite blend loaded");
       }
@@ -2000,8 +2551,12 @@
         if (account) {
           els.accountButton.textContent = hasLifetimeUnlock ? "Account" : "Unlock Favorite Blends";
           els.accountSummary.textContent = hasLifetimeUnlock
-            ? `Signed in as ${account.email}. Favorite Blends are unlocked.`
-            : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`;
+            ? pendingFavoriteDraft
+              ? `Signed in as ${account.email}. Your pending blend is ready to save.`
+              : `Signed in as ${account.email}. Favorite Blends are unlocked.`
+            : pendingFavoriteDraft
+              ? `Signed in as ${account.email}. Your pending blend is safe here. Unlock Favorite Blends to save it.`
+              : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`;
           showElement(els.accountForm, false, "grid");
           showElement(els.accountFeedback, Boolean(authMessage), "block");
           showElement(els.accountSession, true, "flex");
@@ -2018,7 +2573,9 @@
             els.accountSummary.textContent = `Check your inbox. We sent a secure sign-in link to ${pendingAuthEmail}.`;
           } else {
             els.accountSummary.textContent = authClient
-              ? accountModalReason || "Continue with email to create or open your Favorite Blends. Then unlock saving across devices."
+              ? pendingFavoriteDraft
+                ? "Continue with email to save this exact blend to Favorite Blends. Your current mix is being held for you."
+                : accountModalReason || "Continue with email to create or open your Favorite Blends. Then unlock saving to your account."
               : "Email login needs a Supabase project before it can be used.";
           }
           showElement(els.accountForm, true, "grid");
@@ -2036,7 +2593,9 @@
           ? "Favorite Blends unlocked"
           : "Favorite Blends - one-time $5.99";
         els.unlockCopy.textContent = hasLifetimeUnlock
-          ? "Your favorites will save to your account. Tāla saves your choices, not source audio."
+          ? pendingFavoriteDraft
+            ? "Your pending blend is ready. Save it to your account whenever you're ready. Tāla saves your choices, not source audio."
+            : "Your favorites will save to your account. Tāla saves your choices, not source audio."
           : "Unlock Favorite Blends for a one-time lifetime payment of $5.99. Tāla saves your favorites, not source audio.";
         els.unlockButton.textContent = hasLifetimeUnlock ? "Favorite Blends unlocked" : "Unlock Favorite Blends";
         els.unlockButton.disabled = hasLifetimeUnlock || !account;
@@ -2074,6 +2633,21 @@
       function closeAccountModal() {
         els.accountModal.hidden = true;
         accountModalReason = "";
+      }
+
+      function openLegalModal(kind) {
+        const content = legalContent[kind];
+        if (!content) return;
+        els.legalTitle.textContent = content.title;
+        els.legalBody.innerHTML = content.body;
+        els.legalModal.hidden = false;
+        window.setTimeout(() => {
+          els.closeLegalModal.focus();
+        }, 0);
+      }
+
+      function closeLegalModal() {
+        els.legalModal.hidden = true;
       }
 
       async function readEntitlementRow() {
@@ -2136,6 +2710,9 @@
             authMessage = "";
             authMessageState = "neutral";
             setStatus("Favorite Blends unlocked");
+            if (pendingFavoriteDraft) {
+              saveFavorite();
+            }
           } else if (reconcile) {
             authMessage = authMessage || "No paid Favorite Blends unlock was found for this email yet.";
             authMessageState = "error";
@@ -2195,6 +2772,13 @@
           sessionStorage.removeItem(postAuthReasonKey);
         }
         renderAccount();
+        if (account && pendingFavoriteDraft) {
+          applyFavoriteDraft(pendingFavoriteDraft, {
+            statusText: hasLifetimeUnlock
+              ? "Signed in. Your pending blend is ready to save."
+              : "Signed in. Your pending blend is safe while you finish unlocking Favorite Blends."
+          });
+        }
         if (account && shouldResumeModal && !hasLifetimeUnlock) {
           openAccountModal(resumeReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
         } else if (account && sessionStorage.getItem(checkoutStartedKey) === "true" && !hasLifetimeUnlock) {
@@ -2228,6 +2812,14 @@
           applyAuthSession(session);
           if (session?.user) setStatus("Favorite Blends ready");
         });
+      }
+
+      async function refreshSessionFromStorage() {
+        if (!authClient) return;
+        const { data, error } = await authClient.auth.getSession();
+        if (!error) {
+          applyAuthSession(data.session);
+        }
       }
 
       async function continueWithEmail(email) {
@@ -2281,13 +2873,13 @@
 
       function canSaveFavorite() {
         if (!account) {
+          persistPendingFavoriteDraft("Continue with email to save Favorite Blends");
           openAccountModal("Continue with email to save this blend to Favorite Blends.");
-          setStatus("Continue with email to save Favorite Blends");
           return false;
         }
         if (!hasLifetimeUnlock) {
+          persistPendingFavoriteDraft("Unlock Favorite Blends to save this blend");
           openAccountModal(`Signed in as ${account.email}. Unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
-          setStatus("Unlock Favorite Blends to save this blend");
           return false;
         }
         return true;
@@ -2604,12 +3196,18 @@
       els.saveFavorite.addEventListener("click", saveFavorite);
       els.accountButton.addEventListener("click", openAccountModal);
       els.closeAccountModal.addEventListener("click", closeAccountModal);
+      els.openTerms.addEventListener("click", () => openLegalModal("terms"));
+      els.openPrivacy.addEventListener("click", () => openLegalModal("privacy"));
+      els.closeLegalModal.addEventListener("click", closeLegalModal);
       els.signOutButton.addEventListener("click", signOutAccount);
       els.completeUnlockButton.addEventListener("click", () => {
         refreshEntitlementStatus({ reconcile: true });
       });
       els.accountModal.addEventListener("click", (event) => {
         if (event.target === els.accountModal) closeAccountModal();
+      });
+      els.legalModal.addEventListener("click", (event) => {
+        if (event.target === els.legalModal) closeLegalModal();
       });
       els.accountForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -2619,6 +3217,24 @@
       window.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && !els.accountModal.hidden) {
           closeAccountModal();
+        }
+        if (event.key === "Escape" && !els.legalModal.hidden) {
+          closeLegalModal();
+        }
+      });
+      window.addEventListener("focus", refreshSessionFromStorage);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          refreshSessionFromStorage();
+        }
+      });
+      window.addEventListener("storage", (event) => {
+        if (event.key === pendingFavoriteKey) {
+          pendingFavoriteDraft = JSON.parse(event.newValue || "null");
+          renderAccount();
+        }
+        if (event.key && event.key.includes("supabase.auth.token")) {
+          refreshSessionFromStorage();
         }
       });
       els.openArchiveSearch.addEventListener("click", () => {
@@ -2641,6 +3257,11 @@
       restoreCustomTracks();
       selectTrack(0);
       selectBeat(0);
+      if (pendingFavoriteDraft) {
+        applyFavoriteDraft(pendingFavoriteDraft, {
+          statusText: "Your pending blend has been restored."
+        });
+      }
       initializeAuth();
     </script>
   </body>

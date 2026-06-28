@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tāla Terms</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Press+Start+2P&display=swap");
+
+      :root {
+        --ink: #231731;
+        --muted: #5f5270;
+        --line: #ffb454;
+        --paper: #20112f;
+        --surface: #fff1cf;
+        --red: #ff667d;
+        --teal: #26d9d0;
+        --gold: #ffd764;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          linear-gradient(rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          linear-gradient(180deg, #2f164a 0%, #1c0f2d 42%, #12091f 100%);
+        color: #fff5d7;
+        font-family: "JetBrains Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
+        line-height: 1.6;
+      }
+
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 20px 72px;
+      }
+
+      .brand {
+        display: inline-block;
+        margin-bottom: 28px;
+        color: #ffe8b5;
+        font-family: "Press Start 2P", "JetBrains Mono", monospace;
+        font-size: 24px;
+        text-decoration: none;
+      }
+
+      .card {
+        background: var(--surface);
+        color: var(--ink);
+        border: 3px solid var(--line);
+        box-shadow: 8px 8px 0 rgba(255, 102, 125, 0.72);
+        padding: 28px;
+      }
+
+      h1, h2 { margin: 0 0 16px; color: var(--ink); }
+      h1 { font-size: clamp(28px, 5vw, 44px); }
+      h2 { font-size: 20px; margin-top: 28px; }
+      p, li { font-size: 15px; color: #3b2e4c; }
+      ul { padding-left: 20px; }
+      a { color: #6d34ff; }
+      .meta { color: var(--muted); margin-bottom: 22px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="brand" href="./index.html">Tāla</a>
+      <section class="card">
+        <h1>Terms</h1>
+        <p class="meta">Last updated June 26, 2026</p>
+
+        <p>
+          Tāla is an ephemeral listening platform for discovering and interacting with historic
+          recordings. By using Tāla, you agree to use it only in ways that respect the rights,
+          terms, and availability of the original streaming sources.
+        </p>
+
+        <h2>Use of archival streams</h2>
+        <p>
+          Tracks available through Tāla are streamed from third-party sources, including the
+          Archive of Indian Music and SoundCloud. Tāla does not own these recordings or their
+          underlying rights.
+        </p>
+        <p>
+          You may use Tāla for private listening. You may not use Tāla to record, download,
+          export, redistribute, or commercially exploit source audio or captured blends unless
+          you have permission from the relevant rights holders.
+        </p>
+
+        <h2>Favorite Blends</h2>
+        <p>
+          Favorite Blends is a one-time paid unlock. It saves your chosen stream URL, beat
+          choice, and listening settings to your account. It does not save source audio.
+        </p>
+
+        <h2>Availability</h2>
+        <p>
+          Tāla depends on connected streaming sources and embedded players. Streams, metadata,
+          and playback behavior may change or disappear if those sources change or remove content.
+        </p>
+
+        <h2>Payments and refunds</h2>
+        <p>
+          Payments are processed by Lemon Squeezy. Questions about access or billing can be sent
+          to <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>. Any refund handling is
+          subject to the payment processor and applicable law.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          For support, contact
+          <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tāla Privacy</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Press+Start+2P&display=swap");
+
+      :root {
+        --ink: #231731;
+        --muted: #5f5270;
+        --line: #ffb454;
+        --surface: #fff1cf;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          linear-gradient(rgba(255, 215, 100, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+          linear-gradient(180deg, #2f164a 0%, #1c0f2d 42%, #12091f 100%);
+        color: #fff5d7;
+        font-family: "JetBrains Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
+        line-height: 1.6;
+      }
+
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 20px 72px;
+      }
+
+      .brand {
+        display: inline-block;
+        margin-bottom: 28px;
+        color: #ffe8b5;
+        font-family: "Press Start 2P", "JetBrains Mono", monospace;
+        font-size: 24px;
+        text-decoration: none;
+      }
+
+      .card {
+        background: var(--surface);
+        color: var(--ink);
+        border: 3px solid var(--line);
+        box-shadow: 8px 8px 0 rgba(255, 102, 125, 0.72);
+        padding: 28px;
+      }
+
+      h1, h2 { margin: 0 0 16px; color: var(--ink); }
+      h1 { font-size: clamp(28px, 5vw, 44px); }
+      h2 { font-size: 20px; margin-top: 28px; }
+      p, li { font-size: 15px; color: #3b2e4c; }
+      a { color: #6d34ff; }
+      .meta { color: var(--muted); margin-bottom: 22px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="brand" href="./index.html">Tāla</a>
+      <section class="card">
+        <h1>Privacy</h1>
+        <p class="meta">Last updated June 26, 2026</p>
+
+        <p>
+          Tāla is designed to keep listening ephemeral. Tāla does not record or store source
+          audio from archival streams.
+        </p>
+
+        <h2>What Tāla stores</h2>
+        <p>
+          If you create an account and unlock Favorite Blends, Tāla may store your email address,
+          the stream URL you chose, your selected beat, and your listening settings such as
+          volume, tempo, swing, and effects.
+        </p>
+
+        <h2>What Tāla does not store</h2>
+        <p>
+          Tāla does not store the archival source audio, rendered remixes, or exported audio
+          files.
+        </p>
+
+        <h2>Third-party services</h2>
+        <p>
+          Tāla relies on third-party services including Supabase for authentication and account
+          storage, Lemon Squeezy for payments, and streaming providers such as SoundCloud and
+          Spotify for embedded playback.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Questions about privacy can be sent to
+          <a href="mailto:hello@keel-labs.org">hello@keel-labs.org</a>.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

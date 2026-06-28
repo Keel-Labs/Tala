@@ -1,6 +1,6 @@
 # Tāla
 
-Tāla is an ephemeral listening tool for pairing archival Indian music streams with original generated beats.
+Tāla is an ephemeral listening tool for pairing archival Indian music streams with original browser-made beats.
 
 ## App
 
@@ -13,10 +13,10 @@ Tāla includes:
 - Official SoundCloud embeds for Archive of Indian Music streams.
 - Original beat patterns using the browser's Web Audio API.
 - Random Blend, which selects a stream and beat and starts live co-playback from a user click.
-- Co-located stream, beat, blend, and stop controls beside the SoundCloud player.
-- Full-archive discovery through SoundCloud search, plus paste-to-load for any SoundCloud track URL.
-- A longer preloaded AIM queue, plus saved pasted SoundCloud streams.
-- Expanded generated beat library across lo-fi, tabla-fusion, garage, dub, trap, and EDM styles.
+- A single Play Blend toggle plus Random Blend and Favorite Blend actions.
+- Curated AIM shelves for discovery, plus paste-to-load for SoundCloud and Spotify URLs.
+- A larger preloaded AIM queue across Hindustani, Carnatic, Qawwali, Theatre, and Tagore shelves.
+- Expanded beat library across lo-fi, tabla-fusion, garage, dub, trap, and EDM styles.
 - Search for archival streams and beat patterns.
 - Stream volume through the SoundCloud embed, plus beat volume, tempo, and swing feel controls.
 - Favorite Blends for saving blend settings; Tāla saves only the source URL, beat choice, and slider settings.
@@ -26,11 +26,11 @@ Tāla includes:
 
 ## Product Guardrail
 
-The first experience is live co-playback, not stored remixing. Archival audio stays in the original streaming embed, and Tāla only plays a separate beat beside it.
+The first experience is live co-playback, not stored remixing. Archival audio stays in the original streaming embed, and Tāla only plays a separate beat beside it. Tāla does not own the underlying archive recordings or their rights.
 
 ## Auth and Payments
 
-See [AUTH_AND_PAYMENTS.md](./AUTH_AND_PAYMENTS.md) for the account library, Supabase Edge Functions, and Lemon Squeezy one-time lifetime unlock flow.
+See [AUTH_AND_PAYMENTS.md](./AUTH_AND_PAYMENTS.md) for the account library, Supabase Edge Functions, and Lemon Squeezy one-time unlock flow.
 
 ## Launch Assets
 
