@@ -1,17 +1,15 @@
 # Tāla
 
-Tāla is an ephemeral listening tool for pairing archival Indian music streams with original browser-made beats.
+Tāla is an ephemeral listening tool for pairing archival Indian music streams with original beats.
 
 ## App
 
-Open the local app at:
-
-http://127.0.0.1:4173/
+[tala.keel-labs.org](https://tala.keel-labs.org/)
 
 Tāla includes:
 
 - Official SoundCloud embeds for Archive of Indian Music streams.
-- Original beat patterns using the browser's Web Audio API.
+- Original beat patterns generated live in the app.
 - Random Blend, which selects a stream and beat and starts live co-playback from a user click.
 - A single Play Blend toggle plus Random Blend and Favorite Blend actions.
 - Curated AIM shelves for discovery, plus paste-to-load for SoundCloud and Spotify URLs.
@@ -28,12 +26,7 @@ Tāla includes:
 
 The first experience is live co-playback, not stored remixing. Archival audio stays in the original streaming embed, and Tāla only plays a separate beat beside it. Tāla does not own the underlying archive recordings or their rights.
 
-## Auth and Payments
+## Credit
 
-See [AUTH_AND_PAYMENTS.md](./AUTH_AND_PAYMENTS.md) for the account library, Supabase Edge Functions, and Lemon Squeezy one-time unlock flow.
-
-## Launch Assets
-
-- [BRANDED_AUTH_EMAIL_TEMPLATE.md](./BRANDED_AUTH_EMAIL_TEMPLATE.md)
-- [LIVE_MODE_CHECKLIST.md](./LIVE_MODE_CHECKLIST.md)
-- [LAUNCH_LEGAL_SUPPORT_COPY.md](./LAUNCH_LEGAL_SUPPORT_COPY.md)
+Tāla also builds on a longer thread of archival music work. Medha previously worked on
+[Muse](https://github.com/code-for-india/muse), a related project from roughly twelve years ago.
