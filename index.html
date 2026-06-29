@@ -1340,14 +1340,14 @@
           </div>
 
           <div class="unlock-box">
-            <strong id="unlockTitle">Favorite Blends - one-time $5.99</strong>
+            <strong id="unlockTitle">Favorite Blends - one-time $4.99</strong>
             <p id="unlockCopy">
-              Unlock Favorite Blends for a one-time lifetime payment of $5.99.
+              Unlock Favorite Blends for a one-time lifetime payment of $4.99.
               Tāla saves your favorites, not source audio.
             </p>
             <div class="unlock-actions">
               <button class="button favorite" id="unlockButton" type="button" disabled>Unlock Favorite Blends</button>
-              <button class="button secondary small" id="completeUnlockButton" type="button" hidden>Check payment</button>
+              <button class="button secondary small" id="completeUnlockButton" type="button" hidden>I've already paid</button>
             </div>
             <p class="hint" id="unlockHint">
               Continue with email first, then checkout will be available.
@@ -1996,7 +1996,7 @@
       const checkoutStartedKey = "tala:checkoutStarted";
       const legacyCustomTracksKey = "mixer:customTracks";
       const legacyFavoritesKey = "mixer:favorites";
-      const lemonCheckoutUrl = "https://keel-pro.lemonsqueezy.com/checkout/buy/905604c1-9648-45df-ac61-7dcc07a21516";
+      const lemonCheckoutUrl = "https://keel-labs.lemonsqueezy.com/checkout/buy/d1193f43-63d8-4418-ad15-ac2fd10955dd";
       const supabaseConfig = {
         url: "https://bjjxlilrxhjebjytrnxi.supabase.co",
         anonKey: "sb_publishable__Vd43aIGh_xXB1waSsdr7Q_c8uSebGX"
@@ -2556,7 +2556,7 @@
               : `Signed in as ${account.email}. Favorite Blends are unlocked.`
             : pendingFavoriteDraft
               ? `Signed in as ${account.email}. Your pending blend is safe here. Unlock Favorite Blends to save it.`
-              : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`;
+              : accountModalReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $4.99 lifetime payment.`;
           showElement(els.accountForm, false, "grid");
           showElement(els.accountFeedback, Boolean(authMessage), "block");
           showElement(els.accountSession, true, "flex");
@@ -2591,16 +2591,20 @@
         }
         els.unlockTitle.textContent = hasLifetimeUnlock
           ? "Favorite Blends unlocked"
-          : "Favorite Blends - one-time $5.99";
+          : "Favorite Blends - one-time $4.99";
         els.unlockCopy.textContent = hasLifetimeUnlock
           ? pendingFavoriteDraft
             ? "Your pending blend is ready. Save it to your account whenever you're ready. Tāla saves your choices, not source audio."
             : "Your favorites will save to your account. Tāla saves your choices, not source audio."
-          : "Unlock Favorite Blends for a one-time lifetime payment of $5.99. Tāla saves your favorites, not source audio.";
+          : "Unlock Favorite Blends for a one-time lifetime payment of $4.99. Tāla saves your favorites, not source audio.";
         els.unlockButton.textContent = hasLifetimeUnlock ? "Favorite Blends unlocked" : "Unlock Favorite Blends";
         els.unlockButton.disabled = hasLifetimeUnlock || !account;
-        showElement(els.completeUnlockButton, !hasLifetimeUnlock && Boolean(account), "inline-flex");
-        els.completeUnlockButton.textContent = entitlementCheckInFlight ? "Checking..." : "Check payment";
+        showElement(
+          els.completeUnlockButton,
+          !hasLifetimeUnlock && Boolean(account) && sessionStorage.getItem(checkoutStartedKey) === "true",
+          "inline-flex"
+        );
+        els.completeUnlockButton.textContent = entitlementCheckInFlight ? "Checking..." : "I've already paid";
         els.completeUnlockButton.disabled = entitlementCheckInFlight;
         els.unlockHint.textContent = authMessage && account && !hasLifetimeUnlock
           ? authMessage
@@ -2608,7 +2612,7 @@
             ? "You can save and reload Favorite Blend settings."
             : account
               ? sessionStorage.getItem(checkoutStartedKey) === "true"
-                ? "If you already finished checkout, click “Check payment” to sync your unlock."
+                ? "If you already finished checkout, click “I've already paid” to sync your unlock."
                 : "Secure checkout opens in a new tab."
               : "Continue with email first, then checkout will be available.";
       }
@@ -2780,7 +2784,7 @@
           });
         }
         if (account && shouldResumeModal && !hasLifetimeUnlock) {
-          openAccountModal(resumeReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
+          openAccountModal(resumeReason || `Signed in as ${account.email}. Next, unlock Favorite Blends with a one-time $4.99 lifetime payment.`);
         } else if (account && sessionStorage.getItem(checkoutStartedKey) === "true" && !hasLifetimeUnlock) {
           openAccountModal(`Signed in as ${account.email}. If you already completed checkout, finish unlocking Favorite Blends on this device.`);
         }
@@ -2879,7 +2883,7 @@
         }
         if (!hasLifetimeUnlock) {
           persistPendingFavoriteDraft("Unlock Favorite Blends to save this blend");
-          openAccountModal(`Signed in as ${account.email}. Unlock Favorite Blends with a one-time $5.99 lifetime payment.`);
+          openAccountModal(`Signed in as ${account.email}. Unlock Favorite Blends with a one-time $4.99 lifetime payment.`);
           return false;
         }
         return true;
