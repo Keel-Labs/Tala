@@ -606,12 +606,17 @@
 
       .inline-form {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) 108px;
         gap: 8px;
+      }
+
+      .inline-form label {
+        min-width: 0;
       }
 
       .inline-form .search {
         margin-bottom: 0;
+        font-size: 15px;
       }
 
       .hint {
@@ -1163,7 +1168,7 @@
                 <span class="live-dot" aria-hidden="true"></span>
                 <span>Live Blend</span>
               </div>
-              <span class="meta" id="statusText">Ready for private listening</span>
+              <span class="meta" id="statusText">Ready</span>
             </div>
 
             <div class="now">
@@ -1236,7 +1241,7 @@
               <form class="inline-form" id="customTrackForm">
                 <label>
                   <span class="sr-only">Paste a SoundCloud or Spotify URL</span>
-                  <input class="search" id="customTrackUrl" type="url" placeholder="Paste a SoundCloud or Spotify URL" />
+                  <input class="search" id="customTrackUrl" type="url" placeholder="Paste SoundCloud or Spotify URL" />
                 </label>
                 <button class="button secondary small" type="submit">Load</button>
               </form>
@@ -2019,6 +2024,8 @@
       let entitlementCheckInFlight = false;
       let activeTrackShelf = "all";
       let pendingFavoriteDraft = JSON.parse(localStorage.getItem(pendingFavoriteKey) || "null");
+      let favoriteConfirmationTimeout = null;
+      let statusResetTimeout = null;
 
       const trackShelves = [
         { id: "all", label: "All" },
@@ -2383,6 +2390,7 @@
           });
         });
         renderFavorites();
+        renderSaveFavoriteButton();
       }
 
       function renderFavorites() {
@@ -2390,6 +2398,7 @@
           els.favoriteList.innerHTML = hasLifetimeUnlock
             ? '<div class="empty">Favorite a blend to save it here.</div>'
             : '<div class="empty">Unlock Favorite Blends to save and reload blends on this account.</div>';
+          renderSaveFavoriteButton();
           return;
         }
 
@@ -2412,6 +2421,40 @@
             removeFavorite(Number(button.dataset.removeFavorite));
           });
         });
+
+        renderSaveFavoriteButton();
+      }
+
+      function currentFavoriteKey() {
+        return favoriteKey(captureFavoriteDraft());
+      }
+
+      function isCurrentBlendFavorited() {
+        const key = currentFavoriteKey();
+        return favorites.some((item) => favoriteKey({
+          ...item,
+          echoAmount: item.echoAmount ?? 14,
+          spaceAmount: item.spaceAmount ?? 18,
+          toneAmount: item.toneAmount ?? 72
+        }) === key);
+      }
+
+      function renderSaveFavoriteButton(forceSaved = false) {
+        const saved = forceSaved || isCurrentBlendFavorited();
+        const icon = els.saveFavorite.querySelector('[aria-hidden="true"]');
+        const label = els.saveFavorite.querySelector("span:last-child");
+
+        if (saved) {
+          if (icon) icon.textContent = "♥";
+          if (label) label.textContent = "Favorited";
+          els.saveFavorite.title = "This blend is saved to Favorite Blends";
+          els.saveFavorite.setAttribute("aria-pressed", "true");
+        } else {
+          if (icon) icon.textContent = "♡";
+          if (label) label.textContent = "Favorite Blend";
+          els.saveFavorite.title = "Save this blend to Favorite Blends";
+          els.saveFavorite.setAttribute("aria-pressed", "false");
+        }
       }
 
       function captureFavoriteDraft() {
@@ -2490,6 +2533,14 @@
         persistFavoritesForAccount();
         clearPendingFavoriteDraft();
         renderFavorites();
+        renderSaveFavoriteButton(true);
+        if (favoriteConfirmationTimeout) {
+          window.clearTimeout(favoriteConfirmationTimeout);
+        }
+        favoriteConfirmationTimeout = window.setTimeout(() => {
+          renderSaveFavoriteButton();
+          favoriteConfirmationTimeout = null;
+        }, 1600);
         setStatus("Blend added to Favorite Blends");
       }
 
@@ -2508,6 +2559,7 @@
         favorites.splice(index, 1);
         persistFavoritesForAccount();
         renderFavorites();
+        renderSaveFavoriteButton();
         setStatus("Favorite blend removed");
       }
 
@@ -2562,7 +2614,39 @@
       }
 
       function setStatus(text) {
-        els.status.textContent = text;
+        const normalized = String(text || "").toLowerCase();
+
+        if (statusResetTimeout) {
+          window.clearTimeout(statusResetTimeout);
+          statusResetTimeout = null;
+        }
+
+        if (normalized.includes("favorite blends unlocked")) {
+          els.status.textContent = "Favorite Blends unlocked";
+          statusResetTimeout = window.setTimeout(() => {
+            els.status.textContent = "Ready";
+            statusResetTimeout = null;
+          }, 1800);
+          return;
+        }
+
+        if (
+          normalized.includes("playing") ||
+          normalized.includes("starting")
+        ) {
+          els.status.textContent = "Playing";
+          return;
+        }
+
+        if (
+          normalized.includes("paused") ||
+          normalized.includes("stopped")
+        ) {
+          els.status.textContent = "Paused";
+          return;
+        }
+
+        els.status.textContent = "Ready";
       }
 
       function showElement(element, visible, displayValue = "block") {
@@ -2752,16 +2836,22 @@
           }
 
           renderAccount();
+          renderFavorites();
+          renderSaveFavoriteButton();
           return hasLifetimeUnlock;
         } catch (error) {
           authMessage = error?.message || "Could not check payment status yet.";
           authMessageState = "error";
           renderAccount();
+          renderFavorites();
+          renderSaveFavoriteButton();
           setStatus("Could not check payment status");
           return false;
         } finally {
           entitlementCheckInFlight = false;
           renderAccount();
+          renderFavorites();
+          renderSaveFavoriteButton();
         }
       }
 
