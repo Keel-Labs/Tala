@@ -183,7 +183,7 @@
       main {
         width: min(1180px, calc(100vw - 32px));
         margin: 0 auto;
-        padding: clamp(22px, 4vw, 44px) 0;
+        padding: clamp(10px, 2vw, 24px) 0 clamp(22px, 4vw, 44px);
       }
 
       .hero {
@@ -194,7 +194,7 @@
       }
 
       .intro {
-        padding: clamp(12px, 2vw, 20px) 0;
+        padding: clamp(4px, 1vw, 12px) 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -231,6 +231,12 @@
         font-size: 15px;
       }
 
+      .intro .mission {
+        color: #ffd36e;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
       .retro-deck {
         width: min(360px, 100%);
         min-height: 118px;
@@ -248,44 +254,45 @@
       .vinyl {
         content: "";
         position: absolute;
-        width: 84px;
-        height: 84px;
+        width: 118px;
+        height: 118px;
         border-radius: 50%;
-        left: 20px;
-        top: 16px;
+        left: 22px;
+        top: 6px;
         background:
-          radial-gradient(circle, #ffcf64 0 7px, #2a163f 7px 16px, transparent 16px),
-          repeating-radial-gradient(circle, #0d0715 0 6px, #372145 6px 9px);
-        border: 4px solid #0d0715;
-        box-shadow: 0 0 0 3px #4d2c66;
-        animation: spinRecord 20s steps(24) infinite;
-        image-rendering: pixelated;
+          conic-gradient(from 20deg, transparent 0deg 34deg, rgba(255, 240, 207, 0.12) 35deg 50deg, transparent 51deg 360deg),
+          radial-gradient(circle, var(--gold) 0 8px, #21102f 9px 18px, transparent 19px),
+          repeating-radial-gradient(circle, #1a1027 0 7px, #372145 8px 10px);
+        border: 5px solid #0d0715;
+        box-shadow: 0 0 20px rgba(255, 211, 110, 0.35);
+        animation: spinRecord 14s linear infinite;
+        opacity: 0.84;
+      }
+
+      .retro-deck::after {
+        content: "ON AIR";
+        position: absolute;
+        right: 24px;
+        top: 28px;
+        color: var(--green);
+        font-family: "Arial Black", sans-serif;
+        font-size: 28px;
+        text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
       }
 
       .cassette-lines {
         position: absolute;
-        right: 20px;
-        bottom: 18px;
-        width: 118px;
-        height: 46px;
-        border: 3px solid rgba(255, 240, 207, 0.8);
-        border-radius: 0;
+        right: 24px;
+        bottom: 26px;
+        width: 160px;
+        height: 34px;
+        border: 2px solid rgba(255, 240, 207, 0.8);
+        border-radius: 4px;
         background:
-          linear-gradient(180deg, transparent 0 8px, rgba(255, 240, 207, 0.78) 8px 14px, transparent 14px 100%),
-          radial-gradient(circle at 30px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
-          radial-gradient(circle at 110px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
-          linear-gradient(90deg, transparent 44px, rgba(255, 240, 207, 0.62) 44px 98px, transparent 98px);
-      }
-
-      .cassette-lines::before {
-        content: "";
-        position: absolute;
-        width: 54px;
-        height: 6px;
-        left: -20px;
-        top: -12px;
-        background: #ffecc4;
-        box-shadow: 6px 6px 0 #ffecc4, 12px 12px 0 #ffecc4, 18px 18px 0 #ffecc4;
+          radial-gradient(circle at 24px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          radial-gradient(circle at 132px 50%, #fff0cf 0 7px, #241133 8px 15px, transparent 16px),
+          linear-gradient(90deg, transparent 42px, rgba(255, 240, 207, 0.62) 43px 116px, transparent 117px);
+        transform: rotate(-2deg);
       }
 
       @keyframes spinRecord {
@@ -296,11 +303,14 @@
 
       .actions {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 10px;
+        justify-content: flex-start;
+        align-items: center;
       }
 
       .button {
+        width: auto;
         min-height: 44px;
         border: 3px solid var(--gold);
         background: #32184b;
@@ -1096,12 +1106,8 @@
           flex-direction: column;
         }
 
-        .button {
-          flex: 1 1 auto;
-        }
-
-        .button.icon {
-          flex: 0 0 46px;
+        .actions {
+          flex-wrap: wrap;
         }
 
         .control-row {
@@ -1138,26 +1144,31 @@
           <div class="intro">
             <h2 id="page-title">Old recordings, new pulse.</h2>
             <p>
-              Pick an archival Indian recording from its original streaming source, layer an
-              original beat beside it, and listen in the moment. To respect the source archive,
-              Tāla saves only your choices, not the audio.
+              Tāla helps you discover Indian archival music by pairing historic recordings with
+              modern beats. Scroll down to explore more songs and beats, and save your
+              favorite blends.
             </p>
+            <p class="mission">Built to help historic recordings be heard again.</p>
             <div class="retro-deck" aria-hidden="true">
               <div class="vinyl"></div>
               <div class="cassette-lines"></div>
             </div>
             <div class="actions">
-              <button class="button" id="playBlend" type="button" title="Start or stop the live blend">
+              <button class="button" id="playBlend" type="button">
                 <span aria-hidden="true">▶</span>
-                <span>Play Blend</span>
+                <span>Play</span>
               </button>
-              <button class="button secondary" id="randomAll" type="button" title="Choose a random recording and beat">
+              <button class="button secondary" id="randomAll" type="button">
                 <span aria-hidden="true">↻</span>
-                <span>Random Blend</span>
+                <span>Shuffle</span>
               </button>
-              <button class="button favorite" id="saveFavorite" type="button" title="Save this blend to Favorite Blends">
+              <button class="button secondary" id="shareBlend" type="button">
+                <span aria-hidden="true">↗</span>
+                <span>Share</span>
+              </button>
+              <button class="button favorite" id="saveFavorite" type="button">
                 <span aria-hidden="true">♡</span>
-                <span>Favorite Blend</span>
+                <span>Favorite</span>
               </button>
             </div>
           </div>
@@ -1166,7 +1177,6 @@
             <div class="stage-head">
               <div class="stage-title">
                 <span class="live-dot" aria-hidden="true"></span>
-                <span>Live Blend</span>
               </div>
               <span class="meta" id="statusText">Ready</span>
             </div>
@@ -1241,13 +1251,13 @@
               <form class="inline-form" id="customTrackForm">
                 <label>
                   <span class="sr-only">Paste a SoundCloud or Spotify URL</span>
-                  <input class="search" id="customTrackUrl" type="url" placeholder="Paste SoundCloud or Spotify URL" />
+                  <input class="search" id="customTrackUrl" type="url" placeholder="Paste SoundCloud URL" />
                 </label>
                 <button class="button secondary small" type="submit">Load</button>
               </form>
               <div class="hint">
                 Looking beyond this queue?
-                <button class="text-link" id="openArchiveSearch" type="button">Open AIM popular tracks</button>
+                <button class="text-link" id="openArchiveSearch" type="button">Find other tracks</button>
               </div>
             </div>
             <div class="list" id="trackList"></div>
@@ -1284,17 +1294,21 @@
             <article class="about-card" id="archive-purpose">
               <h3>About</h3>
               <p>
-                Tāla is an ephemeral listening platform for discovering and interacting with
-                historic recordings. Tracks are sourced from the
+                Tāla is an ephemeral listening platform for reviving historic recordings. Why?
+                Rare music and voice recordings that carry the voices of our ancestors are
+                disappearing at an alarming rate. Tāla was created to help people discover some
+                of the earliest recordings of Indian music, engage with them by mixing in beats,
+                and rekindle interest in vintage recordings. Tracks are sourced from the
                 <a href="https://archiveofindianmusic.org/" target="_blank" rel="noopener">Archive of Indian Music</a>.
-                Tāla does not own these recordings or their underlying rights.
               </p>
             </article>
             <article class="about-card" id="saved-settings">
               <h3>Favorite Blends</h3>
               <p>
                 If a blend feels right, save the stream, beat, volumes, tempo, and swing to your
-                account. Favorite Blends save choices and settings only, never source audio.
+                account. Favorite Blends save choices and settings only, never source audio. A
+                one-time paid unlock helps cover the cost of maintaining accounts, preferences,
+                and saved favorites for each listener.
               </p>
             </article>
             <article class="about-card" id="listening-notice">
@@ -1302,8 +1316,9 @@
               <p>
                 Archive recordings remain subject to the rights and terms of their original
                 source and rights holders. Tāla streams them for private listening only and does
-                not record, download, export, or distribute source audio. Track availability
-                depends on the Archive of Indian Music and other connected streaming sources.
+                not record, download, export, or distribute source audio. Tāla does not own
+                these recordings or their underlying rights. Track availability depends on the
+                Archive of Indian Music and other connected streaming sources.
               </p>
             </article>
           </section>
@@ -1911,6 +1926,7 @@
         openPrivacy: document.querySelector("#openPrivacy"),
         playBlend: document.querySelector("#playBlend"),
         randomAll: document.querySelector("#randomAll"),
+        shareBlend: document.querySelector("#shareBlend"),
         saveFavorite: document.querySelector("#saveFavorite"),
         openArchiveSearch: document.querySelector("#openArchiveSearch"),
         customTrackForm: document.querySelector("#customTrackForm"),
@@ -2025,6 +2041,7 @@
       let activeTrackShelf = "all";
       let pendingFavoriteDraft = JSON.parse(localStorage.getItem(pendingFavoriteKey) || "null");
       let favoriteConfirmationTimeout = null;
+      let shareConfirmationTimeout = null;
       let statusResetTimeout = null;
 
       const trackShelves = [
@@ -2056,6 +2073,58 @@
           return;
         }
         localStorage.setItem(scopedFavoritesKey(account.email), JSON.stringify(favorites));
+      }
+
+      function captureSharedBlend() {
+        return {
+          version: 1,
+          trackUrl: tracks[currentTrack].url,
+          beatIndex: currentBeat,
+          streamVolume: Number(els.streamVolume.value),
+          beatVolume: Number(els.beatVolume.value),
+          tempo: Number(els.tempo.value),
+          swing: Number(els.swing.value),
+          echoAmount: Number(els.echoAmount.value),
+          spaceAmount: Number(els.spaceAmount.value),
+          toneAmount: Number(els.toneAmount.value)
+        };
+      }
+
+      function encodeSharedBlend(blend) {
+        return encodeURIComponent(JSON.stringify(blend));
+      }
+
+      function decodeSharedBlend(value) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(value));
+          if (!parsed || parsed.version !== 1 || !parsed.trackUrl || typeof parsed.beatIndex !== "number") {
+            return null;
+          }
+          return parsed;
+        } catch (_error) {
+          return null;
+        }
+      }
+
+      function getSharedBlendFromUrl() {
+        const hash = window.location.hash.replace(/^#/, "");
+        const match = hash.match(/(?:^|&)blend=(.+)$/);
+        return match ? decodeSharedBlend(match[1]) : null;
+      }
+
+      function buildSharedBlendUrl() {
+        const payload = encodeSharedBlend(captureSharedBlend());
+        const url = new URL(window.location.href);
+        url.search = "";
+        url.hash = `blend=${payload}`;
+        return url.toString();
+      }
+
+      function renderShareButton(label = "Share") {
+        const text = els.shareBlend.querySelector("span:last-child");
+        if (text) {
+          text.textContent = label;
+        }
       }
 
       function embedUrl(trackUrl, autoPlay = false) {
@@ -2446,13 +2515,11 @@
 
         if (saved) {
           if (icon) icon.textContent = "♥";
-          if (label) label.textContent = "Favorited";
-          els.saveFavorite.title = "This blend is saved to Favorite Blends";
+          if (label) label.textContent = "Saved";
           els.saveFavorite.setAttribute("aria-pressed", "true");
         } else {
           if (icon) icon.textContent = "♡";
-          if (label) label.textContent = "Favorite Blend";
-          els.saveFavorite.title = "Save this blend to Favorite Blends";
+          if (label) label.textContent = "Favorite";
           els.saveFavorite.setAttribute("aria-pressed", "false");
         }
       }
@@ -2461,6 +2528,11 @@
         return {
           trackUrl: tracks[currentTrack].url,
           trackTitle: tracks[currentTrack].title,
+          trackMeta: tracks[currentTrack].meta,
+          trackProvider: getTrackProvider(tracks[currentTrack]),
+          spotifyType: tracks[currentTrack].spotifyType || null,
+          spotifyId: tracks[currentTrack].spotifyId || null,
+          isCustomTrack: Boolean(tracks[currentTrack].isCustom),
           beatTitle: beats[currentBeat].title,
           beatIndex: currentBeat,
           streamVolume: Number(els.streamVolume.value),
@@ -2490,6 +2562,36 @@
         localStorage.removeItem(pendingFavoriteKey);
       }
 
+      function ensureTrackForFavorite(favorite) {
+        const existingIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
+        if (existingIndex >= 0) {
+          return existingIndex;
+        }
+
+        const provider = favorite.trackProvider || (favorite.trackUrl.includes("spotify.com") ? "spotify" : "soundcloud");
+        const slug = favorite.trackUrl.split("/").filter(Boolean).pop() || "shared-stream";
+        const sharedTrack = {
+          title: favorite.trackTitle || slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+          meta: favorite.trackMeta || (provider === "spotify" ? "Spotify embed" : "Shared SoundCloud stream"),
+          url: favorite.trackUrl,
+          provider,
+          isCustom: true
+        };
+
+        if (provider === "spotify") {
+          sharedTrack.spotifyType = favorite.spotifyType || "track";
+          sharedTrack.spotifyId = favorite.spotifyId || "";
+        }
+
+        tracks.unshift(sharedTrack);
+        saveCustomTrack(sharedTrack);
+        if (provider === "spotify") {
+          hydrateSpotifyTrack(sharedTrack);
+        }
+        renderLists();
+        return 0;
+      }
+
       async function applyFavoriteDraft(favorite, options = {}) {
         if (!favorite) return;
 
@@ -2499,7 +2601,7 @@
           statusText = ""
         } = options;
 
-        const trackIndex = tracks.findIndex((track) => track.url === favorite.trackUrl);
+        const trackIndex = ensureTrackForFavorite(favorite);
         if (trackIndex >= 0) {
           selectTrack(trackIndex, { autoPlay: autoPlayTrack });
         }
@@ -2561,6 +2663,49 @@
         renderFavorites();
         renderSaveFavoriteButton();
         setStatus("Favorite blend removed");
+      }
+
+      async function shareBlend() {
+        const shareUrl = buildSharedBlendUrl();
+        const shareText = "Check out this blend I made on Tāla.";
+        const shareMessage = `${shareText} ${shareUrl}`;
+        const canUseNativeShare = Boolean(navigator.share) && window.location.protocol !== "file:";
+
+        try {
+          if (canUseNativeShare) {
+            await navigator.share({
+              title: "Tāla blend",
+              text: shareText,
+              url: shareUrl
+            });
+            renderShareButton("Shared");
+          } else if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(shareMessage);
+            renderShareButton("Message Copied");
+          } else {
+            window.prompt("Copy this Tāla blend message", shareMessage);
+            renderShareButton("Link Ready");
+          }
+        } catch (error) {
+          if (error?.name === "AbortError") {
+            return;
+          }
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(shareMessage);
+            renderShareButton("Message Copied");
+          } else {
+            window.prompt("Copy this Tāla blend message", shareMessage);
+            renderShareButton("Link Ready");
+          }
+        }
+
+        if (shareConfirmationTimeout) {
+          window.clearTimeout(shareConfirmationTimeout);
+        }
+        shareConfirmationTimeout = window.setTimeout(() => {
+          renderShareButton();
+          shareConfirmationTimeout = null;
+        }, 1800);
       }
 
       function renderVisualizer(activeStep = -1) {
@@ -3083,8 +3228,8 @@
 
       function updatePlaybackButtons() {
         els.playBlend.innerHTML = isStreamPlaying || isPlaying
-          ? '<span aria-hidden="true">■</span><span>Stop Blend</span>'
-          : '<span aria-hidden="true">▶</span><span>Play Blend</span>';
+          ? '<span aria-hidden="true">■</span><span>Stop</span>'
+          : '<span aria-hidden="true">▶</span><span>Play</span>';
       }
 
       async function startStream() {
@@ -3320,6 +3465,7 @@
 
       els.playBlend.addEventListener("click", toggleBlend);
       els.randomAll.addEventListener("click", randomizeAll);
+      els.shareBlend.addEventListener("click", shareBlend);
       els.saveFavorite.addEventListener("click", saveFavorite);
       els.accountButton.addEventListener("click", openAccountModal);
       els.closeAccountModal.addEventListener("click", closeAccountModal);
@@ -3384,7 +3530,12 @@
       restoreCustomTracks();
       selectTrack(0);
       selectBeat(0);
-      if (pendingFavoriteDraft) {
+      const sharedBlend = getSharedBlendFromUrl();
+      if (sharedBlend) {
+        applyFavoriteDraft(sharedBlend, {
+          statusText: "Shared blend loaded."
+        });
+      } else if (pendingFavoriteDraft) {
         applyFavoriteDraft(pendingFavoriteDraft, {
           statusText: "Your pending blend has been restored."
         });
