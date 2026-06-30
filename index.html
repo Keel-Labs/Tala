@@ -2861,11 +2861,14 @@
         }
         account = null;
         hasLifetimeUnlock = false;
+        favorites = [];
         authMessage = "";
         authMessageState = "neutral";
         pendingAuthEmail = "";
         sessionStorage.removeItem(checkoutStartedKey);
         renderAccount();
+        renderFavorites();
+        renderSaveFavoriteButton();
         setStatus("Signed out");
       }
 
