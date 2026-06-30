@@ -278,9 +278,8 @@
         right: 24px;
         top: 28px;
         color: var(--green);
-        font-family: var(--mono-font);
+        font-family: "Arial Black", sans-serif;
         font-size: 28px;
-        font-weight: 800;
         text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
       }
 
@@ -311,13 +310,6 @@
         gap: 10px;
         justify-content: flex-start;
         align-items: center;
-        overflow-x: auto;
-        padding-bottom: 6px;
-        scrollbar-width: none;
-      }
-
-      .actions::-webkit-scrollbar {
-        display: none;
       }
 
       .button {
@@ -1195,41 +1187,8 @@
           padding: 10px 12px;
         }
 
-        .now {
-          padding: 12px;
-          gap: 10px;
-        }
-
-        .selection {
-          gap: 6px;
-          padding-bottom: 10px;
-        }
-
-        .track-name {
-          font-size: clamp(18px, 7vw, 24px);
-          line-height: 1.08;
-        }
-
-        .meta,
-        .hint,
-        .about-card p,
-        .legal-modal p,
-        footer {
-          font-size: 13px;
-        }
-
-        iframe {
-          height: 116px;
-        }
-
-        .beat-visual {
-          height: 68px;
-          gap: 4px;
-          padding: 9px 10px;
-        }
-
-        .controls {
-          gap: 8px;
+        .actions {
+          flex-wrap: wrap;
         }
 
         .control-row {
