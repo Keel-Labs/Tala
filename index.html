@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tāla - Ephemeral Blend</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Press+Start+2P&display=swap");
-    </style>
-    <style>
       :root {
         color-scheme: dark;
+        --mono-font:
+          ui-monospace, "SFMono-Regular", "SF Mono", "Menlo", "Monaco", "Consolas", "Liberation Mono",
+          "Courier New", monospace;
         --ink: #231731;
         --muted: #5f5270;
         --line: #ffb454;
@@ -39,10 +39,11 @@
           radial-gradient(circle at 82% 8%, rgba(38, 217, 208, 0.2), transparent 22%),
           linear-gradient(180deg, #2f164a 0%, #1c0f2d 42%, #12091f 100%);
         color: #fff5d7;
-        font-family:
-          "JetBrains Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
+        font-family: var(--mono-font);
         letter-spacing: 0;
         overflow-x: hidden;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
       }
 
       body::before {
@@ -129,12 +130,13 @@
       }
 
       h1 {
-        font-family: "Press Start 2P", "Courier New", monospace;
+        font-family: var(--mono-font);
         font-size: clamp(20px, 3vw, 32px);
         line-height: 1;
         margin: 0;
         letter-spacing: 0;
         color: var(--gold);
+        font-weight: 800;
         text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(38, 217, 208, 0.5);
       }
 
@@ -210,13 +212,14 @@
       }
 
       .intro h2 {
-        font-family: "Press Start 2P", "Courier New", monospace;
+        font-family: var(--mono-font);
         font-size: clamp(24px, 5vw, 50px);
         line-height: 1.14;
         margin: 0;
         max-width: 720px;
         letter-spacing: 0;
         color: #fff0cf;
+        font-weight: 800;
         text-shadow:
           3px 3px 0 var(--red),
           6px 6px 0 var(--teal),
@@ -275,8 +278,9 @@
         right: 24px;
         top: 28px;
         color: var(--green);
-        font-family: "Arial Black", sans-serif;
+        font-family: var(--mono-font);
         font-size: 28px;
+        font-weight: 800;
         text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
       }
 
@@ -307,6 +311,13 @@
         gap: 10px;
         justify-content: flex-start;
         align-items: center;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scrollbar-width: none;
+      }
+
+      .actions::-webkit-scrollbar {
+        display: none;
       }
 
       .button {
@@ -326,6 +337,8 @@
         font-weight: 800;
         text-transform: none;
         letter-spacing: 0;
+        flex: 0 0 auto;
+        white-space: nowrap;
       }
 
       .button.secondary {
@@ -534,7 +547,8 @@
 
       .about-card h3 {
         margin: 0 0 8px;
-        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-family: var(--mono-font);
+        font-weight: 800;
         font-size: 17px;
       }
 
@@ -568,7 +582,8 @@
       .panel h3 {
         margin: 0 0 12px;
         font-size: 18px;
-        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-family: var(--mono-font);
+        font-weight: 800;
         color: var(--ink);
       }
 
@@ -843,7 +858,8 @@
 
       .modal-head h2 {
         margin: 0;
-        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-family: var(--mono-font);
+        font-weight: 800;
         font-size: 28px;
       }
 
@@ -957,9 +973,10 @@
       }
 
       .footer-title {
-        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-family: var(--mono-font);
         color: var(--gold);
         font-size: 22px;
+        font-weight: 800;
         margin-bottom: 8px;
       }
 
@@ -1008,13 +1025,15 @@
 
       .legal-modal h2 {
         margin: 0;
-        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-family: var(--mono-font);
+        font-weight: 800;
         font-size: 28px;
       }
 
       .legal-modal h3 {
         margin: 22px 0 8px;
-        font-family: "Cooper Black", "Arial Black", fantasy;
+        font-family: var(--mono-font);
+        font-weight: 800;
         font-size: 20px;
       }
 
@@ -1049,6 +1068,10 @@
       }
 
       @media (max-width: 860px) {
+        header {
+          padding: 18px 16px;
+        }
+
         .hero,
         .library,
         .about-grid {
@@ -1056,7 +1079,8 @@
         }
 
         .intro {
-          padding-top: 4px;
+          padding-top: 2px;
+          gap: 12px;
         }
 
         .mode-pill {
@@ -1066,25 +1090,99 @@
         .topbar {
           align-items: flex-start;
           flex-direction: column;
+          gap: 12px;
         }
 
         .site-nav {
           justify-content: flex-start;
+          gap: 10px 12px;
         }
 
         .footer-inner {
           grid-template-columns: 1fr;
         }
-
       }
 
       @media (max-width: 560px) {
         main {
-          width: min(100vw - 24px, 1180px);
+          width: min(100vw - 18px, 1180px);
+          padding-top: 8px;
+        }
+
+        .brand {
+          gap: 10px;
+        }
+
+        .mark {
+          width: 42px;
+          height: 42px;
+        }
+
+        h1 {
+          font-size: 28px;
+          text-shadow: 2px 2px 0 var(--red), 4px 4px 0 rgba(38, 217, 208, 0.5);
+        }
+
+        .site-nav a,
+        .nav-account {
+          font-size: 13px;
+        }
+
+        .nav-account {
+          min-height: 34px;
+          padding: 6px 9px;
+        }
+
+        .hero {
+          gap: 12px;
+        }
+
+        .intro h2 {
+          font-size: clamp(22px, 9vw, 34px);
+          line-height: 1.1;
+          text-shadow:
+            2px 2px 0 var(--red),
+            4px 4px 0 var(--teal),
+            0 0 18px rgba(255, 211, 110, 0.32);
+        }
+
+        .intro p {
+          font-size: 14px;
+          line-height: 1.5;
+        }
+
+        .intro .mission {
+          font-size: 12px;
+        }
+
+        .retro-deck {
+          width: 100%;
+          min-height: 104px;
+        }
+
+        .vinyl {
+          width: 96px;
+          height: 96px;
+          left: 16px;
+          top: 8px;
+        }
+
+        .retro-deck::after {
+          right: 18px;
+          top: 24px;
+          font-size: 24px;
+        }
+
+        .cassette-lines {
+          right: 18px;
+          bottom: 22px;
+          width: 136px;
+          height: 30px;
         }
 
         .panel {
-          height: 720px;
+          height: 620px;
+          padding: 12px;
         }
 
         .list,
@@ -1093,30 +1191,115 @@
           max-height: none;
         }
 
-        .topbar {
-          align-items: flex-start;
-        }
-
-        .stage-head,
-        .actions {
-          align-items: stretch;
-        }
-
         .stage-head {
-          flex-direction: column;
+          padding: 10px 12px;
         }
 
-        .actions {
-          flex-wrap: wrap;
+        .now {
+          padding: 12px;
+          gap: 10px;
+        }
+
+        .selection {
+          gap: 6px;
+          padding-bottom: 10px;
+        }
+
+        .track-name {
+          font-size: clamp(18px, 7vw, 24px);
+          line-height: 1.08;
+        }
+
+        .meta,
+        .hint,
+        .about-card p,
+        .legal-modal p,
+        footer {
+          font-size: 13px;
+        }
+
+        iframe {
+          height: 116px;
+        }
+
+        .beat-visual {
+          height: 68px;
+          gap: 4px;
+          padding: 9px 10px;
+        }
+
+        .controls {
+          gap: 8px;
         }
 
         .control-row {
-          grid-template-columns: 1fr;
-          gap: 7px;
+          grid-template-columns: 88px minmax(0, 1fr) 42px;
+          gap: 8px;
+          font-size: 13px;
         }
 
         .control-row output {
-          text-align: left;
+          text-align: right;
+        }
+
+        .actions {
+          gap: 8px;
+          margin-top: 2px;
+          padding-bottom: 4px;
+        }
+
+        .button {
+          min-height: 42px;
+          padding: 0 14px;
+          box-shadow: 4px 4px 0 var(--red);
+        }
+
+        .button.small {
+          min-height: 36px;
+          padding: 0 10px;
+        }
+
+        .library {
+          margin-top: 12px;
+          gap: 12px;
+        }
+
+        .panel h3 {
+          margin-bottom: 10px;
+        }
+
+        .search {
+          min-height: 40px;
+          margin-bottom: 8px;
+        }
+
+        .inline-form {
+          grid-template-columns: minmax(0, 1fr) 88px;
+        }
+
+        .inline-form .search {
+          font-size: 14px;
+        }
+
+        .item {
+          min-height: 80px;
+          padding: 10px;
+        }
+
+        .favorite-item {
+          min-height: 96px;
+          padding: 12px 42px 12px 12px;
+        }
+
+        .remove-favorite {
+          top: 8px;
+          right: 8px;
+        }
+
+        .about-card,
+        .account-modal,
+        .legal-modal {
+          padding: 14px;
         }
       }
     </style>
@@ -1187,7 +1370,7 @@
                 <span class="track-name" id="trackTitle"></span>
                 <span class="meta" id="trackMeta"></span>
                 <div class="player-frame">
-                  <iframe id="soundcloudPlayer" title="Archive of Indian Music SoundCloud player" allow="autoplay"></iframe>
+                  <iframe id="soundcloudPlayer" title="Archive of Indian Music SoundCloud player" allow="autoplay; encrypted-media"></iframe>
                 </div>
               </div>
 
@@ -3219,10 +3402,20 @@
         const timeout = new Promise((resolve) => window.setTimeout(() => resolve(false), 3500));
         const ready = await Promise.race([soundcloudReady, timeout]);
         if (!ready || !soundcloudWidget) {
-          setStatus("Use the SoundCloud player if stream control is unavailable");
           return false;
         }
         action(soundcloudWidget);
+        return true;
+      }
+
+      function forceSoundcloudAutoplay() {
+        const track = tracks[currentTrack];
+        if (!track || getTrackProvider(track) !== "soundcloud") {
+          return false;
+        }
+        soundcloudAutoPlayOnReady = true;
+        els.player.src = embedUrl(track.url, true);
+        bindSoundcloudWidget();
         return true;
       }
 
@@ -3237,11 +3430,23 @@
           setStatus("Beat playing; start the Spotify stream in the embed");
           return false;
         }
-        return withSoundcloudWidget((widget) => {
+        const started = await withSoundcloudWidget((widget) => {
           widget.play();
           isStreamPlaying = true;
           updatePlaybackButtons();
         });
+        if (started) {
+          window.setTimeout(() => {
+            if (!isStreamPlaying) {
+              forceSoundcloudAutoplay();
+              setStatus("Starting stream...");
+            }
+          }, 400);
+          return true;
+        }
+        forceSoundcloudAutoplay();
+        setStatus("Starting stream...");
+        return true;
       }
 
       async function stopStream() {
@@ -3258,7 +3463,7 @@
       async function playBlend() {
         await startBeat();
         const streamStarted = await startStream();
-        setStatus(streamStarted ? "Live blend playing" : "Beat playing; use the SoundCloud play button for the stream");
+        setStatus(streamStarted ? "Playing" : "Beat playing; use the SoundCloud play button for the stream");
       }
 
       async function stopAll() {
