@@ -557,6 +557,25 @@
         animation: needsTapPulse 1.4s ease-in-out infinite;
       }
 
+      .stream-hint {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 12px;
+        border: 2px solid var(--red);
+        border-radius: 7px;
+        background: rgba(255, 95, 125, 0.14);
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .stream-hint[hidden] {
+        display: none;
+      }
+
       @keyframes needsTapPulse {
         0%,
         100% {
@@ -1529,6 +1548,13 @@
                 <span class="label">Archival stream</span>
                 <span class="track-name" id="trackTitle"></span>
                 <span class="meta" id="trackMeta"></span>
+                <div class="stream-hint" id="streamHint" hidden>
+                  <span>Stream didn't auto-start — one more tap:</span>
+                  <button class="button small" id="startStreamButton" type="button">
+                    <span aria-hidden="true">▶</span>
+                    <span>Start stream</span>
+                  </button>
+                </div>
                 <div class="player-frame">
                   <iframe id="soundcloudPlayer" title="Archive of Indian Music SoundCloud player" allow="autoplay; encrypted-media"></iframe>
                 </div>
@@ -2283,6 +2309,8 @@
         openPrivacy: document.querySelector("#openPrivacy"),
         playBlend: document.querySelector("#playBlend"),
         playerFrame: document.querySelector(".player-frame"),
+        streamHint: document.querySelector("#streamHint"),
+        startStreamButton: document.querySelector("#startStreamButton"),
         debugPanel: document.querySelector("#debugPanel"),
         miniPlayer: document.querySelector("#miniPlayer"),
         miniPlayerToggle: document.querySelector("#miniPlayerToggle"),
@@ -3582,7 +3610,7 @@
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
               logSC("PLAY");
               isStreamPlaying = true;
-              els.playerFrame?.classList.remove("needs-tap");
+              hideStreamHint();
               updatePlaybackButtons();
             });
             widget.bind(window.SC.Widget.Events.PAUSE, () => {
@@ -3650,13 +3678,23 @@
         });
       }
 
+      function showStreamHint() {
+        if (els.streamHint) els.streamHint.hidden = false;
+        els.playerFrame?.classList.add("needs-tap");
+      }
+
+      function hideStreamHint() {
+        if (els.streamHint) els.streamHint.hidden = true;
+        els.playerFrame?.classList.remove("needs-tap");
+      }
+
       async function startCurrentBlend() {
         const [, streamStarted] = await Promise.all([startBeat(), startStream()]);
         if (streamStarted) {
           setStatus("Playing");
         } else if (getTrackProvider(tracks[currentTrack]) === "soundcloud" && isPlaying) {
-          setStatus("Beat playing · tap ▶ on the SoundCloud player for the stream");
-          els.playerFrame?.classList.add("needs-tap");
+          setStatus("Beat playing · stream needs one more tap");
+          showStreamHint();
         } else if (isPlaying) {
           setStatus("Playing");
         } else {
@@ -3720,6 +3758,18 @@
         } else {
           soundcloudAutoPlayOnReady = true;
         }
+        // On iOS the first in-gesture play() can be refused because the page hadn't yet played
+        // any media at that instant; once the silent keepalive is rolling, WebKit honors the
+        // iframe's allow="autoplay" delegation without a fresh gesture (observed on device: a
+        // second Play tap started the stream without touching the embed). Retry a few times
+        // inside the confirmation window to catch that relaxation on the first tap.
+        [350, 900, 1700].forEach((delay) => {
+          window.setTimeout(() => {
+            if (!isStreamPlaying && soundcloudWidget) {
+              try { soundcloudWidget.play(); } catch (_error) { /* still blocked */ }
+            }
+          }, delay);
+        });
         return waitForStreamPlayback(2600);
       }
 
@@ -3739,7 +3789,7 @@
       }
 
       async function stopAll() {
-        els.playerFrame?.classList.remove("needs-tap");
+        hideStreamHint();
         stopBeat();
         await stopStream();
         setStatus("Blend stopped");
@@ -4043,6 +4093,15 @@
       }
       els.playBlend.addEventListener("click", handlePlayToggle);
       els.miniPlayerToggle?.addEventListener("click", handlePlayToggle);
+      els.startStreamButton?.addEventListener("click", async () => {
+        // A fresh parent-page gesture: by now the page has played media (keepalive), so this
+        // in-gesture play() is honored (verified on device via the stop→play-again flow).
+        requestStreamPlaySync();
+        const started = await waitForStreamPlayback(2600);
+        if (started) {
+          setStatus("Playing");
+        }
+      });
       if (els.miniPlayer && "IntersectionObserver" in window) {
         const miniPlayerObserver = new IntersectionObserver(([entry]) => {
           const visible = !entry.isIntersecting;
