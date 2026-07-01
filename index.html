@@ -497,6 +497,7 @@
         padding: 10px 12px;
         border: 1px solid var(--line);
         border-radius: 7px;
+        overflow: hidden;
         background:
           linear-gradient(180deg, rgba(23, 214, 197, 0.16), transparent),
           repeating-linear-gradient(90deg, rgba(37, 22, 52, 0.08) 0 1px, transparent 1px 22px),
@@ -505,9 +506,11 @@
 
       .bar {
         min-height: 12px;
+        max-height: 100%;
         border-radius: 4px 4px 0 0;
         background: var(--teal);
         opacity: 0.38;
+        transform-origin: bottom;
         transition: opacity 120ms ease, transform 120ms ease;
       }
 
@@ -2666,7 +2669,7 @@
       async function randomizeAll() {
         selectTrack(randomTrackIndex(currentTrack));
         await selectBeat(randomIndex(beats.length, currentBeat));
-        await startCurrentBlend({ preferStream: true });
+        await startCurrentBlend();
       }
 
       function includesQuery(item, query) {
@@ -2706,7 +2709,7 @@
           button.addEventListener("click", async () => {
             await stopAll();
             selectTrack(Number(button.dataset.track));
-            await startCurrentBlend({ preferStream: true });
+            await startCurrentBlend();
           });
         });
         els.trackList.querySelectorAll("[data-remove-track]").forEach((button) => {
@@ -2915,7 +2918,7 @@
         await stopAll();
 
         await applyFavoriteDraft(favorite);
-        await startCurrentBlend({ preferStream: true });
+        await startCurrentBlend();
       }
 
       function removeFavorite(index) {
@@ -3517,18 +3520,9 @@
         });
       }
 
-      async function startCurrentBlend(options = {}) {
-        const { preferStream = true } = options;
-        let streamStarted = false;
-
-        if (preferStream) {
-          streamStarted = await startStream();
-          await startBeat();
-        } else {
-          await startBeat();
-          streamStarted = await startStream();
-        }
-
+      async function startCurrentBlend() {
+        await startBeat();
+        const streamStarted = await startStream();
         setStatus(streamStarted || isPlaying ? "Playing" : "Ready");
         return streamStarted;
       }
@@ -3595,7 +3589,7 @@
       }
 
       async function playBlend() {
-        await startCurrentBlend({ preferStream: true });
+        await startCurrentBlend();
       }
 
       async function stopAll() {
@@ -3851,12 +3845,12 @@
           refreshSessionFromStorage();
         }
       });
-      window.addEventListener("pointerdown", () => {
+      window.addEventListener("click", () => {
         if (!audioPrimed) {
           primeAudio();
         }
       }, { passive: true });
-      window.addEventListener("touchstart", () => {
+      window.addEventListener("touchend", () => {
         if (!audioPrimed) {
           primeAudio();
         }
