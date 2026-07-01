@@ -247,6 +247,12 @@
         font-weight: 800;
       }
 
+      .intro .desktop-note {
+        display: none;
+        font-size: 12px;
+        color: rgba(255, 232, 181, 0.72);
+      }
+
       .retro-deck {
         width: min(360px, 100%);
         min-height: 118px;
@@ -557,9 +563,16 @@
         animation: needsTapPulse 1.4s ease-in-out infinite;
       }
 
+      .scrub-hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
       .stream-hint {
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
         gap: 8px;
         padding: 10px 12px;
         border: 2px solid var(--red);
@@ -568,20 +581,6 @@
         color: var(--ink);
         font-size: 14px;
         font-weight: 700;
-      }
-
-      .stream-hint-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .stream-hint-note {
-        font-size: 12px;
-        font-weight: 400;
-        color: var(--muted);
       }
 
       .stream-hint[hidden] {
@@ -1320,6 +1319,10 @@
           font-size: 12px;
         }
 
+        .intro .desktop-note {
+          display: block;
+        }
+
         .retro-deck {
           width: 100%;
           min-height: 96px;
@@ -1523,6 +1526,7 @@
               favorite blends.
             </p>
             <p class="mission">Built to help historic recordings be heard again.</p>
+            <p class="desktop-note">Best experienced on desktop — full library view and smoother playback.</p>
             <div class="retro-deck" id="retroDeck" aria-hidden="true">
               <div class="vinyl"></div>
               <div class="cassette-lines"></div>
@@ -1561,18 +1565,16 @@
                 <span class="track-name" id="trackTitle"></span>
                 <span class="meta" id="trackMeta"></span>
                 <div class="stream-hint" id="streamHint" hidden>
-                  <div class="stream-hint-row">
-                    <span>Stream didn't auto-start — one more tap:</span>
-                    <button class="button small" id="startStreamButton" type="button">
-                      <span aria-hidden="true">▶</span>
-                      <span>Start stream</span>
-                    </button>
-                  </div>
-                  <span class="stream-hint-note">Tip: Tāla is best experienced on desktop, with the full library and smoother playback.</span>
+                  <span>Stream didn't auto-start — one more tap:</span>
+                  <button class="button small" id="startStreamButton" type="button">
+                    <span aria-hidden="true">▶</span>
+                    <span>Start stream</span>
+                  </button>
                 </div>
                 <div class="player-frame">
                   <iframe id="soundcloudPlayer" title="Archive of Indian Music SoundCloud player" allow="autoplay; encrypted-media"></iframe>
                 </div>
+                <span class="meta scrub-hint" id="scrubHint" hidden>Tip: drag the waveform in the player to skip to any part of the recording.</span>
               </div>
 
               <div class="selection">
@@ -2326,6 +2328,7 @@
         playerFrame: document.querySelector(".player-frame"),
         streamHint: document.querySelector("#streamHint"),
         startStreamButton: document.querySelector("#startStreamButton"),
+        scrubHint: document.querySelector("#scrubHint"),
         debugPanel: document.querySelector("#debugPanel"),
         miniPlayer: document.querySelector("#miniPlayer"),
         miniPlayerToggle: document.querySelector("#miniPlayerToggle"),
@@ -3761,6 +3764,9 @@
         if (els.miniPlayerToggle) {
           els.miniPlayerToggle.innerHTML = toggleHtml;
         }
+        if (els.scrubHint) {
+          els.scrubHint.hidden = !isStreamPlaying;
+        }
         syncMiniPlayerNowPlaying();
         renderDebug();
       }
@@ -4134,14 +4140,6 @@
       }
       els.playBlend.addEventListener("click", handlePlayToggle);
       els.miniPlayerToggle?.addEventListener("click", handlePlayToggle);
-      // While the hint is up, let any tap on the page double as the stream-starting gesture —
-      // the user shouldn't have to find the button specifically. Guarded on isPlaying so a
-      // Stop tap (which hides the hint synchronously before this bubbles) never resurrects it.
-      window.addEventListener("click", () => {
-        if (els.streamHint && !els.streamHint.hidden && isPlaying && !isStreamPlaying) {
-          requestStreamPlaySync();
-        }
-      }, { passive: true });
       els.startStreamButton?.addEventListener("click", async () => {
         // A fresh parent-page gesture: by now the page has played media (keepalive), so this
         // in-gesture play() is honored (verified on device via the stop→play-again flow).
