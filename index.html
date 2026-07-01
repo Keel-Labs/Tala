@@ -559,9 +559,7 @@
 
       .stream-hint {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 8px;
         padding: 10px 12px;
         border: 2px solid var(--red);
@@ -570,6 +568,20 @@
         color: var(--ink);
         font-size: 14px;
         font-weight: 700;
+      }
+
+      .stream-hint-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .stream-hint-note {
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--muted);
       }
 
       .stream-hint[hidden] {
@@ -1549,11 +1561,14 @@
                 <span class="track-name" id="trackTitle"></span>
                 <span class="meta" id="trackMeta"></span>
                 <div class="stream-hint" id="streamHint" hidden>
-                  <span>Stream didn't auto-start — one more tap:</span>
-                  <button class="button small" id="startStreamButton" type="button">
-                    <span aria-hidden="true">▶</span>
-                    <span>Start stream</span>
-                  </button>
+                  <div class="stream-hint-row">
+                    <span>Stream didn't auto-start — one more tap:</span>
+                    <button class="button small" id="startStreamButton" type="button">
+                      <span aria-hidden="true">▶</span>
+                      <span>Start stream</span>
+                    </button>
+                  </div>
+                  <span class="stream-hint-note">Tip: Tāla is best experienced on desktop, with the full library and smoother playback.</span>
                 </div>
                 <div class="player-frame">
                   <iframe id="soundcloudPlayer" title="Archive of Indian Music SoundCloud player" allow="autoplay; encrypted-media"></iframe>
@@ -2616,6 +2631,29 @@
         els.trackTitle.textContent = track.title;
         els.trackMeta.textContent = formatTrackMeta(track);
         syncMiniPlayerNowPlaying();
+
+        // Swap SoundCloud tracks inside the existing widget document instead of replacing the
+        // iframe src. Replacing the src creates a fresh document that iOS treats as never
+        // user-activated, so programmatic play after shuffle/track change gets vetoed; the
+        // same document keeps its "has played" grant across widget.load() calls.
+        if (provider === "soundcloud" && soundcloudWidget) {
+          isStreamPlaying = false;
+          updatePlaybackButtons();
+          try {
+            soundcloudWidget.load(track.url, {
+              auto_play: autoPlay,
+              callback: () => {
+                soundcloudWidget?.setVolume(Number(els.streamVolume.value));
+              }
+            });
+            setStatus("Archival stream selected");
+            renderLists();
+            return;
+          } catch (_error) {
+            // Fall through to a full iframe reload below.
+          }
+        }
+
         els.player.src = getTrackEmbedUrl(track, autoPlay);
         els.player.title = provider === "spotify"
           ? "Spotify embedded player"
@@ -4096,6 +4134,14 @@
       }
       els.playBlend.addEventListener("click", handlePlayToggle);
       els.miniPlayerToggle?.addEventListener("click", handlePlayToggle);
+      // While the hint is up, let any tap on the page double as the stream-starting gesture —
+      // the user shouldn't have to find the button specifically. Guarded on isPlaying so a
+      // Stop tap (which hides the hint synchronously before this bubbles) never resurrects it.
+      window.addEventListener("click", () => {
+        if (els.streamHint && !els.streamHint.hidden && isPlaying && !isStreamPlaying) {
+          requestStreamPlaySync();
+        }
+      }, { passive: true });
       els.startStreamButton?.addEventListener("click", async () => {
         // A fresh parent-page gesture: by now the page has played media (keepalive), so this
         // in-gesture play() is honored (verified on device via the stop→play-again flow).
