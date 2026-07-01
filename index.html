@@ -1601,22 +1601,17 @@
                   <output id="tempoOut">88</output>
                 </label>
                 <label class="control-row">
-                  <span>Swing feel</span>
-                  <input id="swing" type="range" min="0" max="42" value="14" />
-                  <output id="swingOut">14</output>
-                </label>
-                <label class="control-row">
-                  <span>Echo</span>
+                  <span>Beat echo</span>
                   <input id="echoAmount" type="range" min="0" max="100" value="14" />
                   <output id="echoAmountOut">14%</output>
                 </label>
                 <label class="control-row">
-                  <span>Space</span>
+                  <span>Beat space</span>
                   <input id="spaceAmount" type="range" min="0" max="100" value="18" />
                   <output id="spaceAmountOut">18%</output>
                 </label>
                 <label class="control-row">
-                  <span>Tone</span>
+                  <span>Beat tone</span>
                   <input id="toneAmount" type="range" min="0" max="100" value="72" />
                   <output id="toneAmountOut">72%</output>
                 </label>
@@ -1691,7 +1686,7 @@
             <article class="about-card" id="saved-settings">
               <h3>Favorite Blends</h3>
               <p>
-                If a blend feels right, save the stream, beat, volumes, tempo, and swing to your
+                If a blend feels right, save the stream, beat, volumes, tempo, and effects to your
                 account. Favorite Blends save choices and settings only, never source audio. A
                 one-time paid unlock helps cover the cost of maintaining accounts, preferences,
                 and saved favorites for each listener.
@@ -2353,8 +2348,6 @@
         beatVolumeOut: document.querySelector("#beatVolumeOut"),
         tempo: document.querySelector("#tempo"),
         tempoOut: document.querySelector("#tempoOut"),
-        swing: document.querySelector("#swing"),
-        swingOut: document.querySelector("#swingOut"),
         echoAmount: document.querySelector("#echoAmount"),
         echoAmountOut: document.querySelector("#echoAmountOut"),
         spaceAmount: document.querySelector("#spaceAmount"),
@@ -2386,7 +2379,7 @@
           body: `
             <p>Tāla is designed to keep listening ephemeral. Tāla does not record or store source audio from archival streams.</p>
             <h3>What Tāla stores</h3>
-            <p>If you create an account and unlock Favorite Blends, Tāla may store your email address, the stream URL you chose, your selected beat, and your listening settings such as volume, tempo, swing, and effects.</p>
+            <p>If you create an account and unlock Favorite Blends, Tāla may store your email address, the stream URL you chose, your selected beat, and your listening settings such as volume, tempo, and effects.</p>
             <h3>What Tāla does not store</h3>
             <p>Tāla does not store the archival source audio, rendered remixes, or exported audio files.</p>
             <h3>Third-party services</h3>
@@ -2500,7 +2493,7 @@
           streamVolume: Number(els.streamVolume.value),
           beatVolume: Number(els.beatVolume.value),
           tempo: Number(els.tempo.value),
-          swing: Number(els.swing.value),
+          swing: beats[currentBeat].swing,
           echoAmount: Number(els.echoAmount.value),
           spaceAmount: Number(els.spaceAmount.value),
           toneAmount: Number(els.toneAmount.value)
@@ -2805,7 +2798,6 @@
         els.beatTitle.textContent = beat.title;
         els.beatMeta.textContent = beat.meta;
         els.tempo.value = beat.tempo;
-        els.swing.value = beat.swing;
         syncMiniPlayerNowPlaying();
         updateOutputs();
         renderVisualizer();
@@ -2922,7 +2914,7 @@
           <div class="item favorite-item">
             <button class="favorite-load" type="button" data-favorite="${index}">
               <strong>${favorite.trackTitle} + ${favorite.beatTitle}</strong>
-              <span class="meta">Stream ${favorite.streamVolume}% · Beat ${favorite.beatVolume}% · ${favorite.tempo} BPM · swing ${favorite.swing}</span>
+              <span class="meta">Stream ${favorite.streamVolume}% · Beat ${favorite.beatVolume}% · ${favorite.tempo} BPM</span>
             </button>
             <button class="remove-favorite" type="button" data-remove-favorite="${index}" aria-label="Remove favorite blend">×</button>
           </div>
@@ -2985,7 +2977,7 @@
           streamVolume: Number(els.streamVolume.value),
           beatVolume: Number(els.beatVolume.value),
           tempo: Number(els.tempo.value),
-          swing: Number(els.swing.value),
+          swing: beats[currentBeat].swing,
           echoAmount: Number(els.echoAmount.value),
           spaceAmount: Number(els.spaceAmount.value),
           toneAmount: Number(els.toneAmount.value)
@@ -3056,7 +3048,6 @@
         els.streamVolume.value = favorite.streamVolume;
         els.beatVolume.value = favorite.beatVolume;
         els.tempo.value = favorite.tempo;
-        els.swing.value = favorite.swing;
         els.echoAmount.value = favorite.echoAmount ?? 14;
         els.spaceAmount.value = favorite.spaceAmount ?? 18;
         els.toneAmount.value = favorite.toneAmount ?? 72;
@@ -3183,7 +3174,6 @@
         els.streamVolumeOut.textContent = els.streamVolume.disabled ? "Embed" : `${els.streamVolume.value}%`;
         els.beatVolumeOut.textContent = `${els.beatVolume.value}%`;
         els.tempoOut.textContent = els.tempo.value;
-        els.swingOut.textContent = els.swing.value;
         els.echoAmountOut.textContent = `${els.echoAmount.value}%`;
         els.spaceAmountOut.textContent = `${els.spaceAmount.value}%`;
         els.toneAmountOut.textContent = `${els.toneAmount.value}%`;
@@ -3940,7 +3930,7 @@
       function scheduler() {
         const tempo = Number(els.tempo.value);
         const baseStep = 60 / tempo / 4;
-        const swing = Number(els.swing.value) / 100;
+        const swing = (beats[currentBeat].swing || 0) / 100;
         while (nextStepTime < audioContext.currentTime + 0.12) {
           scheduleStep(nextStepTime, step);
           const swingOffset = step % 2 === 0 ? baseStep * swing : -baseStep * swing;
@@ -4227,7 +4217,6 @@
       els.streamVolume.addEventListener("input", updateOutputs);
       els.beatVolume.addEventListener("input", updateOutputs);
       els.tempo.addEventListener("input", updateOutputs);
-      els.swing.addEventListener("input", updateOutputs);
       els.echoAmount.addEventListener("input", updateOutputs);
       els.spaceAmount.addEventListener("input", updateOutputs);
       els.toneAmount.addEventListener("input", updateOutputs);
