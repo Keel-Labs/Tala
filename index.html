@@ -276,7 +276,12 @@
         border: 5px solid #0d0715;
         box-shadow: 0 0 20px rgba(255, 211, 110, 0.35);
         animation: spinRecord 14s linear infinite;
+        animation-play-state: paused;
         opacity: 0.84;
+      }
+
+      .retro-deck.is-playing .vinyl {
+        animation-play-state: running;
       }
 
       .retro-deck::after {
@@ -284,10 +289,16 @@
         position: absolute;
         right: 24px;
         top: 28px;
-        color: var(--green);
+        color: #3a4a3a;
         font-family: var(--mono-font);
         font-size: 28px;
         font-weight: 800;
+        text-shadow: none;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      .retro-deck.is-playing::after {
+        color: var(--green);
         text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
       }
 
@@ -1391,7 +1402,7 @@
               favorite blends.
             </p>
             <p class="mission">Built to help historic recordings be heard again.</p>
-            <div class="retro-deck" aria-hidden="true">
+            <div class="retro-deck" id="retroDeck" aria-hidden="true">
               <div class="vinyl"></div>
               <div class="cassette-lines"></div>
             </div>
@@ -2144,6 +2155,7 @@
         beatTitle: document.querySelector("#beatTitle"),
         beatMeta: document.querySelector("#beatMeta"),
         status: document.querySelector("#statusText"),
+        retroDeck: document.querySelector("#retroDeck"),
         accountButton: document.querySelector("#accountButton"),
         accountModal: document.querySelector("#accountModal"),
         closeAccountModal: document.querySelector("#closeAccountModal"),
@@ -3522,9 +3534,11 @@
       }
 
       function updatePlaybackButtons() {
-        els.playBlend.innerHTML = isStreamPlaying || isPlaying
+        const active = isStreamPlaying || isPlaying;
+        els.playBlend.innerHTML = active
           ? '<span aria-hidden="true">■</span><span>Stop</span>'
           : '<span aria-hidden="true">▶</span><span>Play</span>';
+        els.retroDeck?.classList.toggle("is-playing", active);
       }
 
       async function startStream() {
