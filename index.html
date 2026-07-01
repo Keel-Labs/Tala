@@ -388,6 +388,58 @@
         box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.42);
       }
 
+      .mini-player {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 10px clamp(14px, 4vw, 32px);
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        background: rgba(18, 9, 31, 0.96);
+        border-top: 3px solid var(--gold);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+        transform: translateY(100%);
+        transition: transform 220ms ease;
+      }
+
+      .mini-player.visible {
+        transform: translateY(0);
+      }
+
+      .mini-player-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        gap: 2px;
+      }
+
+      .mini-player-track,
+      .mini-player-beat {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mini-player-track {
+        color: #ffe8b5;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .mini-player-beat {
+        color: rgba(255, 232, 181, 0.6);
+        font-size: 12px;
+      }
+
+      .mini-player .button.small {
+        flex: 0 0 auto;
+      }
+
       .button:active {
         transform: translate(2px, 2px);
         box-shadow: 2px 2px 0 var(--red);
@@ -1644,6 +1696,17 @@
           <div id="legalBody"></div>
         </section>
       </div>
+
+      <div class="mini-player" id="miniPlayer" aria-hidden="true">
+        <div class="mini-player-info">
+          <span class="mini-player-track" id="miniPlayerTrack"></span>
+          <span class="mini-player-beat" id="miniPlayerBeat"></span>
+        </div>
+        <button class="button small" id="miniPlayerToggle" type="button">
+          <span aria-hidden="true">▶</span>
+          <span>Play</span>
+        </button>
+      </div>
     </div>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
@@ -2182,6 +2245,10 @@
         openTerms: document.querySelector("#openTerms"),
         openPrivacy: document.querySelector("#openPrivacy"),
         playBlend: document.querySelector("#playBlend"),
+        miniPlayer: document.querySelector("#miniPlayer"),
+        miniPlayerToggle: document.querySelector("#miniPlayerToggle"),
+        miniPlayerTrack: document.querySelector("#miniPlayerTrack"),
+        miniPlayerBeat: document.querySelector("#miniPlayerBeat"),
         randomAll: document.querySelector("#randomAll"),
         shareBlend: document.querySelector("#shareBlend"),
         saveFavorite: document.querySelector("#saveFavorite"),
@@ -2478,6 +2545,7 @@
         const autoPlay = Boolean(options.autoPlay) && provider === "soundcloud";
         els.trackTitle.textContent = track.title;
         els.trackMeta.textContent = formatTrackMeta(track);
+        syncMiniPlayerNowPlaying();
         els.player.src = getTrackEmbedUrl(track, autoPlay);
         els.player.title = provider === "spotify"
           ? "Spotify embedded player"
@@ -2627,6 +2695,7 @@
         els.beatMeta.textContent = beat.meta;
         els.tempo.value = beat.tempo;
         els.swing.value = beat.swing;
+        syncMiniPlayerNowPlaying();
         updateOutputs();
         renderVisualizer();
         renderLists();
@@ -3529,10 +3598,24 @@
 
       function updatePlaybackButtons() {
         const active = isStreamPlaying || isPlaying;
-        els.playBlend.innerHTML = active
+        const toggleHtml = active
           ? '<span aria-hidden="true">■</span><span>Stop</span>'
           : '<span aria-hidden="true">▶</span><span>Play</span>';
+        els.playBlend.innerHTML = toggleHtml;
         els.retroDeck?.classList.toggle("is-playing", active);
+        if (els.miniPlayerToggle) {
+          els.miniPlayerToggle.innerHTML = toggleHtml;
+        }
+        syncMiniPlayerNowPlaying();
+      }
+
+      function syncMiniPlayerNowPlaying() {
+        if (els.miniPlayerTrack) {
+          els.miniPlayerTrack.textContent = els.trackTitle?.textContent || "";
+        }
+        if (els.miniPlayerBeat) {
+          els.miniPlayerBeat.textContent = els.beatTitle?.textContent || "";
+        }
       }
 
       async function startStream() {
@@ -3808,6 +3891,15 @@
       }
 
       els.playBlend.addEventListener("click", toggleBlend);
+      els.miniPlayerToggle?.addEventListener("click", toggleBlend);
+      if (els.miniPlayer && "IntersectionObserver" in window) {
+        const miniPlayerObserver = new IntersectionObserver(([entry]) => {
+          const visible = !entry.isIntersecting;
+          els.miniPlayer.classList.toggle("visible", visible);
+          els.miniPlayer.setAttribute("aria-hidden", visible ? "false" : "true");
+        }, { threshold: 0 });
+        miniPlayerObserver.observe(els.playBlend);
+      }
       els.randomAll.addEventListener("click", randomizeAll);
       els.shareBlend.addEventListener("click", shareBlend);
       els.saveFavorite.addEventListener("click", saveFavorite);
