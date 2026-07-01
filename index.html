@@ -440,6 +440,26 @@
         flex: 0 0 auto;
       }
 
+      .debug-panel {
+        display: none;
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        z-index: 100;
+        margin: 0;
+        padding: 8px 10px;
+        max-width: min(320px, calc(100vw - 16px));
+        font-family: var(--mono-font);
+        font-size: 11px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        color: #9cff7a;
+        background: rgba(8, 4, 14, 0.92);
+        border: 1px solid rgba(156, 255, 122, 0.5);
+        border-radius: 6px;
+        pointer-events: none;
+      }
+
       .button:active {
         transform: translate(2px, 2px);
         box-shadow: 2px 2px 0 var(--red);
@@ -1708,6 +1728,8 @@
           <span>Play</span>
         </button>
       </div>
+
+      <pre class="debug-panel" id="debugPanel" aria-hidden="true"></pre>
     </div>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
@@ -2246,6 +2268,7 @@
         openTerms: document.querySelector("#openTerms"),
         openPrivacy: document.querySelector("#openPrivacy"),
         playBlend: document.querySelector("#playBlend"),
+        debugPanel: document.querySelector("#debugPanel"),
         miniPlayer: document.querySelector("#miniPlayer"),
         miniPlayerToggle: document.querySelector("#miniPlayerToggle"),
         miniPlayerTrack: document.querySelector("#miniPlayerTrack"),
@@ -2325,7 +2348,6 @@
       let convolverNode;
       let reverbWetGain;
       let schedulerId;
-      let audioClosePromise = null;
       let audioPrimed = false;
       let soundcloudBindId = 0;
       let soundcloudAutoPlayOnReady = false;
@@ -2335,6 +2357,9 @@
       let isStreamPlaying = false;
       let soundcloudWidget;
       let soundcloudReady = Promise.resolve(false);
+      let audioUnlocked = false;
+      const debugEnabled = new URLSearchParams(window.location.search).has("debug");
+      const debugState = { resume: "—", unlock: "—", activation: "—", scEvents: [] };
       const customTracksKey = "tala:customTracks";
       const favoritesKey = "tala:favorites";
       const pendingFavoriteKey = "tala:pendingFavorite";
@@ -3518,6 +3543,7 @@
             soundcloudWidget = widget;
             widget.bind(window.SC.Widget.Events.READY, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("READY");
               widget.setVolume(Number(els.streamVolume.value));
               if (shouldAutoPlay) {
                 widget.play();
@@ -3528,19 +3554,25 @@
             });
             widget.bind(window.SC.Widget.Events.PLAY, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("PLAY");
               isStreamPlaying = true;
               updatePlaybackButtons();
             });
             widget.bind(window.SC.Widget.Events.PAUSE, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("PAUSE");
               isStreamPlaying = false;
               updatePlaybackButtons();
             });
             widget.bind(window.SC.Widget.Events.FINISH, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("FINISH");
               isStreamPlaying = false;
               updatePlaybackButtons();
             });
+            if (window.SC.Widget.Events.ERROR) {
+              widget.bind(window.SC.Widget.Events.ERROR, () => logSC("ERROR"));
+            }
           };
 
           els.player.addEventListener("load", attachWidget, { once: true });
@@ -3559,15 +3591,16 @@
         return true;
       }
 
-      function forceSoundcloudAutoplay() {
-        const track = tracks[currentTrack];
-        if (!track || getTrackProvider(track) !== "soundcloud") {
-          return false;
+      // Ask the already-loaded SoundCloud widget to play, synchronously within the tap. On
+      // mobile WebKit, reliable cross-origin iframe autoplay is not guaranteed even so — the
+      // honest fallback (a "tap ▶" prompt) is handled in startCurrentBlend.
+      function requestStreamPlaySync() {
+        if (getTrackProvider(tracks[currentTrack]) !== "soundcloud") return;
+        if (soundcloudWidget) {
+          try { soundcloudWidget.play(); } catch (_error) { /* cross-origin play may be blocked */ }
+        } else {
+          soundcloudAutoPlayOnReady = true;
         }
-        soundcloudAutoPlayOnReady = true;
-        els.player.src = embedUrl(track.url, true);
-        bindSoundcloudWidget();
-        return true;
       }
 
       function waitForStreamPlayback(timeoutMs = 2200) {
@@ -3592,7 +3625,15 @@
 
       async function startCurrentBlend() {
         const [, streamStarted] = await Promise.all([startBeat(), startStream()]);
-        setStatus(streamStarted || isPlaying ? "Playing" : "Ready");
+        if (streamStarted) {
+          setStatus("Playing");
+        } else if (getTrackProvider(tracks[currentTrack]) === "soundcloud" && isPlaying) {
+          setStatus("Beat playing · tap ▶ on the SoundCloud player for the stream");
+        } else if (isPlaying) {
+          setStatus("Playing");
+        } else {
+          setStatus("Ready");
+        }
         return streamStarted;
       }
 
@@ -3607,6 +3648,7 @@
           els.miniPlayerToggle.innerHTML = toggleHtml;
         }
         syncMiniPlayerNowPlaying();
+        renderDebug();
       }
 
       function syncMiniPlayerNowPlaying() {
@@ -3618,46 +3660,38 @@
         }
       }
 
+      function logSC(event) {
+        debugState.scEvents.push(event);
+        if (debugState.scEvents.length > 8) debugState.scEvents.shift();
+        renderDebug();
+      }
+
+      function renderDebug() {
+        if (!debugEnabled || !els.debugPanel) return;
+        const ctx = audioContext;
+        els.debugPanel.textContent = [
+          "ctx: " + (ctx ? ctx.state : "none") + " @ " + (ctx ? ctx.sampleRate : "-") + "Hz",
+          "resume: " + debugState.resume,
+          "unlock: " + debugState.unlock,
+          "activation@tap: " + debugState.activation,
+          "masterGain: " + (masterGain ? masterGain.gain.value.toFixed(2) : "-"),
+          "beat: " + isPlaying + "  stream: " + isStreamPlaying,
+          "SC: " + (debugState.scEvents.join(" › ") || "—"),
+        ].join("\n");
+      }
+
       async function startStream() {
         if (getTrackProvider(tracks[currentTrack]) === "spotify") {
-          setStatus("Ready");
           return false;
         }
-
-        if (isCompactViewport()) {
-          const forced = forceSoundcloudAutoplay();
-          if (forced) {
-            const played = await waitForStreamPlayback(2600);
-            return played || true;
-          }
+        // The tap handler already called requestStreamPlaySync() in-gesture. Re-request via the
+        // widget in case it only just became ready, then wait for the PLAY event to confirm.
+        if (soundcloudWidget) {
+          try { soundcloudWidget.play(); } catch (_error) { /* cross-origin play may be blocked */ }
+        } else {
+          soundcloudAutoPlayOnReady = true;
         }
-
-        const started = await withSoundcloudWidget((widget) => {
-          widget.play();
-          isStreamPlaying = true;
-          updatePlaybackButtons();
-        });
-        if (started) {
-          return new Promise((resolve) => {
-            window.setTimeout(() => {
-              if (isStreamPlaying) {
-                resolve(true);
-                return;
-              }
-              if (!isCompactViewport() && forceSoundcloudAutoplay()) {
-                setStatus("Playing");
-                resolve(true);
-                return;
-              }
-              resolve(false);
-            }, isCompactViewport() ? 900 : 450);
-          });
-        }
-        if (!isCompactViewport() && forceSoundcloudAutoplay()) {
-          setStatus("Playing");
-          return true;
-        }
-        return false;
+        return waitForStreamPlayback(2600);
       }
 
       async function stopStream() {
@@ -3793,10 +3827,7 @@
         }
       }
 
-      async function ensureAudio() {
-        if (audioClosePromise) {
-          await audioClosePromise;
-        }
+      function ensureAudio() {
         if (audioContext) return;
         audioContext = new AudioContext();
         masterGain = audioContext.createGain();
@@ -3827,71 +3858,94 @@
         toneFilter.connect(convolverNode).connect(reverbWetGain).connect(audioContext.destination);
       }
 
-      async function primeAudio() {
+      // Unlock audio synchronously inside a real user gesture. iOS Safari only honors
+      // AudioContext.resume() and starts audible output when this runs in the same tick as
+      // the tap — never behind an await. Keep the context alive across stop/play so we only
+      // pay this cost once.
+      function unlockAudioSync() {
         try {
-          await ensureAudio();
-          if (audioContext?.state === "suspended") {
-            await audioContext.resume();
+          ensureAudio();
+          debugState.activation = navigator.userActivation
+            ? String(navigator.userActivation.isActive)
+            : "n/a";
+          if (audioContext.state === "suspended") {
+            audioContext.resume().then(
+              () => { debugState.resume = "resolved (" + audioContext.state + ")"; renderDebug(); },
+              (err) => { debugState.resume = "rejected: " + err; renderDebug(); }
+            );
+          } else {
+            debugState.resume = "state=" + audioContext.state;
           }
-          audioPrimed = audioContext?.state === "running";
-        } catch (_error) {
-          // On mobile Safari this can fail before the next direct gesture; we'll retry on tap.
+          // Silent one-frame buffer: the standard iOS trick that flips the audio session to
+          // an audible/running state (also covers the ringer-switch muting case).
+          const buffer = audioContext.createBuffer(1, 1, 22050);
+          const source = audioContext.createBufferSource();
+          source.buffer = buffer;
+          source.connect(audioContext.destination);
+          source.start(0);
+          audioUnlocked = true;
+          audioPrimed = audioContext.state === "running";
+          debugState.unlock = "ran (state=" + audioContext.state + ")";
+        } catch (err) {
+          debugState.unlock = "error: " + err;
         }
+        renderDebug();
       }
 
       async function startBeat() {
-        await ensureAudio();
+        ensureAudio();
         if (audioContext.state === "suspended") {
-          await audioContext.resume();
+          // Best-effort backup; the real unlock already happened synchronously on the tap.
+          audioContext.resume();
         }
         audioPrimed = audioContext.state === "running";
 
         if (isPlaying) return;
         isPlaying = true;
+        // Restore output gain (stopBeat ramps it to 0 rather than tearing down the context).
+        masterGain.gain.cancelScheduledValues(audioContext.currentTime);
+        masterGain.gain.setValueAtTime(beatGainFromSlider(els.beatVolume.value), audioContext.currentTime);
         step = 0;
         nextStepTime = audioContext.currentTime + 0.04;
         schedulerId = window.setInterval(scheduler, 25);
         updatePlaybackButtons();
+        renderDebug();
         setStatus("Beat playing beside the stream");
       }
 
-      async function stopBeat() {
+      function stopBeat() {
         isPlaying = false;
         if (schedulerId) {
           window.clearInterval(schedulerId);
           schedulerId = null;
         }
+        // Silence output but keep the context alive and unlocked so the next play needs no
+        // re-unlock (closing/recreating is what left the context suspended on mobile).
         if (audioContext && masterGain) {
           try {
             masterGain.gain.cancelScheduledValues(audioContext.currentTime);
             masterGain.gain.setValueAtTime(0, audioContext.currentTime);
           } catch (_error) {
-            // Ignore gain ramp cleanup if the context is already shutting down.
+            // Ignore gain cleanup if the context is unavailable.
           }
-        }
-        if (audioContext) {
-          const contextToClose = audioContext;
-          audioContext = null;
-          masterGain = null;
-          toneFilter = null;
-          dryGain = null;
-          delayNode = null;
-          delayFeedback = null;
-          delayWetGain = null;
-          convolverNode = null;
-          reverbWetGain = null;
-          audioClosePromise = contextToClose.close().catch(() => {}).finally(() => {
-            audioClosePromise = null;
-          });
-          await audioClosePromise;
         }
         renderVisualizer();
         updatePlaybackButtons();
+        renderDebug();
         setStatus("Beat stopped");
       }
 
-      els.playBlend.addEventListener("click", toggleBlend);
-      els.miniPlayerToggle?.addEventListener("click", toggleBlend);
+      function handlePlayToggle() {
+        // Do the gesture-sensitive work synchronously, before toggleBlend's first await, so
+        // iOS still sees this as a user-activated call.
+        if (!(isPlaying || isStreamPlaying)) {
+          unlockAudioSync();
+          requestStreamPlaySync();
+        }
+        toggleBlend();
+      }
+      els.playBlend.addEventListener("click", handlePlayToggle);
+      els.miniPlayerToggle?.addEventListener("click", handlePlayToggle);
       if (els.miniPlayer && "IntersectionObserver" in window) {
         const miniPlayerObserver = new IntersectionObserver(([entry]) => {
           const visible = !entry.isIntersecting;
@@ -3937,15 +3991,13 @@
           refreshSessionFromStorage();
         }
       });
-      window.addEventListener("click", () => {
-        if (!audioPrimed) {
-          primeAudio();
-        }
+      // Warm up the audio context on the earliest gesture events (which fire synchronously at
+      // the very start of a tap) so output is unlocked before the user reaches Play.
+      window.addEventListener("pointerdown", () => {
+        if (!audioUnlocked) unlockAudioSync();
       }, { passive: true });
-      window.addEventListener("touchend", () => {
-        if (!audioPrimed) {
-          primeAudio();
-        }
+      window.addEventListener("touchstart", () => {
+        if (!audioUnlocked) unlockAudioSync();
       }, { passive: true });
       window.addEventListener("storage", (event) => {
         if (event.key === pendingFavoriteKey) {
@@ -3987,6 +4039,12 @@
         });
       }
       initializeAuth();
+
+      if (debugEnabled && els.debugPanel) {
+        els.debugPanel.style.display = "block";
+        renderDebug();
+        window.setInterval(renderDebug, 500);
+      }
     </script>
   </body>
 </html>
