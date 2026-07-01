@@ -3658,17 +3658,27 @@
         }
       }
 
-      function waitForStreamPlayback(timeoutMs = 2200) {
+      // The SoundCloud widget optimistically fires PLAY and then flips to PAUSE when WebKit
+      // vetoes un-gestured playback (observed on device as a millisecond flicker). Only count
+      // the stream as started once playback survives for sustainMs continuously.
+      function waitForStreamPlayback(timeoutMs = 4200, sustainMs = 900) {
         return new Promise((resolve) => {
           const startedAt = window.performance.now();
+          let playingSince = null;
 
           const check = () => {
+            const now = window.performance.now();
             if (isStreamPlaying) {
-              resolve(true);
-              return;
+              if (playingSince === null) playingSince = now;
+              if (now - playingSince >= sustainMs) {
+                resolve(true);
+                return;
+              }
+            } else {
+              playingSince = null;
             }
-            if (window.performance.now() - startedAt >= timeoutMs) {
-              resolve(false);
+            if (now - startedAt >= timeoutMs) {
+              resolve(isStreamPlaying);
               return;
             }
             window.setTimeout(check, 120);
@@ -3758,19 +3768,7 @@
         } else {
           soundcloudAutoPlayOnReady = true;
         }
-        // On iOS the first in-gesture play() can be refused because the page hadn't yet played
-        // any media at that instant; once the silent keepalive is rolling, WebKit honors the
-        // iframe's allow="autoplay" delegation without a fresh gesture (observed on device: a
-        // second Play tap started the stream without touching the embed). Retry a few times
-        // inside the confirmation window to catch that relaxation on the first tap.
-        [350, 900, 1700].forEach((delay) => {
-          window.setTimeout(() => {
-            if (!isStreamPlaying && soundcloudWidget) {
-              try { soundcloudWidget.play(); } catch (_error) { /* still blocked */ }
-            }
-          }, delay);
-        });
-        return waitForStreamPlayback(2600);
+        return waitForStreamPlayback();
       }
 
       async function stopStream() {
@@ -4015,11 +4013,13 @@
               () => { debugState.media = "playing"; renderDebug(); },
               (err) => { debugState.media = "blocked: " + err.name; renderDebug(); }
             );
+            return playPromise;
           }
         } catch (err) {
           debugState.media = "error: " + err;
           renderDebug();
         }
+        return null;
       }
 
       function stopKeepAliveAudio() {
@@ -4034,7 +4034,7 @@
       // the gesture: Web Audio unlock + the playback-session flip above.
       function beginPlaybackGesture() {
         unlockAudioSync();
-        startKeepAliveAudio();
+        return startKeepAliveAudio();
       }
 
       async function startBeat() {
@@ -4086,8 +4086,11 @@
         if (isPlaying || isStreamPlaying) {
           stopKeepAliveAudio();
         } else {
-          beginPlaybackGesture();
+          const mediaStarted = beginPlaybackGesture();
           requestStreamPlaySync();
+          // Ask again the instant the keepalive actually starts: the page is then officially
+          // playing media, and WebKit extends the tap's gesture through this promise reaction.
+          mediaStarted?.then?.(() => requestStreamPlaySync(), () => {});
         }
         toggleBlend();
       }
@@ -4097,9 +4100,13 @@
         // A fresh parent-page gesture: by now the page has played media (keepalive), so this
         // in-gesture play() is honored (verified on device via the stop→play-again flow).
         requestStreamPlaySync();
-        const started = await waitForStreamPlayback(2600);
+        const started = await waitForStreamPlayback();
         if (started) {
           setStatus("Playing");
+        } else if (isPlaying) {
+          // A phantom PLAY may have hidden the banner before the veto; bring it back.
+          setStatus("Beat playing · stream needs one more tap");
+          showStreamHint();
         }
       });
       if (els.miniPlayer && "IntersectionObserver" in window) {
