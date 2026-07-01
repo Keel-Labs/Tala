@@ -1024,6 +1024,7 @@
       footer {
         border-top: 2px solid rgba(255, 211, 110, 0.45);
         padding: 22px clamp(18px, 4vw, 48px);
+        padding-bottom: calc(22px + 70px + env(safe-area-inset-bottom, 0px));
         color: #ffe8b5;
         background: rgba(22, 12, 36, 0.82);
         font-size: 13px;
@@ -3590,8 +3591,7 @@
       }
 
       async function startCurrentBlend() {
-        await startBeat();
-        const streamStarted = await startStream();
+        const [, streamStarted] = await Promise.all([startBeat(), startStream()]);
         setStatus(streamStarted || isPlaying ? "Playing" : "Ready");
         return streamStarted;
       }
