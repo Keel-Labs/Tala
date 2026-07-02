@@ -2220,6 +2220,8 @@
             <p>Tāla is designed to keep listening ephemeral. Tāla does not record or store source audio from archival streams.</p>
             <h3>What Tāla stores</h3>
             <p>If you create an account and unlock Favorite Blends, Tāla may store your email address, the stream URL you chose, your selected beat, and your listening settings such as volume, tempo, swing, and effects.</p>
+            <h3>Basic visit analytics</h3>
+            <p>Tāla also stores anonymous visit events so Keel Labs can understand total visits and approximate unique visitors. These analytics are not used to store source audio or to build listener profiles.</p>
             <h3>What Tāla does not store</h3>
             <p>Tāla does not store the archival source audio, rendered remixes, or exported audio files.</p>
             <h3>Third-party services</h3>
@@ -2258,9 +2260,12 @@
       const postAuthModalKey = "tala:postAuthModal";
       const postAuthReasonKey = "tala:postAuthReason";
       const checkoutStartedKey = "tala:checkoutStarted";
+      const analyticsVisitorKey = "tala:visitorId";
+      const analyticsSessionKey = "tala:sessionId";
       const legacyCustomTracksKey = "mixer:customTracks";
       const legacyFavoritesKey = "mixer:favorites";
       const lemonCheckoutUrl = "https://keel-labs.lemonsqueezy.com/checkout/buy/d1193f43-63d8-4418-ad15-ac2fd10955dd";
+      const analyticsProductionHosts = new Set(["tala.keel-labs.org"]);
       const supabaseConfig = {
         url: "https://bjjxlilrxhjebjytrnxi.supabase.co",
         anonKey: "sb_publishable__Vd43aIGh_xXB1waSsdr7Q_c8uSebGX"
@@ -2286,6 +2291,7 @@
       let favoriteConfirmationTimeout = null;
       let shareConfirmationTimeout = null;
       let statusResetTimeout = null;
+      let analyticsTracked = false;
 
       function isCompactViewport() {
         return window.matchMedia("(max-width: 560px)").matches;
@@ -2303,6 +2309,85 @@
 
       function scopedFavoritesKey(email) {
         return `${favoritesKey}:${String(email || "").trim().toLowerCase()}`;
+      }
+
+      function createStableId() {
+        if (window.crypto?.randomUUID) {
+          return window.crypto.randomUUID();
+        }
+        return `tala-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
+      function getOrCreateLocalId(key, storage) {
+        const existing = storage.getItem(key);
+        if (existing) {
+          return existing;
+        }
+        const created = createStableId();
+        storage.setItem(key, created);
+        return created;
+      }
+
+      function getAnalyticsVisitorId() {
+        try {
+          return getOrCreateLocalId(analyticsVisitorKey, window.localStorage);
+        } catch (_error) {
+          return createStableId();
+        }
+      }
+
+      function getAnalyticsSessionId() {
+        try {
+          return getOrCreateLocalId(analyticsSessionKey, window.sessionStorage);
+        } catch (_error) {
+          return createStableId();
+        }
+      }
+
+      function getAnalyticsSiteHost() {
+        return String(window.location.hostname || "").trim().toLowerCase();
+      }
+
+      function formatMetricValue(value) {
+        return new Intl.NumberFormat().format(Number(value || 0));
+      }
+
+      function formatAnalyticsTimestamp(value) {
+        if (!value) {
+          return "No visits yet.";
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "Recently updated.";
+        }
+        return `Last updated ${date.toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit"
+        })}`;
+      }
+
+      async function trackVisit() {
+        if (!authClient || analyticsTracked) {
+          return;
+        }
+        const siteHost = getAnalyticsSiteHost();
+        if (!analyticsProductionHosts.has(siteHost)) {
+          return;
+        }
+        analyticsTracked = true;
+        const payload = {
+          visitor_id: getAnalyticsVisitorId(),
+          session_id: getAnalyticsSessionId(),
+          path: window.location.pathname || "/",
+          site_host: siteHost
+        };
+        const { error } = await authClient.from("analytics_visits").insert(payload);
+        if (error) {
+          console.warn("Tāla analytics visit insert failed", error.message);
+          analyticsTracked = false;
+        }
       }
 
       function loadFavoritesForAccount() {
@@ -3876,6 +3961,7 @@
       restoreCustomTracks();
       selectTrack(0);
       selectBeat(0);
+      Promise.resolve(trackVisit()).catch(() => {});
       const sharedBlend = getSharedBlendFromUrl();
       if (sharedBlend) {
         applyFavoriteDraft(sharedBlend, {
