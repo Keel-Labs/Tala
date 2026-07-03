@@ -247,6 +247,12 @@
         font-weight: 800;
       }
 
+      .intro .desktop-note {
+        display: none;
+        font-size: 12px;
+        color: rgba(255, 232, 181, 0.72);
+      }
+
       .retro-deck {
         width: min(360px, 100%);
         min-height: 118px;
@@ -276,7 +282,12 @@
         border: 5px solid #0d0715;
         box-shadow: 0 0 20px rgba(255, 211, 110, 0.35);
         animation: spinRecord 14s linear infinite;
+        animation-play-state: paused;
         opacity: 0.84;
+      }
+
+      .retro-deck.is-playing .vinyl {
+        animation-play-state: running;
       }
 
       .retro-deck::after {
@@ -284,10 +295,16 @@
         position: absolute;
         right: 24px;
         top: 28px;
-        color: var(--green);
+        color: #3a4a3a;
         font-family: var(--mono-font);
         font-size: 28px;
         font-weight: 800;
+        text-shadow: none;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      .retro-deck.is-playing::after {
+        color: var(--green);
         text-shadow: 0 0 14px rgba(156, 255, 122, 0.75);
       }
 
@@ -375,6 +392,78 @@
         padding: 0 12px;
         font-size: 14px;
         box-shadow: 3px 3px 0 rgba(29, 27, 24, 0.42);
+      }
+
+      .mini-player {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 10px clamp(14px, 4vw, 32px);
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        background: rgba(18, 9, 31, 0.96);
+        border-top: 3px solid var(--gold);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+        transform: translateY(100%);
+        transition: transform 220ms ease;
+      }
+
+      .mini-player.visible {
+        transform: translateY(0);
+      }
+
+      .mini-player-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        gap: 2px;
+      }
+
+      .mini-player-track,
+      .mini-player-beat {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mini-player-track {
+        color: #ffe8b5;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .mini-player-beat {
+        color: rgba(255, 232, 181, 0.6);
+        font-size: 12px;
+      }
+
+      .mini-player .button.small {
+        flex: 0 0 auto;
+      }
+
+      .debug-panel {
+        display: none;
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        z-index: 100;
+        margin: 0;
+        padding: 8px 10px;
+        max-width: min(320px, calc(100vw - 16px));
+        font-family: var(--mono-font);
+        font-size: 11px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        color: #9cff7a;
+        background: rgba(8, 4, 14, 0.92);
+        border: 1px solid rgba(156, 255, 122, 0.5);
+        border-radius: 6px;
+        pointer-events: none;
       }
 
       .button:active {
@@ -470,6 +559,44 @@
         min-width: 0;
       }
 
+      .player-frame.needs-tap {
+        animation: needsTapPulse 1.4s ease-in-out infinite;
+      }
+
+      .scrub-hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .stream-hint {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 12px;
+        border: 2px solid var(--red);
+        border-radius: 7px;
+        background: rgba(255, 95, 125, 0.14);
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .stream-hint[hidden] {
+        display: none;
+      }
+
+      @keyframes needsTapPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 4px rgba(255, 95, 125, 0.12);
+        }
+        50% {
+          box-shadow: 0 0 0 6px rgba(255, 95, 125, 0.85);
+        }
+      }
+
       iframe {
         display: block;
         width: 100%;
@@ -486,6 +613,7 @@
         padding: 10px 12px;
         border: 1px solid var(--line);
         border-radius: 7px;
+        overflow: hidden;
         background:
           linear-gradient(180deg, rgba(23, 214, 197, 0.16), transparent),
           repeating-linear-gradient(90deg, rgba(37, 22, 52, 0.08) 0 1px, transparent 1px 22px),
@@ -494,9 +622,11 @@
 
       .bar {
         min-height: 12px;
+        max-height: 100%;
         border-radius: 4px 4px 0 0;
         background: var(--teal);
         opacity: 0.38;
+        transform-origin: bottom;
         transition: opacity 120ms ease, transform 120ms ease;
       }
 
@@ -958,6 +1088,7 @@
       footer {
         border-top: 2px solid rgba(255, 211, 110, 0.45);
         padding: 22px clamp(18px, 4vw, 48px);
+        padding-bottom: calc(22px + 70px + env(safe-area-inset-bottom, 0px));
         color: #ffe8b5;
         background: rgba(22, 12, 36, 0.82);
         font-size: 13px;
@@ -1188,6 +1319,10 @@
           font-size: 12px;
         }
 
+        .intro .desktop-note {
+          display: block;
+        }
+
         .retro-deck {
           width: 100%;
           min-height: 96px;
@@ -1391,7 +1526,8 @@
               favorite blends.
             </p>
             <p class="mission">Built to help historic recordings be heard again.</p>
-            <div class="retro-deck" aria-hidden="true">
+            <p class="desktop-note">Best experienced on desktop — full library view and smoother playback.</p>
+            <div class="retro-deck" id="retroDeck" aria-hidden="true">
               <div class="vinyl"></div>
               <div class="cassette-lines"></div>
             </div>
@@ -1428,9 +1564,17 @@
                 <span class="label">Archival stream</span>
                 <span class="track-name" id="trackTitle"></span>
                 <span class="meta" id="trackMeta"></span>
+                <div class="stream-hint" id="streamHint" hidden>
+                  <span>Stream didn't auto-start — one more tap:</span>
+                  <button class="button small" id="startStreamButton" type="button">
+                    <span aria-hidden="true">▶</span>
+                    <span>Start stream</span>
+                  </button>
+                </div>
                 <div class="player-frame">
                   <iframe id="soundcloudPlayer" title="Archive of Indian Music SoundCloud player" allow="autoplay; encrypted-media"></iframe>
                 </div>
+                <span class="meta scrub-hint" id="scrubHint" hidden>Tip: drag the waveform in the player to skip to any part of the recording.</span>
               </div>
 
               <div class="selection">
@@ -1457,22 +1601,17 @@
                   <output id="tempoOut">88</output>
                 </label>
                 <label class="control-row">
-                  <span>Swing feel</span>
-                  <input id="swing" type="range" min="0" max="42" value="14" />
-                  <output id="swingOut">14</output>
-                </label>
-                <label class="control-row">
-                  <span>Echo</span>
+                  <span>Beat echo</span>
                   <input id="echoAmount" type="range" min="0" max="100" value="14" />
                   <output id="echoAmountOut">14%</output>
                 </label>
                 <label class="control-row">
-                  <span>Space</span>
+                  <span>Beat space</span>
                   <input id="spaceAmount" type="range" min="0" max="100" value="18" />
                   <output id="spaceAmountOut">18%</output>
                 </label>
                 <label class="control-row">
-                  <span>Tone</span>
+                  <span>Beat tone</span>
                   <input id="toneAmount" type="range" min="0" max="100" value="72" />
                   <output id="toneAmountOut">72%</output>
                 </label>
@@ -1547,7 +1686,7 @@
             <article class="about-card" id="saved-settings">
               <h3>Favorite Blends</h3>
               <p>
-                If a blend feels right, save the stream, beat, volumes, tempo, and swing to your
+                If a blend feels right, save the stream, beat, volumes, tempo, and effects to your
                 account. Favorite Blends save choices and settings only, never source audio. A
                 one-time paid unlock helps cover the cost of maintaining accounts, preferences,
                 and saved favorites for each listener.
@@ -1630,6 +1769,19 @@
           <div id="legalBody"></div>
         </section>
       </div>
+
+      <div class="mini-player" id="miniPlayer" aria-hidden="true">
+        <div class="mini-player-info">
+          <span class="mini-player-track" id="miniPlayerTrack"></span>
+          <span class="mini-player-beat" id="miniPlayerBeat"></span>
+        </div>
+        <button class="button small" id="miniPlayerToggle" type="button">
+          <span aria-hidden="true">▶</span>
+          <span>Play</span>
+        </button>
+      </div>
+
+      <pre class="debug-panel" id="debugPanel" aria-hidden="true"></pre>
     </div>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
@@ -2144,6 +2296,7 @@
         beatTitle: document.querySelector("#beatTitle"),
         beatMeta: document.querySelector("#beatMeta"),
         status: document.querySelector("#statusText"),
+        retroDeck: document.querySelector("#retroDeck"),
         accountButton: document.querySelector("#accountButton"),
         accountModal: document.querySelector("#accountModal"),
         closeAccountModal: document.querySelector("#closeAccountModal"),
@@ -2167,6 +2320,15 @@
         openTerms: document.querySelector("#openTerms"),
         openPrivacy: document.querySelector("#openPrivacy"),
         playBlend: document.querySelector("#playBlend"),
+        playerFrame: document.querySelector(".player-frame"),
+        streamHint: document.querySelector("#streamHint"),
+        startStreamButton: document.querySelector("#startStreamButton"),
+        scrubHint: document.querySelector("#scrubHint"),
+        debugPanel: document.querySelector("#debugPanel"),
+        miniPlayer: document.querySelector("#miniPlayer"),
+        miniPlayerToggle: document.querySelector("#miniPlayerToggle"),
+        miniPlayerTrack: document.querySelector("#miniPlayerTrack"),
+        miniPlayerBeat: document.querySelector("#miniPlayerBeat"),
         randomAll: document.querySelector("#randomAll"),
         shareBlend: document.querySelector("#shareBlend"),
         saveFavorite: document.querySelector("#saveFavorite"),
@@ -2186,8 +2348,6 @@
         beatVolumeOut: document.querySelector("#beatVolumeOut"),
         tempo: document.querySelector("#tempo"),
         tempoOut: document.querySelector("#tempoOut"),
-        swing: document.querySelector("#swing"),
-        swingOut: document.querySelector("#swingOut"),
         echoAmount: document.querySelector("#echoAmount"),
         echoAmountOut: document.querySelector("#echoAmountOut"),
         spaceAmount: document.querySelector("#spaceAmount"),
@@ -2244,7 +2404,6 @@
       let convolverNode;
       let reverbWetGain;
       let schedulerId;
-      let audioClosePromise = null;
       let audioPrimed = false;
       let soundcloudBindId = 0;
       let soundcloudAutoPlayOnReady = false;
@@ -2254,6 +2413,10 @@
       let isStreamPlaying = false;
       let soundcloudWidget;
       let soundcloudReady = Promise.resolve(false);
+      let audioUnlocked = false;
+      let keepAliveAudio = null;
+      const debugEnabled = new URLSearchParams(window.location.search).has("debug");
+      const debugState = { resume: "—", unlock: "—", activation: "—", media: "—", scEvents: [] };
       const customTracksKey = "tala:customTracks";
       const favoritesKey = "tala:favorites";
       const pendingFavoriteKey = "tala:pendingFavorite";
@@ -2292,6 +2455,10 @@
       let shareConfirmationTimeout = null;
       let statusResetTimeout = null;
       let analyticsTracked = false;
+
+      function isCompactViewport() {
+        return window.matchMedia("(max-width: 560px)").matches;
+      }
 
       function isCompactViewport() {
         return window.matchMedia("(max-width: 560px)").matches;
@@ -2415,7 +2582,7 @@
           streamVolume: Number(els.streamVolume.value),
           beatVolume: Number(els.beatVolume.value),
           tempo: Number(els.tempo.value),
-          swing: Number(els.swing.value),
+          swing: beats[currentBeat].swing,
           echoAmount: Number(els.echoAmount.value),
           spaceAmount: Number(els.spaceAmount.value),
           toneAmount: Number(els.toneAmount.value)
@@ -2548,6 +2715,30 @@
         const autoPlay = Boolean(options.autoPlay) && provider === "soundcloud";
         els.trackTitle.textContent = track.title;
         els.trackMeta.textContent = formatTrackMeta(track);
+        syncMiniPlayerNowPlaying();
+
+        // Swap SoundCloud tracks inside the existing widget document instead of replacing the
+        // iframe src. Replacing the src creates a fresh document that iOS treats as never
+        // user-activated, so programmatic play after shuffle/track change gets vetoed; the
+        // same document keeps its "has played" grant across widget.load() calls.
+        if (provider === "soundcloud" && soundcloudWidget) {
+          isStreamPlaying = false;
+          updatePlaybackButtons();
+          try {
+            soundcloudWidget.load(track.url, {
+              auto_play: autoPlay,
+              callback: () => {
+                soundcloudWidget?.setVolume(Number(els.streamVolume.value));
+              }
+            });
+            setStatus("Archival stream selected");
+            renderLists();
+            return;
+          } catch (_error) {
+            // Fall through to a full iframe reload below.
+          }
+        }
+
         els.player.src = getTrackEmbedUrl(track, autoPlay);
         els.player.title = provider === "spotify"
           ? "Spotify embedded player"
@@ -2696,7 +2887,7 @@
         els.beatTitle.textContent = beat.title;
         els.beatMeta.textContent = beat.meta;
         els.tempo.value = beat.tempo;
-        els.swing.value = beat.swing;
+        syncMiniPlayerNowPlaying();
         updateOutputs();
         renderVisualizer();
         renderLists();
@@ -2737,9 +2928,10 @@
       }
 
       async function randomizeAll() {
+        beginPlaybackGesture();
         selectTrack(randomTrackIndex(currentTrack));
         await selectBeat(randomIndex(beats.length, currentBeat));
-        await startCurrentBlend({ preferStream: true });
+        await startCurrentBlend();
       }
 
       function includesQuery(item, query) {
@@ -2777,9 +2969,10 @@
 
         els.trackList.querySelectorAll("[data-track]").forEach((button) => {
           button.addEventListener("click", async () => {
+            beginPlaybackGesture();
             await stopAll();
             selectTrack(Number(button.dataset.track));
-            await startCurrentBlend({ preferStream: true });
+            await startCurrentBlend();
           });
         });
         els.trackList.querySelectorAll("[data-remove-track]").forEach((button) => {
@@ -2810,7 +3003,7 @@
           <div class="item favorite-item">
             <button class="favorite-load" type="button" data-favorite="${index}">
               <strong>${favorite.trackTitle} + ${favorite.beatTitle}</strong>
-              <span class="meta">Stream ${favorite.streamVolume}% · Beat ${favorite.beatVolume}% · ${favorite.tempo} BPM · swing ${favorite.swing}</span>
+              <span class="meta">Stream ${favorite.streamVolume}% · Beat ${favorite.beatVolume}% · ${favorite.tempo} BPM</span>
             </button>
             <button class="remove-favorite" type="button" data-remove-favorite="${index}" aria-label="Remove favorite blend">×</button>
           </div>
@@ -2873,7 +3066,7 @@
           streamVolume: Number(els.streamVolume.value),
           beatVolume: Number(els.beatVolume.value),
           tempo: Number(els.tempo.value),
-          swing: Number(els.swing.value),
+          swing: beats[currentBeat].swing,
           echoAmount: Number(els.echoAmount.value),
           spaceAmount: Number(els.spaceAmount.value),
           toneAmount: Number(els.toneAmount.value)
@@ -2944,7 +3137,6 @@
         els.streamVolume.value = favorite.streamVolume;
         els.beatVolume.value = favorite.beatVolume;
         els.tempo.value = favorite.tempo;
-        els.swing.value = favorite.swing;
         els.echoAmount.value = favorite.echoAmount ?? 14;
         els.spaceAmount.value = favorite.spaceAmount ?? 18;
         els.toneAmount.value = favorite.toneAmount ?? 72;
@@ -2985,10 +3177,11 @@
         const favorite = favorites[index];
         if (!favorite) return;
 
+        beginPlaybackGesture();
         await stopAll();
 
         await applyFavoriteDraft(favorite);
-        await startCurrentBlend({ preferStream: true });
+        await startCurrentBlend();
       }
 
       function removeFavorite(index) {
@@ -3070,7 +3263,6 @@
         els.streamVolumeOut.textContent = els.streamVolume.disabled ? "Embed" : `${els.streamVolume.value}%`;
         els.beatVolumeOut.textContent = `${els.beatVolume.value}%`;
         els.tempoOut.textContent = els.tempo.value;
-        els.swingOut.textContent = els.swing.value;
         els.echoAmountOut.textContent = `${els.echoAmount.value}%`;
         els.spaceAmountOut.textContent = `${els.spaceAmount.value}%`;
         els.toneAmountOut.textContent = `${els.toneAmount.value}%`;
@@ -3106,6 +3298,13 @@
             els.status.textContent = "Ready";
             statusResetTimeout = null;
           }, 1800);
+          return;
+        }
+
+        // Actionable hints must survive verbatim — the generic collapse below would
+        // otherwise rewrite "Beat playing · tap ▶ ..." to a false "Playing".
+        if (normalized.includes("tap")) {
+          els.status.textContent = text;
           return;
         }
 
@@ -3518,6 +3717,7 @@
             soundcloudWidget = widget;
             widget.bind(window.SC.Widget.Events.READY, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("READY");
               widget.setVolume(Number(els.streamVolume.value));
               if (shouldAutoPlay) {
                 widget.play();
@@ -3528,19 +3728,26 @@
             });
             widget.bind(window.SC.Widget.Events.PLAY, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("PLAY");
               isStreamPlaying = true;
+              hideStreamHint();
               updatePlaybackButtons();
             });
             widget.bind(window.SC.Widget.Events.PAUSE, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("PAUSE");
               isStreamPlaying = false;
               updatePlaybackButtons();
             });
             widget.bind(window.SC.Widget.Events.FINISH, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
+              logSC("FINISH");
               isStreamPlaying = false;
               updatePlaybackButtons();
             });
+            if (window.SC.Widget.Events.ERROR) {
+              widget.bind(window.SC.Widget.Events.ERROR, () => logSC("ERROR"));
+            }
           };
 
           els.player.addEventListener("load", attachWidget, { once: true });
@@ -3559,28 +3766,39 @@
         return true;
       }
 
-      function forceSoundcloudAutoplay() {
-        const track = tracks[currentTrack];
-        if (!track || getTrackProvider(track) !== "soundcloud") {
-          return false;
+      // Ask the already-loaded SoundCloud widget to play, synchronously within the tap. On
+      // mobile WebKit, reliable cross-origin iframe autoplay is not guaranteed even so — the
+      // honest fallback (a "tap ▶" prompt) is handled in startCurrentBlend.
+      function requestStreamPlaySync() {
+        if (getTrackProvider(tracks[currentTrack]) !== "soundcloud") return;
+        if (soundcloudWidget) {
+          try { soundcloudWidget.play(); } catch (_error) { /* cross-origin play may be blocked */ }
+        } else {
+          soundcloudAutoPlayOnReady = true;
         }
-        soundcloudAutoPlayOnReady = true;
-        els.player.src = embedUrl(track.url, true);
-        bindSoundcloudWidget();
-        return true;
       }
 
-      function waitForStreamPlayback(timeoutMs = 2200) {
+      // The SoundCloud widget optimistically fires PLAY and then flips to PAUSE when WebKit
+      // vetoes un-gestured playback (observed on device as a millisecond flicker). Only count
+      // the stream as started once playback survives for sustainMs continuously.
+      function waitForStreamPlayback(timeoutMs = 4200, sustainMs = 900) {
         return new Promise((resolve) => {
           const startedAt = window.performance.now();
+          let playingSince = null;
 
           const check = () => {
+            const now = window.performance.now();
             if (isStreamPlaying) {
-              resolve(true);
-              return;
+              if (playingSince === null) playingSince = now;
+              if (now - playingSince >= sustainMs) {
+                resolve(true);
+                return;
+              }
+            } else {
+              playingSince = null;
             }
-            if (window.performance.now() - startedAt >= timeoutMs) {
-              resolve(false);
+            if (now - startedAt >= timeoutMs) {
+              resolve(isStreamPlaying);
               return;
             }
             window.setTimeout(check, 120);
@@ -3590,68 +3808,90 @@
         });
       }
 
-      async function startCurrentBlend(options = {}) {
-        const { preferStream = true } = options;
-        let streamStarted = false;
+      function showStreamHint() {
+        if (els.streamHint) els.streamHint.hidden = false;
+        els.playerFrame?.classList.add("needs-tap");
+      }
 
-        if (preferStream) {
-          streamStarted = await startStream();
-          await startBeat();
+      function hideStreamHint() {
+        if (els.streamHint) els.streamHint.hidden = true;
+        els.playerFrame?.classList.remove("needs-tap");
+      }
+
+      async function startCurrentBlend() {
+        const [, streamStarted] = await Promise.all([startBeat(), startStream()]);
+        if (streamStarted) {
+          setStatus("Playing");
+        } else if (getTrackProvider(tracks[currentTrack]) === "soundcloud" && isPlaying) {
+          setStatus("Beat playing · stream needs one more tap");
+          showStreamHint();
+        } else if (isPlaying) {
+          setStatus("Playing");
         } else {
-          await startBeat();
-          streamStarted = await startStream();
+          setStatus("Ready");
         }
-
-        setStatus(streamStarted || isPlaying ? "Playing" : "Ready");
         return streamStarted;
       }
 
-      function updatePlaybackButtons() {
-        els.playBlend.innerHTML = isStreamPlaying || isPlaying
-          ? '<span aria-hidden="true">■</span><span>Stop</span>'
-          : '<span aria-hidden="true">▶</span><span>Play</span>';
+      // The SoundCloud widget optimistically fires PLAY and then flips to PAUSE when WebKit
+      // vetoes un-gestured playback (observed on device as a millisecond flicker). Only count
+      // the stream as started once playback survives for sustainMs continuously.
+      function waitForStreamPlayback(timeoutMs = 4200, sustainMs = 900) {
+        return new Promise((resolve) => {
+          const startedAt = window.performance.now();
+          let playingSince = null;
+
+          const check = () => {
+            const now = window.performance.now();
+            if (isStreamPlaying) {
+              if (playingSince === null) playingSince = now;
+              if (now - playingSince >= sustainMs) {
+                resolve(true);
+                return;
+              }
+            } else {
+              playingSince = null;
+            }
+            if (now - startedAt >= timeoutMs) {
+              resolve(isStreamPlaying);
+              return;
+            }
+            window.setTimeout(check, 120);
+          };
+
+          check();
+        });
       }
 
       async function startStream() {
         if (getTrackProvider(tracks[currentTrack]) === "spotify") {
-          setStatus("Ready");
           return false;
         }
+        // The tap handler already called requestStreamPlaySync() in-gesture. Re-request via the
+        // widget in case it only just became ready, then wait for the PLAY event to confirm.
+        if (soundcloudWidget) {
+          try { soundcloudWidget.play(); } catch (_error) { /* cross-origin play may be blocked */ }
+        } else {
+          soundcloudAutoPlayOnReady = true;
+        }
+        return waitForStreamPlayback();
+      }
 
-        if (isCompactViewport()) {
-          const forced = forceSoundcloudAutoplay();
-          if (forced) {
-            const played = await waitForStreamPlayback(2600);
-            return played || true;
-          }
+      function updatePlaybackButtons() {
+        const active = isStreamPlaying || isPlaying;
+        const toggleHtml = active
+          ? '<span aria-hidden="true">■</span><span>Stop</span>'
+          : '<span aria-hidden="true">▶</span><span>Play</span>';
+        els.playBlend.innerHTML = toggleHtml;
+        els.retroDeck?.classList.toggle("is-playing", active);
+        if (els.miniPlayerToggle) {
+          els.miniPlayerToggle.innerHTML = toggleHtml;
         }
-
-        const started = await withSoundcloudWidget((widget) => {
-          widget.play();
-          isStreamPlaying = true;
-          updatePlaybackButtons();
-        });
-        if (started) {
-          return new Promise((resolve) => {
-            window.setTimeout(() => {
-              if (isStreamPlaying) {
-                resolve(true);
-                return;
-              }
-              if (!isCompactViewport() && forceSoundcloudAutoplay()) {
-                setStatus("Playing");
-                resolve(true);
-                return;
-              }
-              resolve(false);
-            }, isCompactViewport() ? 900 : 450);
-          });
+        if (els.scrubHint) {
+          els.scrubHint.hidden = !isStreamPlaying;
         }
-        if (!isCompactViewport() && forceSoundcloudAutoplay()) {
-          setStatus("Playing");
-          return true;
-        }
-        return false;
+        syncMiniPlayerNowPlaying();
+        renderDebug();
       }
 
       async function stopStream() {
@@ -3666,10 +3906,11 @@
       }
 
       async function playBlend() {
-        await startCurrentBlend({ preferStream: true });
+        await startCurrentBlend();
       }
 
       async function stopAll() {
+        hideStreamHint();
         stopBeat();
         await stopStream();
         setStatus("Blend stopped");
@@ -3778,7 +4019,7 @@
       function scheduler() {
         const tempo = Number(els.tempo.value);
         const baseStep = 60 / tempo / 4;
-        const swing = Number(els.swing.value) / 100;
+        const swing = (beats[currentBeat].swing || 0) / 100;
         while (nextStepTime < audioContext.currentTime + 0.12) {
           scheduleStep(nextStepTime, step);
           const swingOffset = step % 2 === 0 ? baseStep * swing : -baseStep * swing;
@@ -3787,10 +4028,7 @@
         }
       }
 
-      async function ensureAudio() {
-        if (audioClosePromise) {
-          await audioClosePromise;
-        }
+      function ensureAudio() {
         if (audioContext) return;
         audioContext = new AudioContext();
         masterGain = audioContext.createGain();
@@ -3821,70 +4059,187 @@
         toneFilter.connect(convolverNode).connect(reverbWetGain).connect(audioContext.destination);
       }
 
-      async function primeAudio() {
+      // Unlock audio synchronously inside a real user gesture. iOS Safari only honors
+      // AudioContext.resume() and starts audible output when this runs in the same tick as
+      // the tap — never behind an await. Keep the context alive across stop/play so we only
+      // pay this cost once.
+      function unlockAudioSync() {
         try {
-          await ensureAudio();
-          if (audioContext?.state === "suspended") {
-            await audioContext.resume();
+          ensureAudio();
+          debugState.activation = navigator.userActivation
+            ? String(navigator.userActivation.isActive)
+            : "n/a";
+          if (audioContext.state === "suspended") {
+            audioContext.resume().then(
+              () => { debugState.resume = "resolved (" + audioContext.state + ")"; renderDebug(); },
+              (err) => { debugState.resume = "rejected: " + err; renderDebug(); }
+            );
+          } else {
+            debugState.resume = "state=" + audioContext.state;
           }
-          audioPrimed = audioContext?.state === "running";
-        } catch (_error) {
-          // On mobile Safari this can fail before the next direct gesture; we'll retry on tap.
+          // Silent one-frame buffer: the standard iOS trick that flips the audio session to
+          // an audible/running state (also covers the ringer-switch muting case).
+          const buffer = audioContext.createBuffer(1, 1, 22050);
+          const source = audioContext.createBufferSource();
+          source.buffer = buffer;
+          source.connect(audioContext.destination);
+          source.start(0);
+          audioUnlocked = true;
+          audioPrimed = audioContext.state === "running";
+          debugState.unlock = "ran (state=" + audioContext.state + ")";
+        } catch (err) {
+          debugState.unlock = "error: " + err;
+        }
+        renderDebug();
+      }
+
+      function createSilentWavUrl() {
+        const sampleRate = 8000;
+        const samples = sampleRate * 0.3;
+        const dataSize = samples * 2;
+        const buffer = new ArrayBuffer(44 + dataSize);
+        const view = new DataView(buffer);
+        const writeStr = (offset, text) => {
+          for (let i = 0; i < text.length; i += 1) view.setUint8(offset + i, text.charCodeAt(i));
+        };
+        writeStr(0, "RIFF");
+        view.setUint32(4, 36 + dataSize, true);
+        writeStr(8, "WAVE");
+        writeStr(12, "fmt ");
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, 1, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 2, true);
+        view.setUint16(32, 2, true);
+        view.setUint16(34, 16, true);
+        writeStr(36, "data");
+        view.setUint32(40, dataSize, true);
+        return URL.createObjectURL(new Blob([buffer], { type: "audio/wav" }));
+      }
+
+      // iOS routes bare Web Audio through the "ambient" audio session, which the hardware
+      // ring/silent switch mutes — the context reports "running" yet produces no sound. Playing
+      // any HTML media element flips the session to "playback", which ignores the switch. (This
+      // is why the beats only became audible after tapping play inside the SoundCloud embed.)
+      // Loop a silent <audio> while the blend plays so the beats are audible on their own.
+      function startKeepAliveAudio() {
+        try {
+          if (!keepAliveAudio) {
+            keepAliveAudio = new Audio(createSilentWavUrl());
+            keepAliveAudio.loop = true;
+            keepAliveAudio.setAttribute("playsinline", "");
+          }
+          const playPromise = keepAliveAudio.play();
+          if (playPromise) {
+            playPromise.then(
+              () => { debugState.media = "playing"; renderDebug(); },
+              (err) => { debugState.media = "blocked: " + err.name; renderDebug(); }
+            );
+            return playPromise;
+          }
+        } catch (err) {
+          debugState.media = "error: " + err;
+          renderDebug();
+        }
+        return null;
+      }
+
+      function stopKeepAliveAudio() {
+        if (keepAliveAudio && !keepAliveAudio.paused) {
+          keepAliveAudio.pause();
+          debugState.media = "paused";
+          renderDebug();
         }
       }
 
+      // Everything a "start playing" tap needs done synchronously, before any await consumes
+      // the gesture: Web Audio unlock + the playback-session flip above.
+      function beginPlaybackGesture() {
+        unlockAudioSync();
+        return startKeepAliveAudio();
+      }
+
       async function startBeat() {
-        await ensureAudio();
+        ensureAudio();
         if (audioContext.state === "suspended") {
-          await audioContext.resume();
+          // Best-effort backup; the real unlock already happened synchronously on the tap.
+          audioContext.resume();
         }
         audioPrimed = audioContext.state === "running";
 
         if (isPlaying) return;
         isPlaying = true;
+        // Restore output gain (stopBeat ramps it to 0 rather than tearing down the context).
+        masterGain.gain.cancelScheduledValues(audioContext.currentTime);
+        masterGain.gain.setValueAtTime(beatGainFromSlider(els.beatVolume.value), audioContext.currentTime);
         step = 0;
         nextStepTime = audioContext.currentTime + 0.04;
         schedulerId = window.setInterval(scheduler, 25);
         updatePlaybackButtons();
+        renderDebug();
         setStatus("Beat playing beside the stream");
       }
 
-      async function stopBeat() {
+      function stopBeat() {
         isPlaying = false;
         if (schedulerId) {
           window.clearInterval(schedulerId);
           schedulerId = null;
         }
+        // Silence output but keep the context alive and unlocked so the next play needs no
+        // re-unlock (closing/recreating is what left the context suspended on mobile).
         if (audioContext && masterGain) {
           try {
             masterGain.gain.cancelScheduledValues(audioContext.currentTime);
             masterGain.gain.setValueAtTime(0, audioContext.currentTime);
           } catch (_error) {
-            // Ignore gain ramp cleanup if the context is already shutting down.
+            // Ignore gain cleanup if the context is unavailable.
           }
-        }
-        if (audioContext) {
-          const contextToClose = audioContext;
-          audioContext = null;
-          masterGain = null;
-          toneFilter = null;
-          dryGain = null;
-          delayNode = null;
-          delayFeedback = null;
-          delayWetGain = null;
-          convolverNode = null;
-          reverbWetGain = null;
-          audioClosePromise = contextToClose.close().catch(() => {}).finally(() => {
-            audioClosePromise = null;
-          });
-          await audioClosePromise;
         }
         renderVisualizer();
         updatePlaybackButtons();
+        renderDebug();
         setStatus("Beat stopped");
       }
 
-      els.playBlend.addEventListener("click", toggleBlend);
+      function handlePlayToggle() {
+        // Do the gesture-sensitive work synchronously, before toggleBlend's first await, so
+        // iOS still sees this as a user-activated call.
+        if (isPlaying || isStreamPlaying) {
+          stopKeepAliveAudio();
+        } else {
+          const mediaStarted = beginPlaybackGesture();
+          requestStreamPlaySync();
+          // Ask again the instant the keepalive actually starts: the page is then officially
+          // playing media, and WebKit extends the tap's gesture through this promise reaction.
+          mediaStarted?.then?.(() => requestStreamPlaySync(), () => {});
+        }
+        toggleBlend();
+      }
+      els.playBlend.addEventListener("click", handlePlayToggle);
+      els.miniPlayerToggle?.addEventListener("click", handlePlayToggle);
+      els.startStreamButton?.addEventListener("click", async () => {
+        // A fresh parent-page gesture: by now the page has played media (keepalive), so this
+        // in-gesture play() is honored (verified on device via the stop→play-again flow).
+        requestStreamPlaySync();
+        const started = await waitForStreamPlayback();
+        if (started) {
+          setStatus("Playing");
+        } else if (isPlaying) {
+          // A phantom PLAY may have hidden the banner before the veto; bring it back.
+          setStatus("Beat playing · stream needs one more tap");
+          showStreamHint();
+        }
+      });
+      if (els.miniPlayer && "IntersectionObserver" in window) {
+        const miniPlayerObserver = new IntersectionObserver(([entry]) => {
+          const visible = !entry.isIntersecting;
+          els.miniPlayer.classList.toggle("visible", visible);
+          els.miniPlayer.setAttribute("aria-hidden", visible ? "false" : "true");
+        }, { threshold: 0 });
+        miniPlayerObserver.observe(els.playBlend);
+      }
       els.randomAll.addEventListener("click", randomizeAll);
       els.shareBlend.addEventListener("click", shareBlend);
       els.saveFavorite.addEventListener("click", saveFavorite);
@@ -3922,15 +4277,13 @@
           refreshSessionFromStorage();
         }
       });
+      // Warm up the audio context on the earliest gesture events (which fire synchronously at
+      // the very start of a tap) so output is unlocked before the user reaches Play.
       window.addEventListener("pointerdown", () => {
-        if (!audioPrimed) {
-          primeAudio();
-        }
+        if (!audioUnlocked) unlockAudioSync();
       }, { passive: true });
       window.addEventListener("touchstart", () => {
-        if (!audioPrimed) {
-          primeAudio();
-        }
+        if (!audioUnlocked) unlockAudioSync();
       }, { passive: true });
       window.addEventListener("storage", (event) => {
         if (event.key === pendingFavoriteKey) {
@@ -3953,7 +4306,6 @@
       els.streamVolume.addEventListener("input", updateOutputs);
       els.beatVolume.addEventListener("input", updateOutputs);
       els.tempo.addEventListener("input", updateOutputs);
-      els.swing.addEventListener("input", updateOutputs);
       els.echoAmount.addEventListener("input", updateOutputs);
       els.spaceAmount.addEventListener("input", updateOutputs);
       els.toneAmount.addEventListener("input", updateOutputs);
@@ -3973,6 +4325,12 @@
         });
       }
       initializeAuth();
+
+      if (debugEnabled && els.debugPanel) {
+        els.debugPanel.style.display = "block";
+        renderDebug();
+        window.setInterval(renderDebug, 500);
+      }
     </script>
   </body>
 </html>
