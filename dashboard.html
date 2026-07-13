@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>Tāla Visitor Dash</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      :root {
+        --bg: #1d1031;
+        --bg-alt: #24153d;
+        --panel: #fff3cf;
+        --panel-border: #ffcf5a;
+        --ink: #271a3a;
+        --muted: #6f6286;
+        --accent: #45d1c7;
+        --accent-2: #ff5c7a;
+        --good: #c8ff6e;
+        --shadow: #e44f7f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 32px 20px 48px;
+        background:
+          linear-gradient(180deg, rgba(69, 209, 199, 0.08), rgba(255, 92, 122, 0.04)),
+          var(--bg);
+        color: var(--ink);
+        font-family:
+          "SFMono-Regular",
+          "Menlo",
+          "Monaco",
+          "Cascadia Mono",
+          "Segoe UI Mono",
+          "Roboto Mono",
+          monospace;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 220, 140, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 220, 140, 0.1) 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: 0.55;
+      }
+
+      .shell {
+        position: relative;
+        z-index: 1;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+
+      .hero,
+      .panel {
+        border: 4px solid var(--panel-border);
+        background: var(--panel);
+        box-shadow: 10px 10px 0 var(--shadow);
+      }
+
+      .hero {
+        padding: 22px 24px;
+        margin-bottom: 24px;
+      }
+
+      .eyebrow {
+        color: var(--muted);
+        margin: 0 0 8px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 48px);
+        line-height: 1.05;
+      }
+
+      .hero p {
+        margin: 14px 0 0;
+        max-width: 60ch;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+
+      button,
+      a.button {
+        appearance: none;
+        border: 3px solid var(--panel-border);
+        background: #31204e;
+        color: #fff2ce;
+        font: inherit;
+        font-size: 16px;
+        font-weight: 700;
+        padding: 12px 16px;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 6px 6px 0 var(--shadow);
+      }
+
+      button.secondary {
+        background: #fff8e8;
+        color: var(--ink);
+        box-shadow: 6px 6px 0 rgba(39, 26, 58, 0.18);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .stat {
+        padding: 18px;
+      }
+
+      .stat h2 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        color: var(--muted);
+      }
+
+      .value {
+        margin: 0;
+        font-size: clamp(34px, 4vw, 52px);
+        line-height: 1;
+        font-weight: 800;
+      }
+
+      .hint {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .panel {
+        padding: 20px 22px;
+      }
+
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: 22px;
+      }
+
+      .status {
+        margin: 0 0 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .blocked {
+        display: none;
+        border: 4px solid var(--accent-2);
+        background: #ffe6ec;
+        color: var(--ink);
+        box-shadow: 10px 10px 0 rgba(39, 26, 58, 0.18);
+        padding: 22px;
+      }
+
+      .blocked h2 {
+        margin: 0 0 10px;
+      }
+
+      .recent {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .recent strong {
+        color: var(--ink);
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 20px 14px 32px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero,
+        .panel,
+        .blocked {
+          box-shadow: 6px 6px 0 var(--shadow);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <section class="blocked" id="blockedPanel">
+        <h2>Local dashboard only</h2>
+        <p>
+          This page is meant for your local machine. Open it from
+          <code>localhost</code>, <code>127.0.0.1</code>, <code>::1</code>, or a local file preview.
+        </p>
+      </section>
+
+      <div id="dashboardShell">
+        <section class="hero">
+          <p class="eyebrow">Tāla</p>
+          <h1>Visitor Dash</h1>
+          <p>
+            A simple local view of public Tāla traffic. This page stays on localhost, but the
+            counts below are pulled from the live site only.
+          </p>
+          <div class="actions">
+            <button id="refreshButton" type="button">Refresh counts</button>
+            <a class="button secondary" href="./index.html">Back to Tāla</a>
+          </div>
+        </section>
+
+        <section class="grid" aria-label="Analytics overview">
+          <article class="hero stat">
+            <h2>Total visits</h2>
+            <p class="value" id="totalVisits">--</p>
+            <p class="hint">Tracked from the live host only.</p>
+          </article>
+          <article class="hero stat">
+            <h2>Unique visitors</h2>
+            <p class="value" id="uniqueVisitors">--</p>
+            <p class="hint">Approximate, based on browser-level local IDs.</p>
+          </article>
+          <article class="hero stat">
+            <h2>Last 7 days</h2>
+            <p class="value" id="visits7d">--</p>
+            <p class="hint">Recent visits on tala.keel-labs.org.</p>
+          </article>
+          <article class="hero stat">
+            <h2>Returning visitors</h2>
+            <p class="value" id="returningVisitors">--</p>
+            <p class="hint">Browsers that have shown up more than once.</p>
+          </article>
+        </section>
+
+        <section class="panel">
+          <h2>Dashboard status</h2>
+          <p class="status" id="dashboardStatus">Loading analytics...</p>
+          <ul class="recent">
+            <li><strong>Host:</strong> <span id="hostValue">--</span></li>
+            <li><strong>Last updated:</strong> <span id="lastUpdatedValue">--</span></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const supabaseConfig = {
+        url: "https://bjjxlilrxhjebjytrnxi.supabase.co",
+        anonKey: "sb_publishable__Vd43aIGh_xXB1waSsdr7Q_c8uSebGX"
+      };
+
+      const allowedHosts = new Set(["localhost", "127.0.0.1", "::1", ""]);
+      const isLocalPreview =
+        window.location.protocol === "file:" || allowedHosts.has(window.location.hostname);
+
+      const els = {
+        blockedPanel: document.querySelector("#blockedPanel"),
+        dashboardShell: document.querySelector("#dashboardShell"),
+        totalVisits: document.querySelector("#totalVisits"),
+        uniqueVisitors: document.querySelector("#uniqueVisitors"),
+        visits7d: document.querySelector("#visits7d"),
+        returningVisitors: document.querySelector("#returningVisitors"),
+        dashboardStatus: document.querySelector("#dashboardStatus"),
+        lastUpdatedValue: document.querySelector("#lastUpdatedValue"),
+        hostValue: document.querySelector("#hostValue"),
+        refreshButton: document.querySelector("#refreshButton")
+      };
+
+      const authClient = supabaseConfig.url && supabaseConfig.anonKey && window.supabase
+        ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey)
+        : null;
+
+      function formatMetricValue(value) {
+        return new Intl.NumberFormat().format(Number(value || 0));
+      }
+
+      function formatTimestamp(value) {
+        if (!value) {
+          return "No visits recorded yet";
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "Recently updated";
+        }
+        return date.toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      }
+
+      function setBlockedState() {
+        els.blockedPanel.style.display = "block";
+        els.dashboardShell.hidden = true;
+      }
+
+      async function loadAnalytics() {
+        els.dashboardStatus.textContent = "Loading analytics...";
+        els.hostValue.textContent =
+          window.location.protocol === "file:"
+            ? "file preview"
+            : `${window.location.hostname || "unknown"}:${window.location.port || "default"}`;
+
+        if (!authClient) {
+          els.dashboardStatus.textContent = "Supabase is not configured on this page yet.";
+          return;
+        }
+
+        const { data, error } = await authClient
+          .from("analytics_public_summary")
+          .select("*")
+          .single();
+
+        if (error || !data) {
+          els.dashboardStatus.textContent =
+            "Could not load analytics yet. If the SQL migration just ran, reload the public site once and try again.";
+          els.lastUpdatedValue.textContent = "Unavailable";
+          return;
+        }
+
+        els.totalVisits.textContent = formatMetricValue(data.total_visits);
+        els.uniqueVisitors.textContent = formatMetricValue(data.unique_visitors);
+        els.visits7d.textContent = formatMetricValue(data.visits_last_7_days);
+        els.returningVisitors.textContent = formatMetricValue(data.returning_visitors);
+        els.lastUpdatedValue.textContent = formatTimestamp(data.last_visit_at);
+
+        if (Number(data.total_visits || 0) === 0) {
+          els.dashboardStatus.textContent =
+            "No public visits recorded yet. Deploy the latest index.html to tala.keel-labs.org, open the live site once, then come back here.";
+          return;
+        }
+
+        els.dashboardStatus.textContent = "Public analytics loaded.";
+      }
+
+      els.refreshButton.addEventListener("click", loadAnalytics);
+
+      if (!isLocalPreview) {
+        setBlockedState();
+      } else {
+        loadAnalytics();
+      }
+    </script>
+  </body>
+</html>
