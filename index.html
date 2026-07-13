@@ -1021,6 +1021,7 @@
         padding: 5px 8px;
         white-space: nowrap;
         align-self: start;
+        pointer-events: none;
       }
 
       .tag.is-active {
@@ -3109,7 +3110,13 @@
           .filter(({ beat }) => includesQuery(beat, beatQuery));
 
         els.trackList.innerHTML = visibleTracks.length ? visibleTracks.map(({ track, index }) => `
-          <div class="item queue-item ${track.isCustom ? "has-remove" : ""}" aria-pressed="${index === currentTrack}">
+          <div
+            class="item queue-item ${track.isCustom ? "has-remove" : ""}"
+            aria-pressed="${index === currentTrack}"
+            data-track-card="${index}"
+            role="button"
+            tabindex="0"
+          >
             <button class="queue-load" type="button" data-track="${index}">
               <span><strong>${track.title}</strong><span class="meta">${formatTrackMeta(track)}</span></span>
             </button>
@@ -3125,12 +3132,19 @@
           </button>
         `).join("") : '<div class="empty">No beat patterns match that search.</div>';
 
-        els.trackList.querySelectorAll("[data-track]").forEach((button) => {
-          button.addEventListener("click", async () => {
+        const handleTrackCardSelect = async (trackIndex) => {
+            const isCurrentTrack = trackIndex === currentTrack;
+            const provider = getTrackProvider(tracks[trackIndex]);
+
+            if (isCurrentTrack && provider === "soundcloud" && isStreamPlaying) {
+              await stopStream();
+              setStatus(isPlaying ? "Beat playing" : "Ready");
+              return;
+            }
+
             beginPlaybackGesture();
-            const trackIndex = Number(button.dataset.track);
             selectTrack(trackIndex, { autoPlay: true });
-            if (getTrackProvider(tracks[trackIndex]) === "spotify") {
+            if (provider === "spotify") {
               setStatus(isPlaying ? "Beat playing" : "Spotify stream selected");
               return;
             }
@@ -3142,6 +3156,23 @@
               setStatus(isPlaying ? "Beat playing · stream needs one more tap" : "Stream needs one more tap");
               showStreamHint();
             }
+        };
+
+        els.trackList.querySelectorAll("[data-track]").forEach((button) => {
+          button.addEventListener("click", async (event) => {
+            event.stopPropagation();
+            await handleTrackCardSelect(Number(button.dataset.track));
+          });
+        });
+
+        els.trackList.querySelectorAll("[data-track-card]").forEach((card) => {
+          card.addEventListener("click", async () => {
+            await handleTrackCardSelect(Number(card.dataset.trackCard));
+          });
+          card.addEventListener("keydown", async (event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            await handleTrackCardSelect(Number(card.dataset.trackCard));
           });
         });
         els.trackList.querySelectorAll("[data-remove-track]").forEach((button) => {
@@ -3151,8 +3182,19 @@
           });
         });
         els.beatList.querySelectorAll("[data-beat]").forEach((button) => {
-          button.addEventListener("click", () => {
-            selectBeat(Number(button.dataset.beat), { autoPlay: true });
+          button.addEventListener("click", async () => {
+            const beatIndex = Number(button.dataset.beat);
+            const isCurrentBeat = beatIndex === currentBeat;
+
+            if (isCurrentBeat && isPlaying) {
+              stopBeat();
+              setStatus(isStreamPlaying ? "Stream playing" : "Ready");
+              return;
+            }
+
+            beginPlaybackGesture();
+            await selectBeat(beatIndex, { autoPlay: true });
+            setStatus(isStreamPlaying ? "Playing" : "Beat playing");
           });
         });
         renderFavorites();
@@ -3902,18 +3944,21 @@
               isStreamPlaying = true;
               hideStreamHint();
               updatePlaybackButtons();
+              renderLists();
             });
             widget.bind(window.SC.Widget.Events.PAUSE, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
               logSC("PAUSE");
               isStreamPlaying = false;
               updatePlaybackButtons();
+              renderLists();
             });
             widget.bind(window.SC.Widget.Events.FINISH, () => {
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
               logSC("FINISH");
               isStreamPlaying = false;
               updatePlaybackButtons();
+              renderLists();
             });
             if (window.SC.Widget.Events.ERROR) {
               widget.bind(window.SC.Widget.Events.ERROR, () => logSC("ERROR"));
@@ -4086,6 +4131,7 @@
           widget.pause();
           isStreamPlaying = false;
           updatePlaybackButtons();
+          renderLists();
         });
       }
 
@@ -4363,6 +4409,7 @@
         updatePlaybackButtons();
         renderDebug();
         setStatus("Beat playing beside the stream");
+        renderLists();
       }
 
       function stopBeat() {
@@ -4385,6 +4432,7 @@
         updatePlaybackButtons();
         renderDebug();
         setStatus("Beat stopped");
+        renderLists();
       }
 
       function handlePlayToggle() {
