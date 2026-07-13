@@ -1023,6 +1023,10 @@
         align-self: start;
       }
 
+      .tag.is-active {
+        background: var(--red);
+      }
+
       .empty {
         border: 2px dashed rgba(37, 22, 52, 0.25);
         border-radius: 7px;
@@ -3109,7 +3113,7 @@
             <button class="queue-load" type="button" data-track="${index}">
               <span><strong>${track.title}</strong><span class="meta">${formatTrackMeta(track)}</span></span>
             </button>
-            <span class="tag">Stream</span>
+            <span class="tag ${(index === currentTrack && isStreamPlaying) ? "is-active" : ""}">${(index === currentTrack && isStreamPlaying) ? "■ Live" : "▶ Play"}</span>
             ${track.isCustom ? `<button class="remove-favorite" type="button" data-remove-track="${index}" aria-label="Remove added stream">×</button>` : ""}
           </div>
         `).join("") : `<div class="empty">${activeTrackShelf === "added" ? "No added streams yet." : "No archival streams match that shelf and search."}</div>`;
@@ -3117,16 +3121,27 @@
         els.beatList.innerHTML = visibleBeats.length ? visibleBeats.map(({ beat, index }) => `
           <button class="item" type="button" aria-pressed="${index === currentBeat}" data-beat="${index}">
             <span><strong>${beat.title}</strong><span class="meta">${beat.meta}</span></span>
-            <span class="tag">Original</span>
+            <span class="tag ${(index === currentBeat && isPlaying) ? "is-active" : ""}">${(index === currentBeat && isPlaying) ? "■ Live" : "▶ Beat"}</span>
           </button>
         `).join("") : '<div class="empty">No beat patterns match that search.</div>';
 
         els.trackList.querySelectorAll("[data-track]").forEach((button) => {
           button.addEventListener("click", async () => {
             beginPlaybackGesture();
-            await stopAll();
-            selectTrack(Number(button.dataset.track));
-            await startCurrentBlend();
+            const trackIndex = Number(button.dataset.track);
+            selectTrack(trackIndex, { autoPlay: true });
+            if (getTrackProvider(tracks[trackIndex]) === "spotify") {
+              setStatus(isPlaying ? "Beat playing" : "Spotify stream selected");
+              return;
+            }
+            requestStreamPlaySync();
+            const started = await startStream();
+            if (started) {
+              setStatus(isPlaying ? "Playing" : "Stream playing");
+            } else {
+              setStatus(isPlaying ? "Beat playing · stream needs one more tap" : "Stream needs one more tap");
+              showStreamHint();
+            }
           });
         });
         els.trackList.querySelectorAll("[data-remove-track]").forEach((button) => {
