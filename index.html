@@ -2535,6 +2535,27 @@
         })}`;
       }
 
+      function renderDebug() {
+        if (!els.debugPanel) return;
+        if (!debugEnabled) {
+          els.debugPanel.hidden = true;
+          els.debugPanel.textContent = "";
+          return;
+        }
+
+        els.debugPanel.hidden = false;
+        els.debugPanel.textContent = JSON.stringify(debugState, null, 2);
+      }
+
+      function logSC(eventName) {
+        debugState.scEvents = [...debugState.scEvents.slice(-11), `${new Date().toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit"
+        })} ${eventName}`];
+        renderDebug();
+      }
+
       async function trackVisit() {
         if (!authClient || analyticsTracked) {
           return;
@@ -3892,6 +3913,16 @@
         }
         syncMiniPlayerNowPlaying();
         renderDebug();
+      }
+
+      function syncMiniPlayerNowPlaying() {
+        if (!els.miniPlayerTrack || !els.miniPlayerBeat) return;
+
+        const track = tracks[currentTrack];
+        const beat = beats[currentBeat];
+
+        els.miniPlayerTrack.textContent = track?.title || "No track selected";
+        els.miniPlayerBeat.textContent = beat?.title || "No beat selected";
       }
 
       async function stopStream() {
