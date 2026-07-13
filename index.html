@@ -2407,6 +2407,7 @@
       let audioPrimed = false;
       let soundcloudBindId = 0;
       let soundcloudAutoPlayOnReady = false;
+      let pendingStreamPlayRequest = false;
       let nextStepTime = 0;
       let step = 0;
       let isPlaying = false;
@@ -2734,6 +2735,8 @@
         const track = tracks[currentTrack];
         const provider = getTrackProvider(track);
         const autoPlay = Boolean(options.autoPlay) && provider === "soundcloud";
+        pendingStreamPlayRequest = autoPlay;
+        hideStreamHint();
         els.trackTitle.textContent = track.title;
         els.trackMeta.textContent = formatTrackMeta(track);
         syncMiniPlayerNowPlaying();
@@ -2773,6 +2776,7 @@
           soundcloudWidget = null;
           soundcloudReady = Promise.resolve(false);
           soundcloudAutoPlayOnReady = false;
+          pendingStreamPlayRequest = false;
           setStatus("Spotify stream selected");
         }
         renderLists();
@@ -3713,8 +3717,6 @@
 
       function bindSoundcloudWidget() {
         const bindId = ++soundcloudBindId;
-        const shouldAutoPlay = soundcloudAutoPlayOnReady;
-        soundcloudAutoPlayOnReady = false;
         soundcloudWidget = null;
         isStreamPlaying = false;
         updatePlaybackButtons();
@@ -3740,10 +3742,10 @@
               if (bindId !== soundcloudBindId || soundcloudWidget !== widget) return;
               logSC("READY");
               widget.setVolume(Number(els.streamVolume.value));
-              if (shouldAutoPlay) {
+              if (soundcloudAutoPlayOnReady || pendingStreamPlayRequest) {
+                soundcloudAutoPlayOnReady = false;
+                pendingStreamPlayRequest = false;
                 widget.play();
-                isStreamPlaying = true;
-                updatePlaybackButtons();
               }
               settle(true);
             });
@@ -3792,6 +3794,7 @@
       // honest fallback (a "tap ▶" prompt) is handled in startCurrentBlend.
       function requestStreamPlaySync() {
         if (getTrackProvider(tracks[currentTrack]) !== "soundcloud") return;
+        pendingStreamPlayRequest = true;
         if (soundcloudWidget) {
           try { soundcloudWidget.play(); } catch (_error) { /* cross-origin play may be blocked */ }
         } else {
@@ -3929,6 +3932,8 @@
         if (getTrackProvider(tracks[currentTrack]) === "spotify") {
           return false;
         }
+        pendingStreamPlayRequest = false;
+        soundcloudAutoPlayOnReady = false;
         return withSoundcloudWidget((widget) => {
           widget.pause();
           isStreamPlaying = false;
